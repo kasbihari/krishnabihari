@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
 import { Play, Pause } from "lucide-react";
-
-const ROLES = [
-  "Full-Stack Developer",
-  "AI Automation Engineer",
-  "SaaS Builder",
-  "Future AI Founder",
-];
+import { useI18n } from "../../lib/client/i18n-store";
+import type { Lang } from "../../i18n";
 
 /**
  * NOTE: paths must start with a single leading "/" and must NOT include
@@ -182,7 +177,13 @@ function getRandomRecordIndex(
   return nextIndex;
 }
 
-export default function Hero() {
+export default function Hero({
+  lang: initialLang = "en",
+}: {
+  lang?: Lang;
+}) {
+  const { t } = useI18n(initialLang);
+
   const containerRef =
     useRef<HTMLDivElement>(null);
 
@@ -1522,9 +1523,17 @@ export default function Hero() {
      Typewriter
   ---------------------------------------------------------------- */
 
+  // When the language changes, restart the role typewriter cleanly.
+  useEffect(() => {
+    setDisplayed("");
+    setIsDeleting(false);
+    setIsPaused(false);
+    setRoleIndex(0);
+  }, [t]);
+
   useEffect(() => {
     const currentRole =
-      ROLES[roleIndex];
+      t.hero.roles[roleIndex % t.hero.roles.length];
 
     if (isPaused) {
       const timeout =
@@ -1597,13 +1606,14 @@ export default function Hero() {
     setRoleIndex(
       (current) =>
         (current + 1) %
-        ROLES.length,
+        t.hero.roles.length,
     );
   }, [
     displayed,
     isDeleting,
     isPaused,
     roleIndex,
+    t,
   ]);
 
   /* ---------------------------------------------------------------
@@ -1656,13 +1666,13 @@ export default function Hero() {
         <div className="hero-copy">
           <p className="hero-availability hero-animate hero-delay-1">
             <span className="hero-status-dot"/>
-            Available for new projects
+            {t.hero.availability}
           </p>
 
           <h1 className="hero-title hero-animate hero-delay-2">
             Krishna Bihari<br />
-            <span className="hero-title-accent">Engineering software</span>{" "}
-            that creates value.
+            <span className="hero-title-accent">{t.hero.headlinePart1}</span>{" "}
+            {t.hero.headlinePart2}
           </h1>
 
           <div className="hero-role hero-animate hero-delay-3">
@@ -1673,31 +1683,29 @@ export default function Hero() {
           </div>
 
           <p className="hero-description hero-animate hero-delay-4">
-            Full-stack developer and AI engineer from the Netherlands
-            building web applications, AI-powered automations, and SaaS
-            products that solve real business problems.
+            {t.hero.description}
           </p>
 
           <div className="hero-actions hero-animate hero-delay-5">
             <a
-              href="#work"
+              href="#projects"
               className="btn-primary"
             >
-              View my work
+              {t.hero.viewWork}
             </a>
 
             <a
               href="/client"
               className="btn-secondary"
             >
-              Client portal
+              {t.hero.clientPortal}
             </a>
 
             <a
               href="#contact"
               className="btn-secondary"
             >
-              Get in touch
+              {t.hero.getInTouch}
             </a>
           </div>
         </div>
@@ -1829,7 +1837,7 @@ export default function Hero() {
                     alt={`${record.title} album artwork`}
                     draggable={false}
                     decoding="async"
-                    fetchPriority="high"
+                    fetchpriority="high"
                   />
 
                   <div className="vinyl-center-hole" />

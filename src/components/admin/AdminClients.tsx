@@ -177,7 +177,7 @@ export default function AdminClients({ clients: initialClients }: AdminClientsPr
         )}
 
         {editorOpen && (
-          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(10,10,10,0.7)', padding: '1.5rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
+          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21,15,10,0.7)', padding: '1.5rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--soft-white)' }}>
               {creating ? 'New client' : 'Edit client'}
             </h2>
@@ -207,7 +207,7 @@ export default function AdminClients({ clients: initialClients }: AdminClientsPr
         )}
 
         {clients.length === 0 ? (
-          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(10, 10, 10, 0.7)', padding: '2rem', textAlign: 'center' }}>
+          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21, 15, 10, 0.7)', padding: '2rem', textAlign: 'center' }}>
             <div style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.8 }}>
               No clients found. Add your first client to get started.
             </div>
@@ -215,7 +215,7 @@ export default function AdminClients({ clients: initialClients }: AdminClientsPr
         ) : (
           <div style={{ display: 'grid', gap: '1rem' }}>
             {clients.map((client) => (
-              <div key={client.id} style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(10, 10, 10, 0.7)', padding: '1.5rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '1.5rem', alignItems: 'center' }}>
+              <div key={client.id} style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21, 15, 10, 0.7)', padding: '1.5rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '1.5rem', alignItems: 'center' }}>
                 <div>
                   <div style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sand)', marginBottom: '0.35rem' }}>
                     {client.company}

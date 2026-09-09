@@ -121,7 +121,7 @@ export default function ProjectProgress({
           '1px solid var(--border-mid)',
         borderRadius: '18px',
         background:
-          'rgba(10, 10, 10, 0.78)',
+          'rgba(21, 15, 10, 0.78)',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
         boxShadow:

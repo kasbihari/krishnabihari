@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { useI18n } from '../../lib/client/i18n-store';
+import type { Lang } from '../../i18n';
 
 type Skill = { name: string; icon: string };
 type Category = { label: string; accent: string; skills: Skill[] };
 
 const categories: Category[] = [
   {
-    label: 'Frontend',
+    label: 'frontend',
     accent: 'var(--sand-light)',
     skills: [
       { name: 'React', icon: '⚛' },
@@ -17,7 +19,7 @@ const categories: Category[] = [
     ],
   },
   {
-    label: 'Backend',
+    label: 'backend',
     accent: 'var(--forest-bright)',
     skills: [
       { name: 'Node.js', icon: '⬡' },
@@ -29,8 +31,8 @@ const categories: Category[] = [
     ],
   },
   {
-    label: 'AI & Automation',
-    accent: '#a78bfa',
+    label: 'ai',
+    accent: 'var(--brown-soft)',
     skills: [
       { name: 'OpenAI API', icon: '◎' },
       { name: 'ElevenLabs', icon: '🎙' },
@@ -41,8 +43,8 @@ const categories: Category[] = [
     ],
   },
   {
-    label: 'Database & Cloud',
-    accent: '#f9a8d4',
+    label: 'cloud',
+    accent: 'var(--pine-bright)',
     skills: [
       { name: 'MySQL', icon: '🐬' },
       { name: 'PostgreSQL', icon: '🐘' },
@@ -54,7 +56,7 @@ const categories: Category[] = [
   },
 ];
 
-function CategoryCard({ cat, delay }: { cat: Category; delay: number }) {
+function CategoryCard({ cat, delay, label }: { cat: Category; delay: number; label: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -107,9 +109,8 @@ function CategoryCard({ cat, delay }: { cat: Category; delay: number }) {
           marginBottom: '1.25rem',
         }}
       >
-        {cat.label}
+        {label}
       </p>
-
       {/* Skills grid */}
       <div
         style={{
@@ -136,7 +137,7 @@ function CategoryCard({ cat, delay }: { cat: Category; delay: number }) {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'var(--border-mid)';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+              e.currentTarget.style.background = 'var(--surface-2)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = 'var(--border-subtle)';
@@ -166,14 +167,23 @@ function CategoryCard({ cat, delay }: { cat: Category; delay: number }) {
   );
 }
 
-export default function Skills() {
+export default function Skills({ lang: initialLang = 'en' }: { lang?: Lang }) {
+  const { t } = useI18n(initialLang);
+  const s = t.skills;
+  const catLabels: Record<string, string> = {
+    frontend: s.frontend,
+    backend: s.backend,
+    ai: s.ai,
+    cloud: s.cloud,
+  };
+
   return (
     <section id="skills" className="section-padding">
       <div className="container-main">
 
         {/* Header */}
         <div style={{ marginBottom: '4rem' }}>
-          <p data-reveal className="section-label">Expertise</p>
+          <p data-reveal className="section-label">{s.label}</p>
           <h2
             data-reveal
             data-delay="100"
@@ -186,7 +196,7 @@ export default function Skills() {
               maxWidth: '560px',
             }}
           >
-            Tools I build{' '}
+            {s.headingPart1}{' '}
             <span
               style={{
                 fontFamily: 'Playfair Display, Georgia, serif',
@@ -195,7 +205,7 @@ export default function Skills() {
                 color: 'var(--sand-light)',
               }}
             >
-              real things with.
+              {s.headingPart2}
             </span>
           </h2>
           <p
@@ -209,7 +219,7 @@ export default function Skills() {
               maxWidth: '440px',
             }}
           >
-            From polished front-end interfaces to backend systems and AI-powered automation pipelines — I work across the full stack.
+            {s.body}
           </p>
         </div>
 
@@ -222,7 +232,7 @@ export default function Skills() {
           }}
         >
           {categories.map((cat, i) => (
-            <CategoryCard key={cat.label} cat={cat} delay={i * 100} />
+            <CategoryCard key={cat.label} cat={cat} delay={i * 100} label={catLabels[cat.label] ?? cat.label} />
           ))}
         </div>
 
@@ -247,7 +257,7 @@ export default function Skills() {
               fontFamily: 'Playfair Display, Georgia, serif',
             }}
           >
-            "I don't chase every new framework. I pick the right tool, understand it deeply, and use it to ship things that work."
+            "{s.quote}"
           </p>
         </div>
       </div>

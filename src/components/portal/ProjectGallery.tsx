@@ -126,7 +126,7 @@ export default function ProjectGallery({
             '1px solid var(--border-mid)',
           borderRadius: '18px',
           background:
-            'rgba(10, 10, 10, 0.78)',
+            'rgba(21, 15, 10, 0.78)',
           padding: '1.5rem',
           minHeight: '180px',
           display: 'grid',
@@ -231,7 +231,7 @@ export default function ProjectGallery({
           borderRadius: '18px',
           overflow: 'hidden',
           background:
-            'rgba(10, 10, 10, 0.78)',
+            'rgba(21, 15, 10, 0.78)',
           boxShadow:
             '0 20px 45px rgba(0, 0, 0, 0.16)',
         }}

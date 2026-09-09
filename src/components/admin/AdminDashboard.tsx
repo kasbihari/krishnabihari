@@ -19,7 +19,7 @@ function StatCard({ label, value }: StatCardProps) {
         border: '1px solid var(--border-mid)',
         borderRadius: '20px',
         padding: '1.2rem',
-        background: 'rgba(10, 10, 10, 0.7)',
+        background: 'rgba(21, 15, 10, 0.7)',
       }}
     >
       <div
@@ -122,7 +122,7 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
             style={{
               border: '1px solid var(--border-mid)',
               borderRadius: '22px',
-              background: 'rgba(10, 10, 10, 0.7)',
+              background: 'rgba(21, 15, 10, 0.7)',
               padding: '1.5rem',
             }}
           >
@@ -149,7 +149,7 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
             style={{
               border: '1px solid var(--border-mid)',
               borderRadius: '22px',
-              background: 'rgba(10, 10, 10, 0.7)',
+              background: 'rgba(21, 15, 10, 0.7)',
               padding: '1.5rem',
             }}
           >

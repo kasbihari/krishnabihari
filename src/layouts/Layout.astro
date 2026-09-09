@@ -1,28 +1,50 @@
 ---
-import "../styles/global.css";
-import Navbar from "../components/Navbar";
+import '../styles/global.css';
+import Navbar from '../components/Navbar';
+import { getLangFromCookies, localizedMeta } from '../i18n/server';
+import type { Lang } from '../i18n';
 
 export interface Props {
   title?: string;
   description?: string;
+  lang?: Lang;
 }
 
-const {
-  title = "Krishna Bihari — Full-Stack & AI Engineer",
-  description = "Full-stack engineer building complete products with engineering depth. Specialising in AI integration, React, Node.js, and scalable architecture.",
-} = Astro.props;
+const lang = Astro.props.lang ?? getLangFromCookies(Astro.cookies);
+const meta = localizedMeta(lang);
+
+const { title = meta.title, description = meta.description } = Astro.props;
 
 const canonicalURL = new URL(
   Astro.url.pathname,
-  Astro.site ?? "https://krishnabihari.vercel.app",
+  Astro.site ?? 'https://krishnabihari.vercel.app',
 );
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('kb-theme');
+          if (stored !== 'light' && stored !== 'dark') {
+            stored =
+              window.matchMedia &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', stored);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalURL} />
@@ -44,32 +66,15 @@ const canonicalURL = new URL(
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="shortcut icon" href="/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.svg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
       rel="stylesheet"
     />
-
-    <style>
-      @font-face {
-        font-family: "AmsterdamFour";
-        src: url("/fonts/Amsterdam.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-      :root {
-        --font-display: "Playfair Display", Georgia, serif;
-        --font-body: "Mukta", "Helvetica Neue", Arial, sans-serif;
-        --font-name: "AmsterdamFour", "Playfair Display", Georgia, serif;
-        --font-mono: "JetBrains Mono", "Fira Code", monospace;
-      }
-    </style>
   </head>
 
   <body>
-    <!-- Één nav component, geen dubbeling -->
-    <Navbar client:load />
+    <Navbar lang={lang} client:load />
 
     <slot />
 

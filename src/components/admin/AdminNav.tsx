@@ -14,7 +14,7 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
         top: 0,
         zIndex: 50,
         borderBottom: '1px solid var(--border-mid)',
-        background: 'rgba(11, 13, 12, 0.85)',
+        background: 'rgba(21, 15, 10, 0.85)',
         backdropFilter: 'blur(12px)',
       }}
     >

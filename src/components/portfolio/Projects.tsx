@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useI18n } from '../../lib/client/i18n-store';
+import type { Lang } from '../../i18n';
 
 type ProjectStatus = 'done' | 'in-progress';
 
@@ -132,15 +134,10 @@ const fallbackProjects: Project[] = [
   // },
 ];
 
-const FILTERS: { label: string; value: FilterValue }[] = [
-  { label: 'All', value: 'all' },
-  { label: 'Shipped', value: 'done' },
-  { label: 'In Progress', value: 'in-progress' },
-];
-
 function StatusBadge({
   status,
-}: Readonly<{ status: ProjectStatus }>) {
+  label,
+}: Readonly<{ status: ProjectStatus; label: string }>) {
   const isDone = status === 'done';
 
   return (
@@ -157,15 +154,15 @@ function StatusBadge({
         borderRadius: '3px',
         border: `1px solid ${
           isDone
-            ? 'rgba(100,200,130,0.25)'
-            : 'rgba(200,160,80,0.25)'
+            ? 'color-mix(in srgb, var(--pine-ink) 45%, transparent)'
+            : 'color-mix(in srgb, var(--brown) 45%, transparent)'
         }`,
         color: isDone
-          ? 'var(--forest-bright)'
-          : '#c8a050',
+          ? 'var(--pine-ink)'
+          : 'var(--brown)',
         background: isDone
-          ? 'rgba(100,200,130,0.06)'
-          : 'rgba(200,160,80,0.06)',
+          ? 'color-mix(in srgb, var(--pine-ink) 10%, transparent)'
+          : 'color-mix(in srgb, var(--brown) 10%, transparent)',
       }}
     >
       <span
@@ -174,21 +171,32 @@ function StatusBadge({
           height: '4px',
           borderRadius: '50%',
           background: isDone
-            ? 'var(--forest-bright)'
-            : '#c8a050',
+            ? 'var(--pine-ink)'
+            : 'var(--brown)',
         }}
       />
 
-      {isDone ? 'Shipped' : 'In Progress'}
+      {label}
     </span>
   );
 }
 
 export default function Projects({
   projects,
+  lang: initialLang = 'en',
 }: {
   projects?: Project[];
+  lang?: Lang;
 }) {
+  const { t } = useI18n(initialLang);
+  const w = t.work;
+
+  const filters: { label: string; value: FilterValue }[] = [
+    { label: w.all, value: 'all' },
+    { label: w.shipped, value: 'done' },
+    { label: w.inProgress, value: 'in-progress' },
+  ];
+
   const [activeProject, setActiveProject] = useState<string | null>(
     null,
   );
@@ -270,31 +278,14 @@ export default function Projects({
         >
           <div>
             <p className="section-label">
-              Selected Work
+              {w.label}
             </p>
 
-            <h2
-              style={{
-                fontSize:
-                  'clamp(2rem, 4vw, 3.5rem)',
-                fontWeight: 500,
-                color:
-                  'var(--soft-white)',
-                lineHeight: 1.05,
-              }}
-            >
-              Products I've{' '}
-              <span
-                style={{
-                  fontFamily:
-                    'Playfair Display, serif',
-                  fontStyle: 'italic',
-                  color:
-                    'var(--sand-light)',
-                }}
-              >
-                built & shipped.
-              </span>
+            <h2 className="text-section-title">
+              {w.headingPart1}{' '}
+              <em style={{ color: 'var(--pine-ink)', fontStyle: 'italic' }}>
+                {w.headingPart2}
+              </em>
             </h2>
           </div>
 
@@ -307,7 +298,7 @@ export default function Projects({
               flexWrap: 'wrap',
             }}
           >
-            {FILTERS.map(
+            {filters.map(
               ({ label, value }) => {
                 const active =
                   filter === value;
@@ -326,13 +317,13 @@ export default function Projects({
                       borderRadius:
                         '999px',
                       border: active
-                        ? '1px solid rgba(255,255,255,0.16)'
-                        : '1px solid rgba(255,255,255,0.06)',
+                        ? '1px solid var(--line-strong)'
+                        : '1px solid var(--line-soft)',
                       background: active
-                        ? 'rgba(255,255,255,0.08)'
+                        ? 'var(--surface-2)'
                         : 'transparent',
                       color: active
-                        ? 'var(--soft-white)'
+                        ? 'var(--text)'
                         : 'var(--muted)',
                       cursor: 'pointer',
                       fontSize: '0.75rem',
@@ -367,7 +358,7 @@ export default function Projects({
                 fontSize: '0.9rem',
               }}
             >
-              Nothing visible at the moment :)
+              {w.empty}
             </div>
           )}
 
@@ -407,7 +398,7 @@ export default function Projects({
                   style={{
                     height: '1px',
                     background:
-                      'rgba(255,255,255,0.06)',
+                      'var(--line-soft)',
                   }}
                 />
 
@@ -484,6 +475,11 @@ export default function Projects({
                         status={
                           project.status
                         }
+                        label={
+                          project.status === 'done'
+                            ? w.shippedBadge
+                            : w.inProgressBadge
+                        }
                       />
                     </div>
 
@@ -559,9 +555,9 @@ export default function Projects({
                               overflow:
                                 'hidden',
                               border:
-                                '1px solid rgba(255,255,255,0.08)',
+                                '1px solid var(--line-soft)',
                               background:
-                                'rgba(255,255,255,0.03)',
+                                'var(--bg-soft)',
                               marginBottom:
                                 '2rem',
                             }}
@@ -594,7 +590,7 @@ export default function Projects({
                               1 && (
                               <button
                                 type="button"
-                                aria-label="Previous image"
+                                aria-label={w.prevImage}
                                 onClick={(
                                   e,
                                 ) => {
@@ -641,7 +637,7 @@ export default function Projects({
                               1 && (
                               <button
                                 type="button"
-                                aria-label="Next image"
+                                aria-label={w.nextImage}
                                 onClick={(
                                   e,
                                 ) => {
@@ -710,9 +706,8 @@ export default function Projects({
                                     <button
                                       key={`${project.id}-${image}`}
                                       type="button"
-                                      aria-label={`Go to image ${
-                                        index +
-                                        1
+                                      aria-label={`${w.goToImage} ${
+                                        index + 1
                                       }`}
                                       onClick={(
                                         e,
@@ -794,7 +789,7 @@ export default function Projects({
                                   padding:
                                     '0.3rem 0.7rem',
                                   border:
-                                    '1px solid rgba(255,255,255,0.08)',
+                                    '1px solid var(--line-soft)',
                                   borderRadius:
                                     '5px',
                                   fontSize:

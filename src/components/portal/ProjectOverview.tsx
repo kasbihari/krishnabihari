@@ -303,7 +303,7 @@ export default function ProjectOverview({
             var(--border-mid);
           border-radius: 18px;
           background:
-            rgba(10, 10, 10, 0.78);
+            rgba(21, 15, 10, 0.78);
           box-shadow:
             0 20px 45px
             rgba(0, 0, 0, 0.18);

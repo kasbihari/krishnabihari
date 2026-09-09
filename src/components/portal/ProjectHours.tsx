@@ -73,7 +73,7 @@ export default function ProjectHours({
         border:
           '1px solid var(--border-mid)',
         background:
-          'rgba(10, 10, 10, 0.78)',
+          'rgba(21, 15, 10, 0.78)',
         borderRadius: '18px',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',

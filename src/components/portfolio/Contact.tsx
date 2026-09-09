@@ -1,413 +1,234 @@
 import { useForm, ValidationError } from '@formspree/react';
+import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react';
+import { useI18n } from '../../lib/client/i18n-store';
+import type { Lang } from '../../i18n';
 
-const contactLinks = [
-  {
-    label: 'GitHub',
-    value: 'github.com/kasbihari',
-    href: 'https://github.com/kasbihari',
-  },
+const CONTACT_LINKS = [
+  { label: 'GitHub', value: 'github.com/kasbihari', href: 'https://github.com/kasbihari', icon: Github },
   {
     label: 'LinkedIn',
-    value: 'linkedin.com/in/krishna-bihari',
+    value: 'in/krishna-bihari',
     href: 'https://www.linkedin.com/in/krishna-bihari/',
+    icon: Linkedin,
   },
-  {
-    label: 'Email',
-    value: 'kas.bihari@gmail.com',
-    href: 'mailto:kas.bihari@gmail.com',
-  },
+  { label: 'Email', value: 'kas.bihari@gmail.com', href: 'mailto:kas.bihari@gmail.com', icon: Mail },
 ];
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  padding: '0.85rem 1rem',
-  background: 'var(--charcoal-2)',
-  border: '1px solid var(--border-subtle)',
-  borderRadius: '4px',
-  color: 'var(--soft-white)',
-  fontSize: '0.9rem',
-  outline: 'none',
-  transition: 'border-color 0.3s',
   boxSizing: 'border-box',
-  fontFamily: 'inherit',
+  padding: '0.85rem 1.05rem',
+  borderRadius: '4px',
+  border: '1px solid var(--line)',
+  background: 'var(--surface)',
+  color: 'var(--text)',
+  fontSize: '0.95rem',
+  fontFamily: 'var(--font-body)',
+  transition: 'border-color 0.3s, box-shadow 0.3s',
 };
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
+  fontFamily: 'var(--font-body)',
   fontSize: '0.72rem',
-  fontWeight: 500,
-  letterSpacing: '0.1em',
+  fontWeight: 600,
+  letterSpacing: '0.14em',
   textTransform: 'uppercase',
-  color: 'var(--muted)',
+  color: 'var(--text-faint)',
   marginBottom: '0.5rem',
 };
 
-export default function Contact() {
+function Field({ id, label, error, children }: { id: string; label: string; error?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div>
+      <label htmlFor={id} style={labelStyle}>{label}</label>
+      {children}
+      {error}
+    </div>
+  );
+}
+
+export default function Contact({ lang: initialLang = 'en' }: { lang?: Lang }) {
+  const { t } = useI18n(initialLang);
+  const c = t.contact;
   const [state, handleSubmit] = useForm('mbdwvkgq');
 
   return (
-    <section id="contact" className="section-padding">
+    <section id="contact" className="section-padding" style={{ position: 'relative' }}>
       <div className="container-main">
-
         {/* Header */}
         <div style={{ marginBottom: '4rem' }}>
-          <p data-reveal className="section-label">Contact</p>
-          <h2
-            data-reveal
-            data-delay="100"
-            style={{
-              fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-              fontWeight: 500,
-              letterSpacing: '-0.025em',
-              color: 'var(--soft-white)',
-              lineHeight: 1.05,
-              maxWidth: '560px',
-            }}
-          >
-            Let's build something{' '}
-            <span
-              style={{
-                fontFamily: 'Playfair Display, Georgia, serif',
-                fontStyle: 'italic',
-                fontWeight: 400,
-                color: 'var(--sand-light)',
-              }}
-            >
-              worth shipping.
-            </span>
+          <p data-reveal className="section-label">
+            <span style={{ width: 26, height: 1, background: 'var(--sand)', display: 'inline-block' }} />
+            {c.label}
+          </p>
+          <h2 data-reveal data-delay="100" className="text-section-title" style={{ maxWidth: '760px' }}>
+            {c.headingPart1}{' '}
+            <em style={{ color: 'var(--pine-ink)', fontStyle: 'italic' }}>{c.headingPart2}</em>
           </h2>
-          <p
-            data-reveal
-            data-delay="200"
-            style={{
-              marginTop: '1.5rem',
-              fontSize: '0.95rem',
-              color: 'var(--muted)',
-              lineHeight: 1.75,
-              maxWidth: '460px',
-            }}
-          >
-            Open to freelance projects, AI automation work, SaaS collaborations, and
-            interesting engineering challenges. Whether you need a web application built,
-            a business process automated, or an AI system integrated — let's talk.
-            Response within 24 hours.
+          <p data-reveal data-delay="200" className="text-body-lg" style={{ marginTop: '1.4rem', maxWidth: '600px' }}>
+            {c.intro}
           </p>
         </div>
 
-        {/* Two column layout */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 'clamp(2.5rem, 5vw, 5rem)',
+            gridTemplateColumns: 'minmax(0, 0.9fr) minmax(0, 1.1fr)',
+            gap: '3rem',
             alignItems: 'start',
           }}
         >
-          {/* Left — contact links */}
-          <div data-reveal data-delay="0">
-            <p
-              style={{
-                fontSize: '0.72rem',
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: 'var(--muted)',
-                marginBottom: '2rem',
-              }}
-            >
-              Find me at
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {contactLinks.map((link) => (
-                <div key={link.label}>
-                  <div className="divider" />
-                  <a
-                    href={link.href}
-                    target={link.href.startsWith('mailto') ? undefined : '_blank'}
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '1.25rem 0',
-                      color: 'var(--muted-light)',
-                      transition: 'color 0.3s cubic-bezier(0.16,1,0.3,1)',
-                      textDecoration: 'none',
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--soft-white)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-light)'; }}
-                  >
-                    <div>
-                      <span
-                        style={{
-                          display: 'block',
-                          fontSize: '0.72rem',
-                          letterSpacing: '0.1em',
-                          textTransform: 'uppercase',
-                          color: 'var(--muted)',
-                          marginBottom: '0.25rem',
-                        }}
-                      >
-                        {link.label}
-                      </span>
-                      <span style={{ fontSize: '0.9rem', wordBreak: 'break-word' }}>
-                        {link.value}
-                      </span>
-                    </div>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      style={{ opacity: 0.4, flexShrink: 0, marginLeft: '1rem' }}
-                    >
-                      <path
-                        d="M3 13L13 3M13 3H6M13 3v7"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              ))}
-              <div className="divider" />
-            </div>
-
-            {/* Availability badge */}
+          {/* Sidebar details */}
+          <div data-reveal style={{ display: 'grid', gap: '1.1rem' }}>
             <div
               style={{
-                marginTop: '2.5rem',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.6rem',
-                padding: '0.6rem 1.1rem',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '4px',
+                alignSelf: 'flex-start',
+                gap: '0.5rem',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'var(--pine-ink)',
+                border: '1px solid var(--pine-ink)',
+                borderRadius: '999px',
+                padding: '0.5rem 1rem',
               }}
             >
               <span
                 style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  background: 'var(--forest-bright)',
-                  boxShadow: '0 0 6px var(--forest-bright)',
-                  flexShrink: 0,
+                  width: 7,
+                  height: 7,
+                  borderRadius: 999,
+                  background: 'var(--pine-ink)',
+                  display: 'inline-block',
                 }}
               />
-              <span
-                style={{
-                  fontSize: '0.78rem',
-                  color: 'var(--muted-light)',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                Available for new projects
-              </span>
+              {c.available}
+            </div>
+
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-soft)' }}>
+              <span style={{ color: 'var(--pine-ink)' }}>✓</span> {c.responseTime}
+            </p>
+
+            <div style={{ display: 'grid', gap: '0.25rem', marginTop: '0.75rem' }}>
+              {CONTACT_LINKS.map(({ label, value, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'noreferrer noopener' : undefined}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.8rem',
+                    padding: '0.65rem 0.25rem',
+                    borderBottom: '1px solid var(--line-soft)',
+                    color: 'var(--text-soft)',
+                    fontSize: '0.92rem',
+                    transition: 'color 0.25s, border-color 0.25s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--pine-ink)';
+                    e.currentTarget.style.borderColor = 'var(--pine-ink)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--text-soft)';
+                    e.currentTarget.style.borderColor = 'var(--line-soft)';
+                  }}
+                >
+                  <Icon size={16} strokeWidth={1.75} style={{ color: 'var(--text-faint)', flexShrink: 0 }} />
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.84rem' }}>{value}</span>
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Right — contact form */}
+          {/* Form */}
           <div data-reveal data-delay="150">
             {state.succeeded ? (
-              /* ✅ Success state */
               <div
+                role="status"
                 style={{
+                  border: '1px solid var(--pine-ink)',
+                  borderRadius: '8px',
+                  background: 'color-mix(in srgb, var(--pine-ink) 7%, var(--surface))',
                   padding: '3rem 2rem',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: '6px',
                   textAlign: 'center',
                 }}
               >
-                <div
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '50%',
-                    background: 'rgba(var(--forest-bright-rgb, 100, 180, 120), 0.12)',
-                    border: '1px solid var(--forest-bright)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 1.25rem',
-                  }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M4 10l4 4 8-8"
-                      stroke="var(--forest-bright)"
-                      strokeWidth="1.75"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <p
-                  style={{
-                    fontSize: '1.1rem',
-                    fontWeight: 500,
-                    color: 'var(--soft-white)',
-                    marginBottom: '0.75rem',
-                  }}
-                >
-                  Message received.
+                <p className="font-display" style={{ fontSize: '1.8rem', fontStyle: 'italic', color: 'var(--text)' }}>
+                  {c.successTitle}
                 </p>
-                <p style={{ fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.7 }}>
-                  I'll get back to you within 24 hours.
-                </p>
+                <p style={{ marginTop: '0.7rem', color: 'var(--text-soft)' }}>{c.successBody}</p>
               </div>
             ) : (
-              /* 📬 Form */
               <form
                 onSubmit={handleSubmit}
                 noValidate
-                style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+                style={{
+                  display: 'grid',
+                  gap: '1.4rem',
+                  border: '1px solid var(--line)',
+                  borderRadius: '10px',
+                  background: 'var(--surface)',
+                  padding: '2.2rem',
+                }}
               >
-                {/* Name */}
-                <div>
-                  <label htmlFor="name" style={labelStyle}>Name</label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    placeholder="Your name"
-                    style={inputStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = 'var(--border-mid)')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
-                    aria-required="true"
-                  />
-                  <ValidationError
-                    field="name"
-                    prefix="Name"
-                    errors={state.errors}
-                    style={{ fontSize: '0.78rem', color: '#e07070', marginTop: '0.35rem', display: 'block' }}
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+                  <Field id="contact-name" label={c.name}>
+                    <input
+                      id="contact-name"
+                      name="name"
+                      type="text"
+                      required
+                      placeholder={c.namePlaceholder}
+                      style={inputStyle}
+                    />
+                  </Field>
+                  <Field id="contact-email" label={c.email}>
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      required
+                      placeholder={c.emailPlaceholder}
+                      style={inputStyle}
+                    />
+                  </Field>
                 </div>
+                <ValidationError prefix={c.name} field="name" errors={state.errors} />
+                <ValidationError prefix={c.email} field="email" errors={state.errors} />
 
-                {/* Email */}
-                <div>
-                  <label htmlFor="email" style={labelStyle}>Email</label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="your@email.com"
-                    style={inputStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = 'var(--border-mid)')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
-                    aria-required="true"
-                  />
-                  <ValidationError
-                    field="email"
-                    prefix="Email"
-                    errors={state.errors}
-                    style={{ fontSize: '0.78rem', color: '#e07070', marginTop: '0.35rem', display: 'block' }}
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label htmlFor="message" style={labelStyle}>Message</label>
+                <Field id="contact-message" label={c.message}>
                   <textarea
-                    id="message"
+                    id="contact-message"
                     name="message"
                     required
-                    rows={5}
-                    placeholder="Tell me about your project, what you're trying to automate, or what you need built..."
-                    style={{ ...inputStyle, resize: 'vertical', minHeight: '120px' }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = 'var(--border-mid)')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
-                    aria-required="true"
+                    rows={6}
+                    placeholder={c.messagePlaceholder}
+                    style={{ ...inputStyle, resize: 'vertical', minHeight: '150px' }}
                   />
-                  <ValidationError
-                    field="message"
-                    prefix="Message"
-                    errors={state.errors}
-                    style={{ fontSize: '0.78rem', color: '#e07070', marginTop: '0.35rem', display: 'block' }}
-                  />
-                </div>
+                </Field>
 
-                {/* Global form error */}
-                <ValidationError
-                  errors={state.errors}
-                  style={{ fontSize: '0.82rem', color: '#e07070' }}
-                />
-
-                {/* Submit */}
                 <button
                   type="submit"
                   disabled={state.submitting}
                   className="btn-primary"
-                  style={{
-                    width: '100%',
-                    justifyContent: 'center',
-                    opacity: state.submitting ? 0.6 : 1,
-                    cursor: state.submitting ? 'not-allowed' : 'pointer',
-                    transition: 'opacity 0.3s',
-                  }}
+                  style={{ justifySelf: 'start' }}
                 >
-                  {state.submitting ? (
-                    <>
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        style={{ animation: 'spin 0.8s linear infinite' }}
-                      >
-                        <circle
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeOpacity="0.25"
-                        />
-                        <path
-                          d="M12 2a10 10 0 0 1 10 10"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      Send message
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <path
-                          d="M2 7h10M7 2l5 5-5 5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </>
-                  )}
+                  {state.submitting ? c.sending : c.send}
+                  {!state.submitting && <ArrowRight size={16} strokeWidth={1.75} />}
                 </button>
 
-                <p style={{ fontSize: '0.75rem', color: 'var(--muted)', textAlign: 'center' }}>
-                  No spam. Your details are only used to respond to your message.
-                </p>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-faint)' }}>{c.privacy}</p>
               </form>
             )}
           </div>
         </div>
       </div>
-
-      {/* Spinning loader keyframe — injected inline to avoid extra CSS file */}
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </section>
   );
 }

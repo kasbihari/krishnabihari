@@ -101,7 +101,7 @@ export default function DemoWorkspace({
           '1px solid var(--border-mid)',
         borderRadius: '20px',
         background:
-          'rgba(10, 10, 10, 0.78)',
+          'rgba(21, 15, 10, 0.78)',
         boxShadow:
           '0 20px 45px rgba(0, 0, 0, 0.16)',
       }}

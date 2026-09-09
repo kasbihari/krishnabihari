@@ -200,7 +200,7 @@ overflow: hidden;
         var(--border-mid);
       border-radius: 24px;
       background:
-        rgba(10, 10, 10, 0.82);
+        rgba(21, 15, 10, 0.82);
       box-shadow:
         0 24px 65px
         rgba(0, 0, 0, 0.24);

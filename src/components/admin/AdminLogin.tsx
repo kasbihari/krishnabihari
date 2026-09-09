@@ -30,7 +30,7 @@ export default function AdminLogin() {
 
   return (
     <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: '2rem 1.25rem' }}>
-      <div style={{ width: '100%', maxWidth: '560px', border: '1px solid var(--border-mid)', borderRadius: '24px', background: 'rgba(10, 10, 10, 0.82)', padding: '2rem', boxShadow: '0 24px 65px rgba(0,0,0,0.25)' }}>
+      <div style={{ width: '100%', maxWidth: '560px', border: '1px solid var(--border-mid)', borderRadius: '24px', background: 'rgba(21, 15, 10, 0.82)', padding: '2rem', boxShadow: '0 24px 65px rgba(0,0,0,0.25)' }}>
         <div style={{ fontSize: '0.68rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sand)', marginBottom: '0.8rem' }}>Developer access</div>
         <h1 style={{ margin: '0 0 0.75rem', fontSize: 'clamp(2rem, 4vw, 3rem)', color: 'var(--soft-white)' }}>Admin workspace</h1>
         <p style={{ margin: '0 0 1.75rem', color: 'var(--muted)', lineHeight: 1.7 }}>Sign in with your configured admin credentials to access the client and project workspace.</p>

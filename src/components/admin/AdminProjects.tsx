@@ -131,7 +131,7 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
         )}
 
         {creating && (
-          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(10,10,10,0.7)', padding: '1.5rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
+          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21,15,10,0.7)', padding: '1.5rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--soft-white)' }}>New project</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
@@ -165,7 +165,7 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
         )}
 
         {projects.length === 0 ? (
-          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(10, 10, 10, 0.7)', padding: '2rem', textAlign: 'center' }}>
+          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21, 15, 10, 0.7)', padding: '2rem', textAlign: 'center' }}>
             <div style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.8 }}>
               No projects found. Create your first project to get started.
             </div>
@@ -173,7 +173,7 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
         ) : (
           <div style={{ display: 'grid', gap: '1rem' }}>
             {projects.map((project) => (
-              <div key={project.id} style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(10, 10, 10, 0.7)', padding: '1.5rem', display: 'grid', gap: '1rem' }}>
+              <div key={project.id} style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21, 15, 10, 0.7)', padding: '1.5rem', display: 'grid', gap: '1rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'start' }}>
                   <div>
                     <div style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sand)', marginBottom: '0.35rem' }}>

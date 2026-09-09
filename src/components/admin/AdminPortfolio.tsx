@@ -450,7 +450,7 @@ export default function AdminPortfolio({
             style={{
               border: '1px solid var(--border-mid)',
               borderRadius: '20px',
-              background: 'rgba(10,10,10,0.7)',
+              background: 'rgba(21,15,10,0.7)',
               padding: '1.5rem',
               marginBottom: '2rem',
             }}
@@ -690,7 +690,7 @@ export default function AdminPortfolio({
             style={{
               border: '1px solid var(--border-mid)',
               borderRadius: '18px',
-              background: 'rgba(10,10,10,0.7)',
+              background: 'rgba(21,15,10,0.7)',
               padding: '2rem',
               textAlign: 'center',
             }}
@@ -707,7 +707,7 @@ export default function AdminPortfolio({
                 style={{
                   border: '1px solid var(--border-mid)',
                   borderRadius: '18px',
-                  background: 'rgba(10,10,10,0.7)',
+                  background: 'rgba(21,15,10,0.7)',
                   padding: '1.5rem',
                   display: 'grid',
                   gap: '1rem',

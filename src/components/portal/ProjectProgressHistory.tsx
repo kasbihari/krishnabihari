@@ -190,7 +190,7 @@ export default function ProjectProgressHistory({
           '1px solid var(--border-mid)',
         borderRadius: '18px',
         background:
-          'rgba(10, 10, 10, 0.78)',
+          'rgba(21, 15, 10, 0.78)',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
         boxShadow:
@@ -492,7 +492,7 @@ export default function ProjectProgressHistory({
                         cx={point.x}
                         cy={point.y}
                         r="6"
-                        fill="rgba(10,10,10,0.95)"
+                        fill="rgba(21,15,10,0.95)"
                         stroke="var(--sand-light)"
                         strokeWidth="2"
                       />

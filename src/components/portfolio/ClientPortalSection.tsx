@@ -1,170 +1,215 @@
-export default function ClientPortalSection() {
+import { ArrowRight, Lock } from 'lucide-react';
+import { useI18n } from '../../lib/client/i18n-store';
+import type { Lang } from '../../i18n';
+
+export default function ClientPortalSection({
+  lang: initialLang = 'en',
+}: {
+  lang?: Lang;
+}) {
+  const { t } = useI18n(initialLang);
+  const c = t.portalTeaser;
+
   return (
-    <section id="client-portal" className="section-padding">
+    <section
+      id="client-portal"
+      className="section-padding"
+      style={{ position: 'relative' }}
+    >
       <div className="container-main">
         <div
           style={{
-            border: '1px solid var(--border-mid)',
-            background: 'rgba(10, 10, 10, 0.82)',
-            borderRadius: '22px',
-            padding: 'clamp(1.5rem, 3vw, 3rem)',
             display: 'grid',
-            // Wijziging: Schakelt automatisch over naar 1 kolom op mobiel en 2 kolommen op desktop
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))',
-            gap: 'clamp(1.5rem, 4vw, 3rem)',
+            gridTemplateColumns: 'minmax(0, 1.05fr) minmax(0, 0.95fr)',
+            gap: '4.5rem',
             alignItems: 'center',
-            boxShadow: '0 18px 45px rgba(0,0,0,0.18)',
           }}
         >
-          <div>
-            <p className="section-label">Client portal</p>
-            <h2
-              style={{
-                fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-                lineHeight: 1.04,
-                color: 'var(--soft-white)',
-                marginBottom: '1rem',
-              }}
-            >
-              A private workspace for ongoing projects.
+          {/* Copy */}
+          <div data-reveal>
+            <p className="section-label">
+              <span
+                style={{
+                  width: 26,
+                  height: 1,
+                  background: 'var(--sand)',
+                  display: 'inline-block',
+                }}
+              />
+              {c.label}
+            </p>
+            <h2 className="text-section-title" style={{ maxWidth: '560px' }}>
+              {c.heading}
             </h2>
             <p
+              className="text-body-lg"
               style={{
-                color: 'var(--muted)',
-                maxWidth: '54ch',
-                lineHeight: 1.8,
-                fontSize: '0.98rem',
-                marginBottom: '1.75rem',
+                marginTop: '1.4rem',
+                maxWidth: '540px',
               }}
             >
-              If we are already building together, this is where you can track progress,
-              review timelines, and keep up with the project status in one focused place.
+              {c.body}
             </p>
 
-            <a href="/client" className="btn-primary" style={{ display: 'inline-block' }}>
-              Access client portal
+            <a
+              href="/client"
+              className="btn-primary"
+              style={{ marginTop: '2.2rem' }}
+            >
+              {c.cta}
+              <ArrowRight size={16} strokeWidth={1.75} />
             </a>
           </div>
 
-          <div
-            style={{
-              border: '1px solid rgba(255,255,255,0.06)',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '18px',
-              padding: '1.25rem',
-              width: '100%', // Zorgt dat de kaart netjes uitlijnt op mobiel
-              boxSizing: 'border-box',
-            }}
-          >
+          {/* Portal preview card */}
+          <div data-reveal data-delay="150">
             <div
+              role="img"
+              aria-label="Client portal preview"
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: '0.75rem',
-                marginBottom: '1rem',
+                position: 'relative',
+                border: '1px solid var(--line)',
+                borderRadius: '12px',
+                background: 'var(--surface)',
+                boxShadow: '0 30px 80px -40px rgba(60, 40, 20, 0.35)',
+                overflow: 'hidden',
               }}
             >
-              <div>
-                <div
-                  style={{
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: 'var(--sand)',
-                  }}
-                >
-                  Active project
-                </div>
-                <div
-                  style={{
-                    marginTop: '0.4rem',
-                    color: 'var(--soft-white)',
-                    fontSize: '1.15rem',
-                  }}
-                >
-                  Website Redesign
-                </div>
-              </div>
-
-              <span
-                style={{
-                  padding: '0.4rem 0.6rem',
-                  borderRadius: '999px',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  background: 'rgba(255,255,255,0.03)',
-                  color: 'var(--sand-light)',
-                  fontSize: '0.64rem',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  whiteSpace: 'nowrap', // Voorkomt dat de badge lelijk afbreekt
-                }}
-              >
-                In development
-              </span>
-            </div>
-
-            <div style={{ marginBottom: '1.1rem' }}>
+              {/* Card header */}
               <div
                 style={{
                   display: 'flex',
+                  alignItems: 'center',
                   justifyContent: 'space-between',
-                  color: 'var(--muted-light)',
-                  fontSize: '0.72rem',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  marginBottom: '0.5rem',
+                  padding: '1rem 1.3rem',
+                  borderBottom: '1px solid var(--line-soft)',
                 }}
               >
-                <span>Progress</span>
-                <span>68%</span>
-              </div>
-              <div
-                style={{
-                  width: '100%',
-                  height: '10px',
-                  borderRadius: '999px',
-                  background: 'rgba(255,255,255,0.06)',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
+                <span
                   style={{
-                    width: '68%',
-                    height: '100%',
-                    background: 'linear-gradient(90deg, var(--forest-bright), var(--sand-light))',
-                    borderRadius: 'inherit',
-                  }}
-                />
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gap: '0.8rem',
-              }}
-            >
-              {[
-                ['Discovery', 'Completed'],
-                ['Design', 'Completed'],
-                ['Development', 'Current phase'],
-                ['Launch', 'September 2026'],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    borderTop: '1px solid rgba(255,255,255,0.05)',
-                    paddingTop: '0.8rem',
-                    gap: '1rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.72rem',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: 'var(--text-faint)',
                   }}
                 >
-                  <span style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>{label}</span>
-                  <span style={{ color: 'var(--soft-white)', fontSize: '0.88rem' }}>{value}</span>
+                  <Lock size={12} strokeWidth={2} style={{ color: 'var(--pine-ink)' }} />
+                  {c.eyebrow}
+                </span>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    fontSize: '0.68rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--pine-ink)',
+                    border: '1px solid var(--pine-ink)',
+                    borderRadius: '999px',
+                    padding: '0.28rem 0.7rem',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: 'var(--pine-ink)',
+                      display: 'inline-block',
+                    }}
+                  />
+                  {c.previewBadge}
+                </span>
+              </div>
+
+              {/* Card body */}
+              <div style={{ padding: '1.6rem 1.3rem 1.8rem', display: 'grid', gap: '1.1rem' }}>
+                <p
+                  className="font-display"
+                  style={{
+                    fontSize: '1.5rem',
+                    fontStyle: 'italic',
+                    color: 'var(--text)',
+                  }}
+                >
+                  {c.previewTitle}
+                </p>
+
+                {/* Skeleton rows (decorative) */}
+                <div style={{ display: 'grid', gap: '0.5rem' }}>
+                  <div
+                    style={{
+                      height: 8,
+                      width: '100%',
+                      borderRadius: 99,
+                      background: 'var(--line-soft)',
+                    }}
+                  />
+                  <div
+                    style={{
+                      height: 8,
+                      width: '72%',
+                      borderRadius: 99,
+                      background: 'var(--line-soft)',
+                    }}
+                  />
                 </div>
-              ))}
+
+                {/* Progress row */}
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '0.68rem',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: 'var(--text-faint)',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    <span>{c.progress}</span>
+                    <span>{c.launch}</span>
+                  </div>
+                  <div
+                    style={{
+                      height: 5,
+                      borderRadius: 99,
+                      background: 'var(--line-soft)',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: '100%',
+                        width: '62%',
+                        borderRadius: 99,
+                        background: 'linear-gradient(90deg, var(--pine-deep), var(--pine-ink))',
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative corner seal */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: '-34px',
+                  right: '-34px',
+                  width: 110,
+                  height: 110,
+                  borderRadius: 999,
+                  background: 'radial-gradient(circle at 40% 40%, var(--glow-1), transparent 70%)',
+                  pointerEvents: 'none',
+                }}
+              />
             </div>
           </div>
         </div>
