@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import AdminProjects from '../../components/admin/AdminProjects';
-import { fetchAdminProjects } from '../../lib/server/admin-data';
+import { fetchAdminClients, fetchAdminProjects } from '../../lib/server/admin-data';
 import { getAdminSession } from '../../lib/server/session';
 
 export const prerender = false;
@@ -14,8 +14,9 @@ if (!activeSession) {
 }
 
 const projects = await fetchAdminProjects();
+const clients = await fetchAdminClients();
 ---
 
 <AdminLayout title={title} description="View all projects and their status.">
-  <AdminProjects projects={projects} client:load />
+  <AdminProjects projects={projects} clients={clients} client:load />
 </AdminLayout>

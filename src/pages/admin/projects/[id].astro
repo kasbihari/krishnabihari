@@ -1,0 +1,32 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ProjectManager from '../../../components/admin/ProjectManager';
+import { fetchProjectDetail } from '../../../lib/server/client-admin';
+import { fetchAdminClients } from '../../../lib/server/admin-data';
+import { getAdminSession } from '../../../lib/server/session';
+
+export const prerender = false;
+
+const title = 'Project';
+
+const activeSession = getAdminSession(Astro.cookies);
+if (!activeSession) {
+  return Astro.redirect('/admin/login');
+}
+
+const projectId = Astro.params.id;
+if (!projectId) {
+  return Astro.redirect('/admin/projects');
+}
+
+const detail = await fetchProjectDetail(projectId);
+if (!detail) {
+  return Astro.redirect('/admin/projects');
+}
+
+const clients = await fetchAdminClients();
+---
+
+<AdminLayout title={title} description="Manage a client project and its workspace.">
+  <ProjectManager detail={detail} clients={clients} client:load />
+</AdminLayout>
