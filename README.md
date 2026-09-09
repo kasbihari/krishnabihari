@@ -32,7 +32,7 @@ focused on **fluidity**, **depth**, and **visual calm**.
 ## Live Experience
 
 🌐 **View Portfolio**  
-👉 https://kasbihari.github.io/
+👉 https://krishnabihari.vercel.app/
 
 ---
 
@@ -72,7 +72,7 @@ Semantic HTML, contrast-safe palette, motion-aware interactions.
 | **3D / WebGL** | Three.js + Custom GLSL Shaders |
 | **Animations** | Framer Motion |
 | **Icons** | Lucide React |
-| **Deployment** | GitHub Pages (GitHub Actions) |
+| **Deployment** | Vercel (GitHub → Vercel) |
 
 ---
 
@@ -109,8 +109,8 @@ Semantic HTML, contrast-safe palette, motion-aware interactions.
 ### Installation
 
 ```bash
-git clone https://github.com/kasbihari/kasbihari.github.io.git
-cd kasbihari.github.io
+git clone https://github.com/kasbihari/krishnabihari.git
+cd krishnabihari
 npm install
 npm run dev
 ```
@@ -119,25 +119,16 @@ npm run dev
 
 ## Deployment Pipeline
 
-Automated deployment via **GitHub Actions**.
+Production is deployed on **Vercel** and connected to this GitHub repository:
+every push to `main` triggers a Vercel production build automatically.
 
-Every push to:
+Vercel runs `npm run build` (Astro server output via the `@astrojs/vercel`
+adapter) and serves the SSR application — public site, `/admin` panel, and
+`/client` portal — from `.vercel/output`.
 
-```
-signature-version
-```
-
-Triggers:
-
-✔ Build  
-✔ Static Export  
-✔ GitHub Pages Deployment  
-
-Workflow:
-
-```
-.github/workflows/deploy.yml
-```
+Environment variables (Supabase keys, session secrets, admin credentials)
+are configured in the Vercel project dashboard — see `.env.example` for the
+full list, and `SUPABASE_SETUP.md` for the database/storage setup.
 
 ---
 
