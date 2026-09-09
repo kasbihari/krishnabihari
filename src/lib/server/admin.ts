@@ -24,15 +24,19 @@ export async function fetchAdminDashboardSummary(): Promise<AdminDashboardSummar
   }
 
   try {
-    const [{ data: clients = [], error: clientsError }, { data: projects = [], error: projectsError }, { data: hours = [], error: hoursError }] = await Promise.all([
+    const [clientsResult, projectsResult, hoursResult] = await Promise.all([
       supabaseAdmin.from('clients').select('id'),
       supabaseAdmin.from('projects').select('*'),
       supabaseAdmin.from('project_hours').select('hours_used'),
     ]);
 
-    if (clientsError || projectsError || hoursError) {
+    if (clientsResult.error || projectsResult.error || hoursResult.error) {
       return emptySummary;
     }
+
+    const clients = clientsResult.data ?? [];
+    const projects = projectsResult.data ?? [];
+    const hours = hoursResult.data ?? [];
 
     const projectCount = projects.length;
     const activeProjects = projects.filter((project) => {

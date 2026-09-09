@@ -7,6 +7,9 @@ import ClientPortalSection from '../components/portfolio/ClientPortalSection';
 import Skills from '../components/portfolio/Skills';
 import Contact from '../components/portfolio/Contact';
 import Footer from '../components/Footer';
+import { fetchPublishedPortfolioProjects } from '../lib/server/portfolio';
+
+const portfolioProjects = await fetchPublishedPortfolioProjects();
 ---
 <Layout>
   <main>
@@ -15,7 +18,7 @@ import Footer from '../components/Footer';
     </div>
     <About client:load />
     <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Projects client:load />
+      <Projects projects={portfolioProjects} client:load />
     </div>
     <ClientPortalSection client:load />
     <div class="full-screen" style="height: auto; min-height: 100svh;">

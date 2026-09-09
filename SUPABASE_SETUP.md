@@ -1,11 +1,26 @@
 # Supabase setup for the client portal
 
-This project is prepared for a Supabase-backed client portal. The frontend expects these environment variables:
+This project is prepared for a Supabase-backed client portal and portfolio. The frontend expects these environment variables:
 
 ```bash
 PUBLIC_SUPABASE_URL=your-project-url
 PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
+
+> The service-role key is used **server-side only** (admin panel + client-portal
+> API routes). Never expose it to the browser. See `.env.example` for the full
+> list of variables, including the admin session secrets and login credentials.
+
+## 0. Apply migrations
+
+Run the SQL files in `supabase/migrations/` in order in the Supabase SQL editor:
+
+1. `20260823_phase1_project_category.sql` — adds the `category` column to the client-portal `projects` table.
+2. `20260909_portfolio_projects.sql` — creates the `portfolio_projects` table (the public "Selected Work" section) and seeds the two existing projects.
+3. `20260909_rls_security_hardening.sql` — enables Row Level Security on every table and adds `updated_at` triggers.
+
+The sections below describe the schema and demo data for reference.
 
 ## 1. Create a Supabase project
 

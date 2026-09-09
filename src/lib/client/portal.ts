@@ -1,6 +1,5 @@
 import type {
   ClientPortalData,
-  ProjectHoursRecord,
   ProjectMilestoneRecord,
   ProjectProgressHistoryRecord,
   ProjectRecord,

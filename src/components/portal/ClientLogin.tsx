@@ -4,9 +4,6 @@ motion,
 import {
 useState,
 } from 'react';
-import type {
-FormEvent,
-} from 'react';
 
 const ease = [
 0.16,
@@ -50,7 +47,7 @@ setError,
 ] = useState('');
 
 const handleSubmit = async (
-event: FormEvent<HTMLFormElement>,
+event: React.SubmitEvent<HTMLFormElement>,
 ) => {
 event.preventDefault();
 

@@ -1,0 +1,21 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminPortfolio from '../../components/admin/AdminPortfolio';
+import { fetchAdminPortfolioProjects } from '../../lib/server/portfolio';
+import { getAdminSession } from '../../lib/server/session';
+
+export const prerender = false;
+
+const title = 'Portfolio';
+
+const activeSession = getAdminSession(Astro.cookies);
+if (!activeSession) {
+  return Astro.redirect('/admin/login');
+}
+
+const projects = await fetchAdminPortfolioProjects();
+---
+
+<AdminLayout title={title} description="Manage the public portfolio projects.">
+  <AdminPortfolio projects={projects} client:load />
+</AdminLayout>

@@ -528,6 +528,16 @@ export default function ProjectProgress({
                           0.38 +
                           index *
                             0.07,
+                        ...(isActive
+                          ? {
+                              boxShadow: {
+                                duration: 2.4,
+                                repeat:
+                                  Infinity,
+                                ease: 'easeInOut',
+                              },
+                            }
+                          : {}),
                       }}
                       animate={
                         isActive
@@ -571,18 +581,6 @@ export default function ProjectProgress({
                         fontSize:
                           '0.7rem',
                       }}
-                      {...(isActive
-                        ? {
-                            transition: {
-                              boxShadow: {
-                                duration: 2.4,
-                                repeat:
-                                  Infinity,
-                                ease: 'easeInOut',
-                              },
-                            },
-                          }
-                        : {})}
                     >
                       {isCompleted
                         ? '✓'

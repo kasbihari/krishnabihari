@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import AdminNav from '../components/admin/AdminNav';
 
 export interface Props {
   title?: string;
@@ -13,7 +14,7 @@ const {
 
 const canonicalURL = new URL(
   Astro.url.pathname,
-  Astro.site ?? 'https://kasbihari.github.io',
+  Astro.site ?? 'https://krishnabihari.vercel.app',
 );
 ---
 
@@ -75,6 +76,7 @@ const canonicalURL = new URL(
   </head>
 
   <body>
+    <AdminNav currentPath={Astro.url.pathname} />
     <slot />
   </body>
 </html>

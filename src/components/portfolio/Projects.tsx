@@ -28,7 +28,7 @@ type Project = {
   images: string[] | 'empty';
 };
 
-const projects: Project[] = [
+const fallbackProjects: Project[] = [
   {
     id: '01',
     category: 'Full-Stack Web App',
@@ -184,7 +184,11 @@ function StatusBadge({
   );
 }
 
-export default function Projects() {
+export default function Projects({
+  projects,
+}: {
+  projects?: Project[];
+}) {
   const [activeProject, setActiveProject] = useState<string | null>(
     null,
   );
@@ -196,10 +200,15 @@ export default function Projects() {
     Record<string, number>
   >({});
 
+  const visibleProjects =
+    projects && projects.length > 0
+      ? projects
+      : fallbackProjects;
+
   const filtered =
     filter === 'all'
-      ? projects
-      : projects.filter(
+      ? visibleProjects
+      : visibleProjects.filter(
           (project) =>
             project.status === filter,
         );

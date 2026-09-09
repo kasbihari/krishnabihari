@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 type ProjectItem = {
   id: string;
   name: string;
