@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { cloneElement, isValidElement, useId, useState } from 'react';
+import ImageUploader from './ImageUploader';
 import type {
   HoursRow,
   MilestoneRow,
@@ -40,10 +41,14 @@ const labelStyle: React.CSSProperties = {
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const id = useId();
+  const child = isValidElement(children)
+    ? cloneElement(children as React.ReactElement<{ id?: string }>, { id })
+    : children;
   return (
     <div>
-      <label style={labelStyle}>{label}</label>
-      {children}
+      <label htmlFor={id} style={labelStyle}>{label}</label>
+      {child}
     </div>
   );
 }
@@ -193,6 +198,7 @@ export default function ProjectManager({
     progress: detail.project.progress ?? 0,
     expected_launch: detail.project.expected_launch ?? '',
     live_demo_url: detail.project.live_demo_url ?? '',
+    images: detail.project.images ?? [],
   });
 
   const [timelineDraft, setTimelineDraft] = useState<{
@@ -258,6 +264,7 @@ export default function ProjectManager({
           progress: Number(overview.progress),
           expected_launch: overview.expected_launch,
           live_demo_url: overview.live_demo_url,
+          images: overview.images,
         }),
       });
       const data = await res.json();
@@ -658,6 +665,15 @@ export default function ProjectManager({
                 value={overview.live_demo_url}
                 onChange={(e) => setOverviewField('live_demo_url', e.target.value)}
                 placeholder="https://..."
+              />
+            </Field>
+
+            <Field label="Project images">
+              <ImageUploader
+                scope="client"
+                entityId={project.id}
+                images={overview.images}
+                onChange={(next) => setOverviewField('images', next)}
               />
             </Field>
 

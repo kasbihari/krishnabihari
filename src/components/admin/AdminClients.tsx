@@ -183,16 +183,16 @@ export default function AdminClients({ clients: initialClients }: AdminClientsPr
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
               <div>
-                <label style={labelStyle}>Name *</label>
-                <input style={inputStyle} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Contact name" />
+                <label htmlFor="client-name" style={labelStyle}>Name *</label>
+                <input id="client-name" style={inputStyle} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Contact name" />
               </div>
               <div>
-                <label style={labelStyle}>Company *</label>
-                <input style={inputStyle} value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder="Company" />
+                <label htmlFor="client-company" style={labelStyle}>Company *</label>
+                <input id="client-company" style={inputStyle} value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder="Company" />
               </div>
               <div>
-                <label style={labelStyle}>Client code *</label>
-                <input style={inputStyle} value={form.client_code} onChange={(e) => setForm({ ...form, client_code: e.target.value })} placeholder="e.g. ACME" />
+                <label htmlFor="client-code" style={labelStyle}>Client code *</label>
+                <input id="client-code" style={inputStyle} value={form.client_code} onChange={(e) => setForm({ ...form, client_code: e.target.value })} placeholder="e.g. ACME" />
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>

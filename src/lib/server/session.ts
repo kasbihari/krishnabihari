@@ -27,7 +27,7 @@ function getProjectSessionSecret(): string {
 
   if (
     configuredSecret &&
-    configuredSecret.length > 0
+    configuredSecret.length >= 32
   ) {
     return configuredSecret;
   }
@@ -37,7 +37,7 @@ function getProjectSessionSecret(): string {
   }
 
   throw new Error(
-    'CLIENT_SESSION_SECRET is required in production.',
+    'CLIENT_SESSION_SECRET must be at least 32 characters in production.',
   );
 }
 
@@ -237,7 +237,7 @@ function getAdminSessionSecret(): string {
 
   if (
     configuredSecret &&
-    configuredSecret.length > 0
+    configuredSecret.length >= 32
   ) {
     return configuredSecret;
   }
@@ -247,7 +247,7 @@ function getAdminSessionSecret(): string {
   }
 
   throw new Error(
-    'ADMIN_SESSION_SECRET is required in production.',
+    'ADMIN_SESSION_SECRET must be at least 32 characters in production.',
   );
 }
 

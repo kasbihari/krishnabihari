@@ -1,4 +1,22 @@
+import crypto from 'node:crypto';
 import { supabaseAdmin } from './supabase-admin';
+import { deleteAllManagedImages, deleteOrphanedImages } from './storage';
+
+/**
+ * Generate a human-friendly, unique-ish project code, e.g. "PROJ-ACME-3F9K".
+ * The random suffix guards against collisions for same-named projects.
+ */
+export function generateProjectCode(name: string): string {
+  const slug = name
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 12);
+  const suffix = crypto.randomBytes(2).toString('hex').toUpperCase();
+  const base = slug.length > 0 ? slug : 'PROJ';
+  return `PROJ-${base}-${suffix}`;
+}
 
 /* =========================================================
    Types — mirror the client-portal schema
@@ -185,6 +203,7 @@ export async function deleteClient(id: string): Promise<{ ok: true } | { error: 
 export type ProjectInput = {
   client_id: string;
   name: string;
+  project_code?: string;
   description?: string;
   type?: string;
   category?: string;
@@ -198,10 +217,12 @@ export type ProjectInput = {
 
 export async function createProject(input: ProjectInput): Promise<{ id: string } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
+  const projectCode = input.project_code?.trim().toUpperCase() || generateProjectCode(input.name);
   const { data, error } = await supabaseAdmin
     .from('projects')
     .insert({
       client_id: input.client_id,
+      project_code: projectCode,
       name: input.name,
       description: input.description ?? '',
       type: input.type ?? 'Project',
@@ -233,15 +254,43 @@ export async function updateProject(id: string, input: Partial<ProjectInput>): P
   if (input.expected_launch !== undefined) payload.expected_launch = input.expected_launch;
   if (input.live_demo_url !== undefined) payload.live_demo_url = input.live_demo_url;
   if (input.images !== undefined) payload.images = input.images;
+
+  // Capture previously stored images for orphan cleanup after the update.
+  const { data: existing } = await supabaseAdmin
+    .from('projects')
+    .select('images')
+    .eq('id', id)
+    .maybeSingle();
+
   const { error } = await supabaseAdmin.from('projects').update(payload).eq('id', id);
   if (error) return { error: error.message };
+
+  if (input.images !== undefined) {
+    const previous = Array.isArray(existing?.images)
+      ? (existing.images as string[])
+      : [];
+    await deleteOrphanedImages(previous, input.images);
+  }
+
   return { ok: true };
 }
 
 export async function deleteProject(id: string): Promise<{ ok: true } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
+
+  const { data: existing } = await supabaseAdmin
+    .from('projects')
+    .select('images')
+    .eq('id', id)
+    .maybeSingle();
+
   const { error } = await supabaseAdmin.from('projects').delete().eq('id', id);
   if (error) return { error: error.message };
+
+  if (Array.isArray(existing?.images)) {
+    await deleteAllManagedImages(existing.images as string[]);
+  }
+
   return { ok: true };
 }
 

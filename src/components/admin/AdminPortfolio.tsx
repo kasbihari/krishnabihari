@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { cloneElement, isValidElement, useId, useState } from 'react';
+import ImageUploader from './ImageUploader';
 
 type PortfolioCategory =
   | 'web-development'
@@ -130,10 +131,14 @@ function Field({
   label: string;
   children: React.ReactNode;
 }) {
+  const id = useId();
+  const child = isValidElement(children)
+    ? cloneElement(children as React.ReactElement<{ id?: string }>, { id })
+    : children;
   return (
     <div>
-      <label style={labelStyle}>{label}</label>
-      {children}
+      <label htmlFor={id} style={labelStyle}>{label}</label>
+      {child}
     </div>
   );
 }
@@ -178,6 +183,7 @@ export default function AdminPortfolio({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [imagesList, setImagesList] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -194,6 +200,7 @@ export default function AdminPortfolio({
   const openCreate = () => {
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setImagesList([]);
     setError('');
     setIsCreating(true);
   };
@@ -202,6 +209,7 @@ export default function AdminPortfolio({
     setIsCreating(false);
     setEditingId(row.id);
     setForm(rowToForm(row));
+    setImagesList(row.images);
     setError('');
   };
 
@@ -594,13 +602,31 @@ export default function AdminPortfolio({
                 </Field>
               </div>
 
-              <Field label="Image URLs (one per line)">
-                <textarea
-                  style={{ ...inputStyle, minHeight: '60px', resize: 'vertical' }}
-                  value={form.images}
-                  onChange={(e) => setField('images', e.target.value)}
-                  placeholder={'https://.../shot-1.png\nhttps://.../shot-2.png'}
+              <Field label="Images">
+                <ImageUploader
+                  scope="portfolio"
+                  entityId={editingId ?? ''}
+                  images={imagesList}
+                  disabled={isCreating || !editingId}
+                  onChange={(next) => {
+                    setImagesList(next);
+                    setField('images', next.join('\n'));
+                  }}
                 />
+                <div style={{ marginTop: '0.75rem' }}>
+                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
+                    Or paste image URLs (one per line)
+                  </div>
+                  <textarea
+                    style={{ ...inputStyle, minHeight: '60px', resize: 'vertical' }}
+                    value={form.images}
+                    onChange={(e) => {
+                      setField('images', e.target.value);
+                      setImagesList(splitLines(e.target.value));
+                    }}
+                    placeholder={'https://.../shot-1.png\nhttps://.../shot-2.png'}
+                  />
+                </div>
               </Field>
 
               <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
@@ -726,6 +752,7 @@ export default function AdminPortfolio({
                       onClick={() => handleMove(index, -1)}
                       disabled={index === 0}
                       title="Move up"
+                      aria-label="Move project up"
                       style={iconButtonStyle(index === 0)}
                     >
                       ↑
@@ -734,6 +761,7 @@ export default function AdminPortfolio({
                       onClick={() => handleMove(index, 1)}
                       disabled={index === projects.length - 1}
                       title="Move down"
+                      aria-label="Move project down"
                       style={iconButtonStyle(index === projects.length - 1)}
                     >
                       ↓

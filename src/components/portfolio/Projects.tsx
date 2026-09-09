@@ -417,6 +417,7 @@ export default function Projects({
                   aria-expanded={
                     isOpen
                   }
+                  aria-controls={`project-panel-${project.id}`}
                   onClick={() =>
                     toggleProject(
                       project.id,
@@ -522,6 +523,7 @@ export default function Projects({
 
                     {/* Expanded content */}
                     <div
+                      id={`project-panel-${project.id}`}
                       style={{
                         overflow:
                           'hidden',
@@ -573,6 +575,8 @@ export default function Projects({
                               alt={`${project.title} screenshot ${
                                 currentSlide + 1
                               }`}
+                              loading="lazy"
+                              decoding="async"
                               style={{
                                 width:
                                   '100%',

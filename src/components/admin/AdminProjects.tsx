@@ -106,6 +106,7 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
 
           <button
             onClick={() => setCreating((v) => !v)}
+            disabled={clients.length === 0}
             style={{
               padding: '0.7rem 1.2rem',
               borderRadius: '10px',
@@ -114,8 +115,10 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
               color: 'var(--forest-bright)',
               fontSize: '0.85rem',
               fontWeight: 600,
-              cursor: 'pointer',
+              cursor: clients.length === 0 ? 'not-allowed' : 'pointer',
+              opacity: clients.length === 0 ? 0.5 : 1,
             }}
+            title={clients.length === 0 ? 'Add a client first' : undefined}
           >
             + New project
           </button>
@@ -132,16 +135,16 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
             <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--soft-white)' }}>New project</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
+                <label htmlFor="project-name" style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
                   Project name *
                 </label>
-                <input style={inputStyle} value={name} onChange={(e) => setName(e.target.value)} placeholder="Project name" />
+                <input id="project-name" style={inputStyle} value={name} onChange={(e) => setName(e.target.value)} placeholder="Project name" />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
+                <label htmlFor="project-client" style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
                   Client *
                 </label>
-                <select style={inputStyle} value={clientId} onChange={(e) => setClientId(e.target.value)}>
+                <select id="project-client" style={inputStyle} value={clientId} onChange={(e) => setClientId(e.target.value)}>
                   {clients.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name} — {c.company}

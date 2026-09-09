@@ -16,16 +16,16 @@ const portfolioProjects = await fetchPublishedPortfolioProjects();
     <div class="full-screen">
       <Hero client:load />
     </div>
-    <About client:load />
+    <About client:visible />
     <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Projects projects={portfolioProjects} client:load />
+      <Projects projects={portfolioProjects} client:visible />
     </div>
-    <ClientPortalSection client:load />
+    <ClientPortalSection client:visible />
     <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Skills client:load />
+      <Skills client:visible />
     </div>
     <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Contact client:load />
+      <Contact client:visible />
     </div>
   </main>
   <Footer />

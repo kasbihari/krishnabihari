@@ -9,6 +9,17 @@ createProjectPortalSession,
 setProjectPortalSessionCookie,
 } from '../../../lib/server/session';
 
+import {
+createRateLimiter,
+clientIp,
+} from '../../../lib/server/security';
+
+// Best-effort per-instance throttle on the project-code login endpoint.
+const loginLimiter = createRateLimiter({
+windowMs: 60_000,
+max: 20,
+});
+
 export const GET: APIRoute = () => {
 return new Response(
 JSON.stringify({
@@ -27,6 +38,23 @@ export const POST: APIRoute = async ({
 request,
 cookies,
 }): Promise<Response> => {
+const ip = clientIp(request);
+if (!loginLimiter.allow(`client-login:${ip}`)) {
+  return new Response(
+    JSON.stringify({
+      success: false,
+      message:
+        'Too many attempts. Please try again later.',
+    }),
+    {
+      status: 429,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}
+
 try {
 const body = await request.json();
 

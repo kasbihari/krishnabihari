@@ -19,8 +19,32 @@ Run the SQL files in `supabase/migrations/` in order in the Supabase SQL editor:
 1. `20260823_phase1_project_category.sql` — adds the `category` column to the client-portal `projects` table.
 2. `20260909_portfolio_projects.sql` — creates the `portfolio_projects` table (the public "Selected Work" section) and seeds the two existing projects.
 3. `20260909_rls_security_hardening.sql` — enables Row Level Security on every table and adds `updated_at` triggers.
+4. `20260909_client_portal_management_schema.sql` — full client-portal management schema (clients, projects, timeline, milestones, hours, updates) plus RLS policies.
+5. `20260909_storage_bucket.sql` — creates the public-read `project-images` Supabase Storage bucket used for admin image uploads.
 
 The sections below describe the schema and demo data for reference.
+
+## 0b. Image storage (Supabase Storage)
+
+Admin image uploads use a **public-read** Supabase Storage bucket named `project-images`
+(created by migration `20260909_storage_bucket.sql`). Stored references are full public
+URLs, so they can be used directly as `<img src>` by the public portfolio and the client
+portal.
+
+- **Read**: public (anyone can load an image URL).
+- **Write**: server-side only, via the admin-authenticated API routes
+  `POST /api/admin/upload-image` and `POST /api/admin/delete-image`, which use the
+  service-role key. The service-role key is never exposed to the browser.
+- **Allowed types**: JPEG, PNG, WebP, GIF, AVIF.
+- **Max size**: 4 MB per image (kept under Vercel's serverless request-body limit).
+- **Paths**: `portfolio/<projectId>/<timestamp>-<random>.<ext>` or
+  `client/<projectId>/<timestamp>-<random>.<ext>` — collision-safe and never derived
+  from the client filename.
+- **Orphan cleanup**: when a project is updated or deleted, any managed images no longer
+  referenced are removed from storage automatically.
+
+If you created the bucket before running the migration, you can also create it from the
+Supabase dashboard (Storage → New bucket → name `project-images`, enable "Public bucket").
 
 ## 1. Create a Supabase project
 

@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './supabase-admin';
+import { deleteAllManagedImages, deleteOrphanedImages } from './storage';
 
 export const PORTFOLIO_CATEGORIES = [
   'web-development',
@@ -159,12 +160,28 @@ export async function updatePortfolioProject(
     return { error: 'Supabase is not configured.' };
   }
 
+  // Capture the previously stored images so we can clean up any managed
+  // storage objects that are no longer referenced after the update.
+  const { data: existing } = await supabaseAdmin
+    .from('portfolio_projects')
+    .select('images')
+    .eq('id', id)
+    .maybeSingle();
+
   const { error } = await supabaseAdmin
     .from('portfolio_projects')
     .update({ ...input, updated_at: new Date().toISOString() })
     .eq('id', id);
 
   if (error) return { error: error.message };
+
+  if (input.images !== undefined) {
+    const previous = Array.isArray(existing?.images)
+      ? (existing.images as string[])
+      : [];
+    await deleteOrphanedImages(previous, input.images);
+  }
+
   return { ok: true };
 }
 
@@ -175,12 +192,23 @@ export async function deletePortfolioProject(
     return { error: 'Supabase is not configured.' };
   }
 
+  const { data: existing } = await supabaseAdmin
+    .from('portfolio_projects')
+    .select('images')
+    .eq('id', id)
+    .maybeSingle();
+
   const { error } = await supabaseAdmin
     .from('portfolio_projects')
     .delete()
     .eq('id', id);
 
   if (error) return { error: error.message };
+
+  if (Array.isArray(existing?.images)) {
+    await deleteAllManagedImages(existing.images as string[]);
+  }
+
   return { ok: true };
 }
 

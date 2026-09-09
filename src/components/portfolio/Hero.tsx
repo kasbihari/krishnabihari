@@ -1828,6 +1828,8 @@ export default function Hero() {
                     }
                     alt={`${record.title} album artwork`}
                     draggable={false}
+                    decoding="async"
+                    fetchPriority="high"
                   />
 
                   <div className="vinyl-center-hole" />

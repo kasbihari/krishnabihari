@@ -8,6 +8,7 @@ const NAV_ITEMS = [
 export default function AdminNav({ currentPath }: { currentPath: string }) {
   return (
     <nav
+      aria-label="Admin navigation"
       style={{
         position: 'sticky',
         top: 0,
@@ -57,13 +58,14 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
               <a
                 key={item.href}
                 href={item.href}
+                aria-current={active ? 'page' : undefined}
                 style={{
                   padding: '0.45rem 0.85rem',
                   borderRadius: '8px',
                   fontSize: '0.78rem',
                   letterSpacing: '0.04em',
                   textDecoration: 'none',
-                  color: active ? 'var(--soft-white)' : 'var(--muted)',
+                  color: active ? 'var(--soft-white)' : 'var(--muted-light)',
                   background: active ? 'rgba(255,255,255,0.07)' : 'transparent',
                   border: active ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
                   whiteSpace: 'nowrap',

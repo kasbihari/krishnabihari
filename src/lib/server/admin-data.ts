@@ -21,6 +21,25 @@ export type AdminProjectsView = {
   expected_launch: string;
 };
 
+type ClientRow = {
+  id: string;
+  name: string | null;
+  company: string | null;
+  client_code: string | null;
+};
+
+type ProjectRow = {
+  id: string;
+  client_id: string | null;
+  name: string | null;
+  type: string | null;
+  category: string | null;
+  status: string | null;
+  phase: string | null;
+  progress: number | null;
+  expected_launch: string | null;
+};
+
 export async function fetchAdminClients(): Promise<AdminClientsView[]> {
   if (!supabaseAdmin) {
     return [];
@@ -46,12 +65,13 @@ export async function fetchAdminClients(): Promise<AdminClientsView[]> {
     }
 
     const projectCountMap = new Map<string, number>();
-    (projects ?? []).forEach((project: { client_id: string }) => {
+    (projects ?? []).forEach((project: { client_id: string | null }) => {
+      if (!project.client_id) return;
       const count = projectCountMap.get(project.client_id) ?? 0;
       projectCountMap.set(project.client_id, count + 1);
     });
 
-    return (clients as any[]).map((client) => ({
+    return (clients as ClientRow[]).map((client) => ({
       id: client.id,
       name: client.name ?? "Unnamed",
       company: client.company ?? "Company",
@@ -91,13 +111,15 @@ export async function fetchAdminProjects(): Promise<AdminProjectsView[]> {
       );
     }
 
-    const clientMap = new Map<string, any>();
-    (clients ?? []).forEach((client: any) => {
+    const clientMap = new Map<string, ClientRow>();
+    (clients ?? []).forEach((client: ClientRow) => {
       clientMap.set(client.id, client);
     });
 
-    return (projects as any[]).map((project) => {
-      const client = clientMap.get(project.client_id);
+    return (projects as ProjectRow[]).map((project) => {
+      const client = project.client_id
+        ? clientMap.get(project.client_id)
+        : undefined;
       return {
         id: project.id,
         name: project.name ?? "Unnamed Project",
