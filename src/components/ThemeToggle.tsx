@@ -1,9 +1,9 @@
 import { Moon, Sun } from 'lucide-react';
 
 const iconBase: React.CSSProperties = {
-  width: '16px',
-  height: '16px',
-  strokeWidth: 1.75,
+  width: '15px',
+  height: '15px',
+  strokeWidth: 1.6,
 };
 
 export default function ThemeToggle({ ariaLabel }: { ariaLabel: string }) {
@@ -11,7 +11,7 @@ export default function ThemeToggle({ ariaLabel }: { ariaLabel: string }) {
     const root = document.documentElement;
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.classList.add('theme-transition');
-    window.setTimeout(() => root.classList.remove('theme-transition'), 500);
+    window.setTimeout(() => root.classList.remove('theme-transition'), 560);
     root.setAttribute('data-theme', next);
     try {
       localStorage.setItem('kb-theme', next);
@@ -21,12 +21,7 @@ export default function ThemeToggle({ ariaLabel }: { ariaLabel: string }) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label={ariaLabel}
-      className="kb-theme-toggle"
-    >
+    <button type="button" onClick={toggle} aria-label={ariaLabel} className="kb-theme-toggle">
       <Sun style={iconBase} className="kb-theme-icon kb-icon-light" />
       <Moon style={iconBase} className="kb-theme-icon kb-icon-dark" />
       <style>{`
@@ -34,19 +29,21 @@ export default function ThemeToggle({ ariaLabel }: { ariaLabel: string }) {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 38px;
-          height: 38px;
+          width: 34px;
+          height: 34px;
           border-radius: 999px;
-          border: 1px solid var(--line);
-          background: var(--surface);
-          color: var(--text-soft);
+          border: 1px solid var(--glass-border);
+          background: var(--glass-1);
+          color: var(--text-faint);
           cursor: pointer;
-          transition: color 0.3s, border-color 0.3s, background 0.3s, transform 0.2s;
+          transition: color var(--dur-base) var(--ease-out),
+                      border-color var(--dur-base) var(--ease-out),
+                      background var(--dur-base) var(--ease-out);
         }
         .kb-theme-toggle:hover {
           color: var(--text);
-          border-color: var(--line-strong);
-          transform: translateY(-1px);
+          border-color: var(--glass-border-hover);
+          background: var(--glass-2);
         }
         .kb-icon-light { display: none; }
         html[data-theme='light'] .kb-icon-light { display: inline-block; }

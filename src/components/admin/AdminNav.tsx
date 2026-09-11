@@ -13,8 +13,8 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        borderBottom: '1px solid var(--border-mid)',
-        background: 'rgba(21, 15, 10, 0.85)',
+        borderBottom: '1px solid var(--line)',
+        background: 'var(--glass-2)',
         backdropFilter: 'blur(12px)',
       }}
     >
@@ -35,7 +35,7 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
           style={{
             fontFamily: 'var(--font-name)',
             fontSize: '1.25rem',
-            color: 'var(--soft-white)',
+            color: 'var(--text)',
             textDecoration: 'none',
             letterSpacing: '0.02em',
             whiteSpace: 'nowrap',
@@ -65,9 +65,9 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
                   fontSize: '0.78rem',
                   letterSpacing: '0.04em',
                   textDecoration: 'none',
-                  color: active ? 'var(--soft-white)' : 'var(--muted-light)',
-                  background: active ? 'rgba(255,255,255,0.07)' : 'transparent',
-                  border: active ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
+                  color: active ? 'var(--text)' : 'var(--text-soft)',
+                  background: active ? 'var(--glass-3)' : 'transparent',
+                  border: active ? '1px solid var(--glass-border)' : '1px solid transparent',
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -85,8 +85,8 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
               fontSize: '0.78rem',
               letterSpacing: '0.04em',
               textDecoration: 'none',
-              color: 'var(--muted-light)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'var(--text-soft)',
+              border: '1px solid var(--glass-border)',
               whiteSpace: 'nowrap',
             }}
           >

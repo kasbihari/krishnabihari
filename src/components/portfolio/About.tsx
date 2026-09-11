@@ -7,15 +7,6 @@ const CHAR_SPEED = 28; // ms per character
 const LINE_PAUSE = 600; // pause after each line completes
 const CHAPTER_PAUSE = 1200;
 
-/**
- * Resolves the visual color for a chapter tab.
- */
-function getChapterTabColor(isCurrent: boolean, isPast: boolean): string {
-  if (isCurrent) return 'var(--sand)';
-  if (isPast) return 'var(--text-faint)';
-  return 'var(--text-faint)';
-}
-
 export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
   const { t } = useI18n(initialLang);
   const s = t.story;
@@ -119,74 +110,28 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
   return (
     <section id="about">
       {/* ══════════════════════════════════════════════════════════
-          CINEMATIC TYPEWRITER SCREEN
+          CINEMATIC TYPEWRITER SCREEN — the story unfolds
       ══════════════════════════════════════════════════════════ */}
-      <div
-        ref={sectionRef}
-        style={{
-          minHeight: '100svh',
-          display: 'flex',
-          alignItems: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Ambient glow left */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '25%',
-            left: '-12%',
-            width: '620px',
-            height: '620px',
-            background: 'radial-gradient(ellipse, var(--glow-1) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }}
-        />
+      <div ref={sectionRef} className="about-stage">
+        {/* Ambient light on the central axis */}
+        <div aria-hidden="true" className="about-ambient" />
 
-        <div
-          className="container-main"
-          style={{ position: 'relative', zIndex: 1, paddingTop: '8rem', paddingBottom: '6rem' }}
-        >
+        <div className="container-main about-stage__inner">
           {/* Section label */}
-          <p
-            data-reveal
-            style={{
-              fontSize: '0.72rem',
-              fontWeight: 600,
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'var(--sand)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              marginBottom: '4rem',
-            }}
-          >
-            <span style={{ width: 26, height: 1, background: 'var(--sand)', display: 'inline-block' }} />
+          <p data-reveal className="section-label section-label--center about-label">
             {s.label}
           </p>
 
           {/* Chapter tabs */}
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '3.5rem', flexWrap: 'wrap' }}>
+          <div className="about-tabs" data-reveal data-delay="100">
             {chapters.map((ch, i) => {
               const isPast = i < chapterIdx;
               const isCurrent = i === chapterIdx && started;
               return (
                 <span
                   key={ch.id}
-                  style={{
-                    fontSize: '0.68rem',
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '5px 14px',
-                    borderRadius: '100px',
-                    border: isCurrent ? '1px solid var(--sand)' : '1px solid var(--line-soft)',
-                    color: getChapterTabColor(isCurrent, isPast),
-                    background: isCurrent ? 'color-mix(in srgb, var(--sand) 8%, transparent)' : 'transparent',
-                    transition: 'all 0.4s ease',
-                  }}
+                  className="about-tab"
+                  data-state={isCurrent ? 'current' : isPast ? 'past' : 'future'}
                 >
                   {ch.label}
                 </span>
@@ -194,27 +139,16 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
             })}
           </div>
 
-          {/* Story text */}
-          <div style={{ maxWidth: '700px' }}>
-            {!started && (
-              <p
-                style={{
-                  fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-                  color: 'var(--text-faint)',
-                  fontStyle: 'italic',
-                  fontFamily: 'var(--font-display)',
-                }}
-              >
-                {s.scrollToBegin}
-              </p>
-            )}
+          {/* Story text — the focus of the section */}
+          <div className="about-story">
+            {!started && <p className="about-idle">{s.scrollToBegin}</p>}
 
             {chapters.map((ch, cIdx) => {
               if (cIdx > chapterIdx) return null;
               const isCurrentChapter = cIdx === chapterIdx;
 
               return (
-                <div key={ch.id} style={{ marginBottom: isCurrentChapter ? 0 : '2.5rem' }}>
+                <div key={ch.id} className={isCurrentChapter ? 'about-chapter' : 'about-chapter about-chapter--past'}>
                   {ch.lines.map((line, lIdx) => {
                     const isPastLine = cIdx < chapterIdx || lIdx < revealedLines;
                     const isTypingLine = isCurrentChapter && lIdx === revealedLines;
@@ -227,50 +161,12 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
                     return (
                       <p
                         key={`${ch.id}-${line.slice(0, 24)}`}
-                        style={{
-                          fontSize: 'clamp(1.2rem, 2.6vw, 1.8rem)',
-                          fontWeight: 400,
-                          lineHeight: 1.45,
-                          letterSpacing: '-0.01em',
-                          marginBottom: '0.55rem',
-                          color: isPastLine ? 'var(--text-faint)' : 'var(--soft-white)',
-                          transition: 'color 0.5s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.75rem',
-                        }}
+                        className="about-line"
+                        data-state={isPastLine ? 'past' : 'active'}
                       >
-                        {/* Active bar */}
-                        {isTypingLine && (
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              display: 'inline-block',
-                              flexShrink: 0,
-                              width: '3px',
-                              height: '1em',
-                              borderRadius: '2px',
-                              background: 'var(--sand)',
-                            }}
-                          />
-                        )}
-                        {displayText}
-                        {/* Blinking cursor */}
-                        {isTypingLine && (
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              display: 'inline-block',
-                              width: '2px',
-                              height: '1.1em',
-                              background: 'var(--pine-ink)',
-                              borderRadius: '1px',
-                              animation: 'kb-blink 0.9s step-end infinite',
-                              verticalAlign: 'middle',
-                              marginLeft: '1px',
-                            }}
-                          />
-                        )}
+                        {isTypingLine && <span aria-hidden="true" className="about-line-bar" />}
+                        <span>{displayText}</span>
+                        {isTypingLine && <span aria-hidden="true" className="about-caret" />}
                       </p>
                     );
                   })}
@@ -279,67 +175,16 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
             })}
           </div>
 
-          {/* Progress + controls */}
-          <div style={{ marginTop: '3rem', display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-            <div
-              style={{
-                width: '160px',
-                height: '1px',
-                background: 'var(--line-soft)',
-                borderRadius: '2px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  height: '100%',
-                  width: `${progressPct}%`,
-                  background: 'linear-gradient(90deg, var(--sand-dark), var(--sand-light))',
-                  transition: 'width 0.5s cubic-bezier(0.16,1,0.3,1)',
-                }}
-              />
+          {/* Progress + replay */}
+          <div className="about-progress">
+            <div className="about-progress__track">
+              <div className="about-progress__fill" style={{ width: `${progressPct}%` }} />
             </div>
 
-            <span
-              style={{
-                fontSize: '0.68rem',
-                letterSpacing: '0.08em',
-                color: 'var(--muted)',
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {progressPct}%
-            </span>
+            <span className="about-progress__value">{progressPct}%</span>
 
             {done && (
-              <button
-                type="button"
-                onClick={start}
-                aria-label={s.replay}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  fontSize: '0.68rem',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: 'var(--text-soft)',
-                  background: 'none',
-                  border: '1px solid var(--line)',
-                  borderRadius: '100px',
-                  cursor: 'pointer',
-                  padding: '5px 14px',
-                  transition: 'color 0.2s, border-color 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'var(--sand)';
-                  e.currentTarget.style.borderColor = 'var(--sand)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'var(--text-soft)';
-                  e.currentTarget.style.borderColor = 'var(--line)';
-                }}
-              >
+              <button type="button" onClick={start} aria-label={s.replay} className="about-replay">
                 <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M2 8a6 6 0 1 0 1.5-3.9L2 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M2 3v3h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -351,103 +196,49 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <div className="divider" />
-
       {/* ══════════════════════════════════════════════════════════
           DETAILS: HOW I WORK + TRAITS
       ══════════════════════════════════════════════════════════ */}
       <div className="section-padding">
         <div className="container-main">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '5rem',
-            }}
-          >
+          <div className="about-details">
             {/* LEFT — how I work */}
             <div>
-              <p
-                data-reveal
-                className="section-label"
-                style={{ marginBottom: '1.5rem' }}
-              >
+              <p data-reveal className="section-label about-details__label">
                 {s.howIWorkTitle}
               </p>
 
-              <p
-                data-reveal
-                data-delay="100"
-                style={{
-                  color: 'var(--text-soft)',
-                  lineHeight: 1.85,
-                  marginBottom: '1.5rem',
-                  fontSize: '0.98rem',
-                }}
-              >
+              <p data-reveal data-delay="100" className="about-details__body">
                 {s.howIWork1}
               </p>
 
-              <p
-                data-reveal
-                data-delay="150"
-                style={{
-                  color: 'var(--text-faint)',
-                  lineHeight: 1.85,
-                  fontSize: '0.92rem',
-                }}
-              >
+              <p data-reveal data-delay="150" className="about-details__body about-details__body--soft">
                 {s.howIWork2}
               </p>
             </div>
 
             {/* RIGHT — traits + journey link */}
             <div>
-              <p data-reveal className="section-label" style={{ marginBottom: '1.5rem' }}>
+              <p data-reveal className="section-label about-details__label">
                 {s.traitsTitle}
               </p>
 
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="about-traits">
                 {traitRows.map((row, i) => (
                   <div
                     key={row.label}
                     data-reveal
                     data-delay={`${100 + i * 80}`}
-                    style={{
-                      display: 'flex',
-                      gap: '1.25rem',
-                      alignItems: 'flex-start',
-                      padding: '1.15rem 0',
-                      borderBottom: i < 3 ? '1px solid var(--line-soft)' : 'none',
-                    }}
+                    className="about-trait"
+                    data-last={i === traitRows.length - 1 ? 'true' : 'false'}
                   >
-                    <span
-                      style={{
-                        fontSize: '0.65rem',
-                        letterSpacing: '0.12em',
-                        textTransform: 'uppercase',
-                        color: 'var(--pine-ink)',
-                        minWidth: '110px',
-                        paddingTop: '2px',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {row.label}
-                    </span>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text-faint)', lineHeight: 1.65 }}>
-                      {row.sub}
-                    </span>
+                    <span className="about-trait__label">{row.label}</span>
+                    <span className="about-trait__sub">{row.sub}</span>
                   </div>
                 ))}
               </div>
 
-              <a
-                href="#journey"
-                className="btn-secondary"
-                data-reveal
-                data-delay="300"
-                style={{ marginTop: '2.5rem' }}
-              >
+              <a href="#journey" className="btn-secondary about-details__cta" data-reveal data-delay="300">
                 {s.readTheJourney}
                 <ArrowDown size={15} strokeWidth={1.75} />
               </a>
@@ -456,10 +247,273 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <div className="divider" />
-
-      {/* Blink keyframe */}
       <style>{`
+        /* ── Stage ── */
+        .about-stage {
+          position: relative;
+          min-height: 100svh;
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+          padding: clamp(7rem, 13vw, 10rem) 0 clamp(5rem, 10vw, 7rem);
+        }
+
+        .about-ambient {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: min(900px, 120vw);
+          height: min(900px, 120vw);
+          transform: translate(-50%, -50%);
+          background: radial-gradient(circle, var(--glow-1) 0%, transparent 62%);
+          pointer-events: none;
+        }
+
+        .about-stage__inner {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .about-label {
+          margin-bottom: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        /* ── Chapter tabs ── */
+        .about-tabs {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .about-tab {
+          font-size: 0.66rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          padding: 6px 15px;
+          border-radius: var(--radius-pill);
+          border: 1px solid var(--line-soft);
+          color: var(--text-faint);
+          background: transparent;
+          transition:
+            color var(--dur-slow) var(--ease-out),
+            border-color var(--dur-slow) var(--ease-out),
+            background var(--dur-slow) var(--ease-out);
+        }
+
+        .about-tab[data-state='current'] {
+          border-color: var(--glass-border-hover);
+          background: var(--glass-2);
+          color: var(--text);
+        }
+
+        .about-tab[data-state='past'] {
+          color: var(--text-faint);
+          opacity: 0.6;
+        }
+
+        /* ── Story ── */
+        .about-story {
+          max-width: 780px;
+          min-height: 12rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .about-idle {
+          font-family: var(--font-display);
+          font-style: italic;
+          font-size: clamp(1rem, 2vw, 1.25rem);
+          color: var(--text-faint);
+        }
+
+        .about-chapter {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+        }
+
+        .about-chapter--past {
+          margin-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
+        }
+
+        .about-line {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.7rem;
+          font-family: var(--font-display);
+          font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+          font-weight: 400;
+          line-height: 1.4;
+          letter-spacing: -0.015em;
+          margin-bottom: 0.75rem;
+          text-wrap: balance;
+          transition: color var(--dur-slow) var(--ease-out);
+        }
+
+        .about-line[data-state='active'] {
+          color: var(--text);
+        }
+
+        .about-line[data-state='past'] {
+          color: var(--text-faint);
+        }
+
+        .about-line-bar {
+          display: inline-block;
+          flex-shrink: 0;
+          width: 2px;
+          height: 0.9em;
+          border-radius: 2px;
+          background: var(--verde-ink);
+        }
+
+        .about-caret {
+          display: inline-block;
+          width: 1px;
+          height: 1.05em;
+          background: var(--verde-ink);
+          border-radius: 1px;
+          animation: kb-blink 0.9s step-end infinite;
+        }
+
+        /* ── Progress ── */
+        .about-progress {
+          margin-top: clamp(2.5rem, 5vw, 3.5rem);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1.25rem;
+          flex-wrap: wrap;
+        }
+
+        .about-progress__track {
+          width: 170px;
+          height: 1px;
+          background: var(--line-soft);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .about-progress__fill {
+          height: 100%;
+          background: var(--verde-ink);
+          transition: width var(--dur-slow) var(--ease-out);
+        }
+
+        .about-progress__value {
+          font-family: var(--font-mono);
+          font-size: 0.66rem;
+          letter-spacing: 0.1em;
+          color: var(--text-faint);
+          font-variant-numeric: tabular-nums;
+        }
+
+        .about-replay {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.66rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--text-faint);
+          background: none;
+          border: 1px solid var(--glass-border);
+          border-radius: var(--radius-pill);
+          cursor: pointer;
+          padding: 6px 15px;
+          transition:
+            color var(--dur-base) var(--ease-out),
+            border-color var(--dur-base) var(--ease-out),
+            background var(--dur-base) var(--ease-out);
+        }
+
+        .about-replay:hover {
+          color: var(--text);
+          border-color: var(--glass-border-hover);
+          background: var(--glass-1);
+        }
+
+        /* ── Details ── */
+        .about-details {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: clamp(3rem, 7vw, 6rem);
+        }
+
+        .about-details__label {
+          margin-bottom: 1.5rem;
+        }
+
+        .about-details__body {
+          color: var(--text-soft);
+          line-height: 1.85;
+          margin-bottom: 1.5rem;
+          font-size: 0.98rem;
+        }
+
+        .about-details__body--soft {
+          color: var(--text-faint);
+          font-size: 0.92rem;
+          margin-bottom: 0;
+        }
+
+        .about-traits {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .about-trait {
+          display: flex;
+          gap: 1.25rem;
+          align-items: flex-start;
+          padding: 1.15rem 0;
+          border-bottom: 1px solid var(--line-soft);
+        }
+
+        .about-trait[data-last='true'] {
+          border-bottom: none;
+        }
+
+        .about-trait__label {
+          font-size: 0.64rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--verde-ink);
+          min-width: 110px;
+          padding-top: 3px;
+          font-weight: 600;
+        }
+
+        .about-trait__sub {
+          font-size: 0.85rem;
+          color: var(--text-faint);
+          line-height: 1.65;
+        }
+
+        .about-details__cta {
+          margin-top: 2.5rem;
+        }
+
+        @media (max-width: 640px) {
+          .about-trait {
+            flex-direction: column;
+            gap: 0.4rem;
+          }
+
+          .about-trait__label {
+            min-width: 0;
+          }
+        }
+
         @keyframes kb-blink {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0; }

@@ -23,20 +23,20 @@ const statusStyles: Record<
   }
 > = {
   completed: {
-    dot: 'var(--forest-bright)',
+    dot: 'var(--verde-ink)',
     ring: 'rgba(74, 124, 106, 0.22)',
     label: 'Completed',
   },
 
   active: {
-    dot: 'var(--sand-light)',
+    dot: 'var(--bronze-soft)',
     ring: 'rgba(200, 184, 154, 0.22)',
     label: 'In progress',
   },
 
   upcoming: {
-    dot: 'rgba(255,255,255,0.2)',
-    ring: 'rgba(255,255,255,0.05)',
+    dot: 'var(--line-strong)',
+    ring: 'var(--glass-1)',
     label: 'Upcoming',
   },
 };
@@ -77,9 +77,9 @@ export default function ProjectTimeline({
         minWidth: 0,
         overflow: 'hidden',
         border:
-          '1px solid var(--border-mid)',
+          '1px solid var(--line)',
         background:
-          'rgba(21, 15, 10, 0.78)',
+          'var(--glass-2)',
         borderRadius: '18px',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
@@ -125,7 +125,7 @@ export default function ProjectTimeline({
             fontSize: '0.68rem',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: 'var(--sand)',
+            color: 'var(--bronze)',
             marginBottom: '1.25rem',
           }}
         >
@@ -154,10 +154,10 @@ export default function ProjectTimeline({
               padding: '1rem',
               borderRadius: '12px',
               border:
-                '1px solid rgba(255,255,255,0.05)',
+                '1px solid var(--glass-1)',
               background:
-                'rgba(255,255,255,0.018)',
-              color: 'var(--muted)',
+                'var(--glass-1)',
+              color: 'var(--text-faint)',
               fontSize: '0.84rem',
               lineHeight: 1.7,
             }}
@@ -232,7 +232,7 @@ export default function ProjectTimeline({
                       '0.85rem 0',
                     borderBottom: isLast
                       ? 'none'
-                      : '1px solid rgba(255,255,255,0.05)',
+                      : '1px solid var(--glass-1)',
                   }}
                 >
                   {!isLast && (
@@ -264,7 +264,7 @@ export default function ProjectTimeline({
                         bottom: '-0.7rem',
                         width: '1px',
                         background:
-                          'rgba(255,255,255,0.07)',
+                          'var(--glass-3)',
                         transformOrigin:
                           'top center',
                       }}
@@ -341,8 +341,8 @@ export default function ProjectTimeline({
                           fontSize:
                             '1.02rem',
                           color: isActive
-                            ? 'var(--soft-white)'
-                            : 'var(--off-white)',
+                            ? 'var(--text)'
+                            : 'var(--text-soft)',
                           overflowWrap:
                             'anywhere',
                           lineHeight: 1.25,
@@ -376,8 +376,8 @@ export default function ProjectTimeline({
                           textTransform:
                             'uppercase',
                           color: isActive
-                            ? 'var(--sand-light)'
-                            : 'var(--muted-light)',
+                            ? 'var(--bronze-soft)'
+                            : 'var(--text-soft)',
                           whiteSpace:
                             'nowrap',
                         }}
@@ -390,7 +390,7 @@ export default function ProjectTimeline({
                       style={{
                         margin: 0,
                         color:
-                          'var(--muted)',
+                          'var(--text-faint)',
                         fontSize:
                           '0.86rem',
                         lineHeight: 1.6,
@@ -407,7 +407,7 @@ export default function ProjectTimeline({
                       fontSize:
                         '0.68rem',
                       color:
-                        'var(--muted-light)',
+                        'var(--text-soft)',
                       letterSpacing:
                         '0.08em',
                       textTransform:

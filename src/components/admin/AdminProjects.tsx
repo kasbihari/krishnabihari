@@ -28,9 +28,9 @@ function StatusBadge({ status }: { status: string }) {
   const isActive = lowerStatus.includes('active') || lowerStatus.includes('development') || lowerStatus.includes('progress');
   const isCompleted = lowerStatus.includes('complete') || lowerStatus.includes('finished') || lowerStatus.includes('closed');
 
-  const bgColor = isActive ? 'rgba(92, 158, 131, 0.15)' : isCompleted ? 'rgba(74, 124, 106, 0.15)' : 'rgba(255, 255, 255, 0.05)';
-  const borderColor = isActive ? 'rgba(92, 158, 131, 0.3)' : isCompleted ? 'rgba(74, 124, 106, 0.3)' : 'rgba(255, 255, 255, 0.1)';
-  const textColor = isActive ? 'var(--forest-bright)' : isCompleted ? 'var(--forest-mid)' : 'var(--muted-light)';
+  const bgColor = isActive ? 'var(--verde-glow)' : isCompleted ? 'var(--verde-glow)' : 'var(--glass-1)';
+  const borderColor = isActive ? 'rgba(92, 158, 131, 0.3)' : isCompleted ? 'rgba(74, 124, 106, 0.3)' : 'var(--glass-border)';
+  const textColor = isActive ? 'var(--verde-ink)' : isCompleted ? 'var(--verde-soft)' : 'var(--text-soft)';
 
   return (
     <span style={{ display: 'inline-block', padding: '0.4rem 0.75rem', borderRadius: '8px', background: bgColor, border: `1px solid ${borderColor}`, color: textColor, fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 500 }}>
@@ -81,9 +81,9 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
     boxSizing: 'border-box',
     padding: '0.6rem 0.75rem',
     borderRadius: '8px',
-    border: '1px solid var(--border-mid)',
-    background: 'rgba(255,255,255,0.03)',
-    color: 'var(--soft-white)',
+    border: '1px solid var(--line)',
+    background: 'var(--glass-1)',
+    color: 'var(--text)',
     fontSize: '0.9rem',
     fontFamily: 'inherit',
   };
@@ -93,13 +93,13 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
           <div>
-            <div style={{ fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--sand)', marginBottom: '0.5rem' }}>
+            <div style={{ fontSize: '0.7rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--bronze)', marginBottom: '0.5rem' }}>
               Workspace
             </div>
-            <h1 style={{ margin: 0, fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.1, color: 'var(--soft-white)' }}>
+            <h1 style={{ margin: 0, fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.1, color: 'var(--text)' }}>
               Projects
             </h1>
-            <div style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
               {projects.length} {projects.length === 1 ? 'project' : 'projects'}
             </div>
           </div>
@@ -112,7 +112,7 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
               borderRadius: '10px',
               border: '1px solid rgba(92,158,131,0.4)',
               background: 'rgba(92,158,131,0.15)',
-              color: 'var(--forest-bright)',
+              color: 'var(--verde-ink)',
               fontSize: '0.85rem',
               fontWeight: 600,
               cursor: clients.length === 0 ? 'not-allowed' : 'pointer',
@@ -131,17 +131,17 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
         )}
 
         {creating && (
-          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21,15,10,0.7)', padding: '1.5rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
-            <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--soft-white)' }}>New project</h2>
+          <div style={{ border: '1px solid var(--line)', borderRadius: '18px', background: 'rgba(21,15,10,0.7)', padding: '1.5rem', marginBottom: '1.5rem', display: 'grid', gap: '1rem' }}>
+            <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--text)' }}>New project</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <label htmlFor="project-name" style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
+                <label htmlFor="project-name" style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)', marginBottom: '0.35rem' }}>
                   Project name *
                 </label>
                 <input id="project-name" style={inputStyle} value={name} onChange={(e) => setName(e.target.value)} placeholder="Project name" />
               </div>
               <div>
-                <label htmlFor="project-client" style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
+                <label htmlFor="project-client" style={{ display: 'block', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)', marginBottom: '0.35rem' }}>
                   Client *
                 </label>
                 <select id="project-client" style={inputStyle} value={clientId} onChange={(e) => setClientId(e.target.value)}>
@@ -154,10 +154,10 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-              <button onClick={() => setCreating(false)} style={{ padding: '0.7rem 1.2rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--muted-light)', cursor: 'pointer', fontSize: '0.85rem' }}>
+              <button onClick={() => setCreating(false)} style={{ padding: '0.7rem 1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-soft)', cursor: 'pointer', fontSize: '0.85rem' }}>
                 Cancel
               </button>
-              <button onClick={createProject} disabled={busy} style={{ padding: '0.7rem 1.4rem', borderRadius: '10px', border: '1px solid rgba(92,158,131,0.4)', background: 'rgba(92,158,131,0.2)', color: 'var(--forest-bright)', cursor: busy ? 'default' : 'pointer', fontSize: '0.85rem', fontWeight: 600, opacity: busy ? 0.6 : 1 }}>
+              <button onClick={createProject} disabled={busy} style={{ padding: '0.7rem 1.4rem', borderRadius: '10px', border: '1px solid rgba(92,158,131,0.4)', background: 'rgba(92,158,131,0.2)', color: 'var(--verde-ink)', cursor: busy ? 'default' : 'pointer', fontSize: '0.85rem', fontWeight: 600, opacity: busy ? 0.6 : 1 }}>
                 {busy ? 'Creating…' : 'Create & manage'}
               </button>
             </div>
@@ -165,24 +165,24 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
         )}
 
         {projects.length === 0 ? (
-          <div style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21, 15, 10, 0.7)', padding: '2rem', textAlign: 'center' }}>
-            <div style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.8 }}>
+          <div style={{ border: '1px solid var(--line)', borderRadius: '18px', background: 'var(--glass-1)', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '1rem', lineHeight: 1.8 }}>
               No projects found. Create your first project to get started.
             </div>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '1rem' }}>
             {projects.map((project) => (
-              <div key={project.id} style={{ border: '1px solid var(--border-mid)', borderRadius: '18px', background: 'rgba(21, 15, 10, 0.7)', padding: '1.5rem', display: 'grid', gap: '1rem' }}>
+              <div key={project.id} style={{ border: '1px solid var(--line)', borderRadius: '18px', background: 'var(--glass-1)', padding: '1.5rem', display: 'grid', gap: '1rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'start' }}>
                   <div>
-                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--sand)', marginBottom: '0.35rem' }}>
+                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--bronze)', marginBottom: '0.35rem' }}>
                       {project.client_company}
                     </div>
-                    <h2 style={{ margin: '0 0 0.5rem', fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: 'var(--soft-white)' }}>
+                    <h2 style={{ margin: '0 0 0.5rem', fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: 'var(--text)' }}>
                       {project.name}
                     </h2>
-                    <div style={{ color: 'var(--muted-light)', fontSize: '0.85rem' }}>
+                    <div style={{ color: 'var(--text-soft)', fontSize: '0.85rem' }}>
                       Client: {project.client_name}
                     </div>
                   </div>
@@ -196,7 +196,7 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
                         borderRadius: '8px',
                         border: '1px solid rgba(92,158,131,0.4)',
                         background: 'rgba(92,158,131,0.12)',
-                        color: 'var(--forest-bright)',
+                        color: 'var(--verde-ink)',
                         fontSize: '0.75rem',
                         textDecoration: 'none',
                         whiteSpace: 'nowrap',
@@ -208,36 +208,36 @@ export default function AdminProjects({ projects, clients }: AdminProjectsProps)
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>
-                  <div style={{ border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '10px', padding: '0.75rem', background: 'rgba(255, 255, 255, 0.02)' }}>
-                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.25rem' }}>
+                  <div style={{ border: '1px solid var(--glass-1)', borderRadius: '10px', padding: '0.75rem', background: 'var(--glass-1)' }}>
+                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)', marginBottom: '0.25rem' }}>
                       Phase
                     </div>
-                    <div style={{ fontSize: '0.95rem', color: 'var(--soft-white)' }}>
+                    <div style={{ fontSize: '0.95rem', color: 'var(--text)' }}>
                       {project.phase}
                     </div>
                   </div>
 
-                  <div style={{ border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '10px', padding: '0.75rem', background: 'rgba(255, 255, 255, 0.02)' }}>
-                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.25rem' }}>
+                  <div style={{ border: '1px solid var(--glass-1)', borderRadius: '10px', padding: '0.75rem', background: 'var(--glass-1)' }}>
+                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)', marginBottom: '0.25rem' }}>
                       Progress
                     </div>
-                    <div style={{ fontSize: '0.95rem', color: 'var(--soft-white)' }}>
+                    <div style={{ fontSize: '0.95rem', color: 'var(--text)' }}>
                       {project.progress}%
                     </div>
                   </div>
 
-                  <div style={{ border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '10px', padding: '0.75rem', background: 'rgba(255, 255, 255, 0.02)' }}>
-                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.25rem' }}>
+                  <div style={{ border: '1px solid var(--glass-1)', borderRadius: '10px', padding: '0.75rem', background: 'var(--glass-1)' }}>
+                    <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)', marginBottom: '0.25rem' }}>
                       Launch
                     </div>
-                    <div style={{ fontSize: '0.95rem', color: 'var(--soft-white)' }}>
+                    <div style={{ fontSize: '0.95rem', color: 'var(--text)' }}>
                       {project.expected_launch}
                     </div>
                   </div>
                 </div>
 
-                <div style={{ height: '6px', borderRadius: '999px', background: 'rgba(255, 255, 255, 0.05)', overflow: 'hidden' }}>
-                  <div style={{ width: `${project.progress}%`, height: '100%', background: 'linear-gradient(90deg, var(--forest-bright), var(--sand-light))', transition: 'width 0.6s ease' }} />
+                <div style={{ height: '6px', borderRadius: '999px', background: 'var(--glass-1)', overflow: 'hidden' }}>
+                  <div style={{ width: `${project.progress}%`, height: '100%', background: 'linear-gradient(90deg, var(--verde-ink), var(--bronze-soft))', transition: 'width 0.6s ease' }} />
                 </div>
               </div>
             ))}

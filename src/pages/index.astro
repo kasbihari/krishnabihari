@@ -2,10 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/portfolio/Hero';
 import About from '../components/portfolio/About';
-import Journey from '../components/portfolio/Journey';
 import Projects from '../components/portfolio/Projects';
-import ClientPortalSection from '../components/portfolio/ClientPortalSection';
 import Skills from '../components/portfolio/Skills';
+import Journey from '../components/portfolio/Journey';
+import ClientPortalSection from '../components/portfolio/ClientPortalSection';
 import Contact from '../components/portfolio/Contact';
 import Footer from '../components/Footer';
 import { fetchPublishedPortfolioProjects } from '../lib/server/portfolio';
@@ -14,23 +14,21 @@ import { getLangFromCookies } from '../i18n/server';
 const lang = getLangFromCookies(Astro.cookies);
 const portfolioProjects = await fetchPublishedPortfolioProjects();
 ---
+
 <Layout lang={lang}>
-  <main>
-    <div class="full-screen">
-      <Hero lang={lang} client:load />
-    </div>
-    <About lang={lang} client:visible />
-    <Journey lang={lang} client:visible />
-    <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Projects lang={lang} projects={portfolioProjects} client:visible />
-    </div>
-    <ClientPortalSection lang={lang} client:visible />
-    <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Skills lang={lang} client:visible />
-    </div>
-    <div class="full-screen" style="height: auto; min-height: 100svh;">
-      <Contact lang={lang} client:visible />
-    </div>
-  </main>
+  <Hero lang={lang} client:load />
+
+  <About lang={lang} client:visible />
+
+  <Projects lang={lang} projects={portfolioProjects} client:visible />
+
+  <Skills lang={lang} client:visible />
+
+  <Journey lang={lang} client:visible />
+
+  <ClientPortalSection lang={lang} client:visible />
+
+  <Contact lang={lang} client:visible />
+
   <Footer lang={lang} client:load />
 </Layout>

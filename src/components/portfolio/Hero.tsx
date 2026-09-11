@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, ArrowRight } from "lucide-react";
 import { useI18n } from "../../lib/client/i18n-store";
 import type { Lang } from "../../i18n";
 
@@ -389,7 +389,9 @@ export default function Hero({
       new Audio(record.audio);
 
     audio.loop = true;
-    audio.preload = "auto";
+    // "metadata" keeps the 3–7 MB tracks off the critical path; the browser
+    // fetches the audio only when the visitor actually presses play.
+    audio.preload = "metadata";
     // Improves Safari/iOS reliability when the graph falls back to plain
     // <audio> playback (see ensureAudioGraph).
     audio.crossOrigin = "anonymous";
@@ -1639,15 +1641,15 @@ export default function Hero({
       ref={containerRef}
       className="hero-section"
     >
-      {/* Spotlight */}
+      {/* Spotlight — ambient light that follows the pointer */}
       <div
         aria-hidden="true"
         className="hero-spotlight"
         style={{
           background: `radial-gradient(
-            ellipse 600px 500px at ${spotlight.x}% ${spotlight.y}%,
-            rgba(200,170,110,0.08) 0%,
-            transparent 70%
+            ellipse 720px 560px at ${spotlight.x}% ${spotlight.y}%,
+            var(--verde-glow) 0%,
+            transparent 68%
           )`,
         }}
       />
@@ -1659,10 +1661,6 @@ export default function Hero({
       />
 
       <div className="hero-content">
-        {/* ---------------------------------------------------------
-            LEFT
-        ---------------------------------------------------------- */}
-
         <div className="hero-copy">
           <p className="hero-availability hero-animate hero-delay-1">
             <span className="hero-status-dot"/>
@@ -1670,9 +1668,11 @@ export default function Hero({
           </p>
 
           <h1 className="hero-title hero-animate hero-delay-2">
-            Krishna Bihari<br />
-            <span className="hero-title-accent">{t.hero.headlinePart1}</span>{" "}
-            {t.hero.headlinePart2}
+            <span className="font-name hero-name">Krishna Bihari</span>
+            <span className="hero-title-line">
+              <span className="hero-title-accent">{t.hero.headlinePart1}</span>{" "}
+              {t.hero.headlinePart2}
+            </span>
           </h1>
 
           <div className="hero-role hero-animate hero-delay-3">
@@ -1703,18 +1703,28 @@ export default function Hero({
 
             <a
               href="#contact"
-              className="btn-secondary"
+              className="hero-link"
             >
               {t.hero.getInTouch}
+              <ArrowRight
+                size={14}
+                strokeWidth={1.75}
+              />
             </a>
           </div>
         </div>
+      </div>
 
-        {/* ---------------------------------------------------------
-            RIGHT / VINYL
-        ---------------------------------------------------------- */}
+      {/* ---------------------------------------------------------
+          VINYL — an easter egg, not a hero component.
 
-        <div className="hero-player">
+          Deliberately positioned outside the composition flow so it
+          can never influence the layout, the fold, or the typography.
+          It sits quietly in the lower-right; it comes forward only
+          when the visitor notices and reaches for it.
+      ---------------------------------------------------------- */}
+
+      <div className="hero-player">
           <div className="vinyl-stage">
             {/* Glow */}
             <div
@@ -1837,7 +1847,7 @@ export default function Hero({
                     alt={`${record.title} album artwork`}
                     draggable={false}
                     decoding="async"
-                    fetchpriority="high"
+                    fetchPriority="high"
                   />
 
                   <div className="vinyl-center-hole" />
@@ -1883,41 +1893,6 @@ export default function Hero({
           >
             {record.title}
           </span>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="hero-stats">
-        {[
-          {
-            value: "3+",
-            label:
-              "Years building software",
-          },
-          {
-            value: "10+",
-            label:
-              "Projects shipped",
-          },
-          {
-            value: "5+",
-            label:
-              "AI & tech stacks",
-          },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="hero-stat"
-          >
-            <p className="hero-stat-value">
-              {stat.value}
-            </p>
-
-            <p className="hero-stat-label">
-              {stat.label}
-            </p>
-          </div>
-        ))}
       </div>
 
       {/* Scroll */}
@@ -1936,12 +1911,15 @@ export default function Hero({
           min-height: 100svh;
           display: flex;
           flex-direction: column;
+          align-items: center;
           justify-content: center;
           overflow: hidden;
           isolation: isolate;
+          /* Height-aware: short laptops compress, tall displays open up. */
           padding:
-            clamp(5rem, 10vw, 8rem)
-            clamp(1.25rem, 6vw, 6rem);
+            clamp(7rem, 13vh, 11rem)
+            var(--container-pad)
+            clamp(7rem, 15vh, 12rem);
         }
 
         .hero-spotlight {
@@ -1949,6 +1927,7 @@ export default function Hero({
           inset: 0;
           pointer-events: none;
           z-index: 0;
+          transition: background 900ms var(--ease-out);
         }
 
         .hero-grain {
@@ -1956,116 +1935,164 @@ export default function Hero({
           inset: 0;
           pointer-events: none;
           z-index: 1;
-          opacity: 0.035;
+          opacity: 0.03;
           background-image:
             url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
           background-size: 180px 180px;
         }
 
+        /* The composition sits on one centred axis. The measure is generous
+           on large displays so the wordmark is never boxed in. */
         .hero-content {
           position: relative;
           z-index: 3;
           width: 100%;
-          max-width: 1280px;
+          max-width: min(1440px, 100%);
           margin: 0 auto;
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          gap: clamp(2.5rem, 6vw, 5rem);
-          align-items: center;
         }
 
         .hero-copy {
           width: 100%;
           min-width: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
         }
 
         .hero-availability {
-          display: flex;
+          display: inline-flex;
           align-items: center;
-          gap: 0.75rem;
-          margin: 0 0 1.75rem;
-          color: var(--sand);
-          font-size: 0.75rem;
+          gap: 0.65rem;
+          margin: 0 0 clamp(2.25rem, 5.5vh, 4rem);
+          color: var(--text-faint);
+          font-size: 0.66rem;
           font-weight: 500;
-          letter-spacing: 0.15em;
+          letter-spacing: 0.22em;
           line-height: 1.4;
           text-transform: uppercase;
         }
 
         .hero-status-dot {
           display: block;
-          width: 6px;
-          min-width: 6px;
-          height: 6px;
+          width: 5px;
+          min-width: 5px;
+          height: 5px;
           border-radius: 50%;
-          background: var(--forest-bright);
-          box-shadow:
-            0 0 8px var(--forest-bright);
+          background: var(--verde-ink);
+          box-shadow: 0 0 10px var(--verde-ink);
+          animation: heroPulse 3.4s var(--ease-inout) infinite;
         }
 
+        @keyframes heroPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.35; }
+        }
+
+        /* ── Typography: two deliberately separate layers ────────── */
+
         .hero-title {
-          margin: 0 0 1.25rem;
-          color: var(--soft-white);
-          font-size: clamp(
-            2.2rem,
-            5.5vw,
-            4.5rem
-          );
-          font-weight: 500;
-          line-height: 1.08;
-          letter-spacing: -0.035em;
+          margin: 0;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: clamp(1.25rem, 3vw, 2.75rem);
+        }
+
+        /*
+          Layer A — the name. Amsterdam Four, and nothing else.
+
+          This face has extreme vertical metrics. Measured from the font
+          tables, its glyphs reach 1.6152em above and 0.8428em below the
+          baseline while its declared line box is 3.1919em tall. At a
+          normal line-height the flourishes therefore overflow into
+          whatever follows — which is precisely what used to collide
+          with the Playfair headline.
+
+          Curing that with line-height alone would need ~2.9em and inject
+          a large block of dead space. Instead the line box stays tight
+          (1em) and the real glyph overflow is absorbed by explicit
+          padding, derived from those metrics:
+
+            top    = 1.6152 - 2.2148 + (3.1919 - 1) / 2 = 0.4964em -> 0.53em
+            bottom = 0.8428 + 2.2148 - (3.1919 - 1) / 2 - 1 = 0.9616em -> 1em
+
+          The box now bounds the glyphs exactly: no waste, no clipping,
+          and no possibility of collision. Separation from layer B is the
+          flex gap above — never a negative margin.
+
+          Sizing: "Krishna Bihari" measures 6.7783em wide, so the fluid
+          size is jointly capped by viewport height as well as width.
+          Height-capping keeps the hero composed on short laptop screens
+          rather than merely tall ones.
+        */
+        .hero-name {
+          display: block;
+          font-family: var(--font-name);
+          font-size: clamp(2.25rem, min(11.5vw, 13.5vh), 10.5rem);
+          font-weight: 400;
+          line-height: 1;
+          letter-spacing: 0.005em;
+          color: var(--text);
+          text-align: center;
+          max-width: 100%;
+          padding: 0.53em 0.02em 1em;
+          overflow: visible;
+        }
+
+        /* Layer B — the statement. Playfair, its own size, its own layer. */
+        .hero-title-line {
+          display: block;
+          font-family: var(--font-display);
+          font-size: clamp(1.3rem, 3.1vw, 2.85rem);
+          font-weight: 400;
+          line-height: 1.2;
+          letter-spacing: -0.015em;
+          color: var(--text-soft);
+          max-width: 28ch;
+          text-wrap: balance;
         }
 
         .hero-title-accent {
-          color: var(--sand-light);
-          font-family:
-            "Playfair Display",
-            Georgia,
-            serif;
+          color: var(--text);
+          font-family: var(--font-display);
           font-style: italic;
           font-weight: 400;
         }
 
         .hero-role {
-          min-height: 2rem;
-          margin-bottom: 2rem;
+          min-height: 1.9rem;
+          margin: clamp(1.75rem, 4vh, 2.75rem) 0 clamp(1.5rem, 3.5vh, 2.25rem);
           display: flex;
           align-items: center;
-          color: var(--muted);
-          font-family:
-            "JetBrains Mono",
-            monospace;
-          font-size: clamp(
-            0.95rem,
-            2.2vw,
-            1.35rem
-          );
-          letter-spacing: -0.01em;
+          justify-content: center;
+          color: var(--text-faint);
+          font-family: var(--font-mono);
+          font-size: clamp(0.72rem, 1.15vw, 0.84rem);
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
         }
 
         .hero-cursor {
           display: inline-block;
-          width: 2px;
-          height: 1.1em;
-          margin-left: 3px;
+          width: 1px;
+          height: 1.05em;
+          margin-left: 4px;
           vertical-align: text-bottom;
-          background: var(--sand-light);
+          background: var(--verde-ink);
           animation:
             heroBlink
-            1s
+            1.1s
             step-end
             infinite;
         }
 
         .hero-description {
-          max-width: 500px;
-          margin: 0 0 2.5rem;
-          color: var(--muted);
-          font-size: clamp(
-            0.9rem,
-            1.5vw,
-            1.05rem
-          );
+          max-width: 46ch;
+          margin: 0 0 clamp(2.25rem, 5vh, 3.5rem);
+          color: var(--text-faint);
+          font-size: clamp(0.95rem, 1.15vw, 1.08rem);
           line-height: 1.8;
         }
 
@@ -2073,55 +2100,76 @@ export default function Hero({
           display: flex;
           flex-wrap: wrap;
           align-items: center;
+          justify-content: center;
+          gap: clamp(0.75rem, 1.5vw, 1.15rem);
+        }
+
+        /* The third path is a quiet text link, not a third button —
+           three competing buttons is what made this read as a landing page. */
+        .hero-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.8rem 0.35rem;
+          font-size: 0.875rem;
+          color: var(--text-faint);
+          white-space: nowrap;
+          transition:
+            color var(--dur-base) var(--ease-out),
+            gap var(--dur-base) var(--ease-out);
+        }
+
+        .hero-link:hover {
+          color: var(--text);
           gap: 0.7rem;
         }
 
+        /*
+          The vinyl is an easter egg, not a hero component.
+
+          It is absolutely positioned so it can never influence the
+          composition, the fold, or the typography. It sits quietly in
+          the lower-right at low opacity — barely more than an
+          atmospheric detail — and only comes forward when the visitor
+          notices it and reaches for it.
+        */
         .hero-player {
-          width: 100%;
-          min-width: 0;
-          min-height: clamp(
-            320px,
-            48vw,
-            560px
-          );
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 1rem 0;
+          position: absolute;
+          right: clamp(2rem, 4vw, 4.5rem);
+          bottom: clamp(2.75rem, 6vh, 4rem);
+          z-index: 2;
+          width: clamp(120px, 11vw, 175px);
+          aspect-ratio: 1;
+          opacity: 0.4;
+          transition: opacity var(--dur-slow) var(--ease-out);
+        }
+
+        .hero-player:hover,
+        .hero-player:focus-within {
+          opacity: 1;
         }
 
         .vinyl-stage {
-          position: relative;
-          width: clamp(
-            220px,
-            32vw,
-            380px
-          );
-          height: clamp(
-            220px,
-            32vw,
-            380px
-          );
+          position: absolute;
+          inset: 0;
         }
 
+        /* A whisper of verde, not a glow. */
         .vinyl-glow {
           position: absolute;
-          inset: -18%;
+          inset: -32%;
           z-index: 0;
           border-radius: 50%;
           background:
             radial-gradient(
               circle,
-              rgba(200, 170, 110, 0.35)
+              var(--verde-glow)
               0%,
-              rgba(200, 170, 110, 0.08)
-              45%,
               transparent
-              72%
+              62%
             );
-          opacity: 0.22;
-          filter: blur(46px);
+          opacity: 0.4;
+          filter: blur(58px);
           pointer-events: none;
         }
 
@@ -2142,6 +2190,10 @@ export default function Hero({
           overflow: visible;
         }
 
+        /* ── The record itself ──
+           Treated as a physical object: fine groove texture, visible track
+           bands, a dark run-out, and a soft specular sheen. No neon, no
+           cartoon gloss — the sheen is a separate layer above this one. */
         .vinyl {
           position: relative;
           z-index: 2;
@@ -2151,46 +2203,31 @@ export default function Hero({
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          border: 1px solid rgba(
-            38,
-            38,
-            38,
-            0.4
-          );
+          border: 1px solid rgba(255, 255, 255, 0.055);
           border-radius: 50%;
-          background-color: #0e0e0d;
+          background-color: #0a0a09;
           background-image:
-            radial-gradient(
-              circle,
-              transparent 30%,
-              rgba(0, 0, 0, 0.9)
-              31%,
-              transparent 32%
+            /* fine groove texture */
+            repeating-radial-gradient(
+              circle at 50% 50%,
+              rgba(255, 255, 255, 0.017) 0px,
+              rgba(255, 255, 255, 0.017) 1px,
+              rgba(0, 0, 0, 0.34) 1px,
+              rgba(0, 0, 0, 0.34) 2.5px
             ),
-            radial-gradient(
-              circle,
-              transparent 45%,
-              rgba(255,255,255,0.02)
-              46%,
-              transparent 47%
-            ),
-            radial-gradient(
-              circle,
-              transparent 60%,
-              rgba(0,0,0,0.85)
-              61%,
-              transparent 62%
-            ),
-            radial-gradient(
-              circle,
-              transparent 75%,
-              rgba(255,255,255,0.01)
-              76%,
-              transparent 77%
-            );
+            /* track bands — the visible breaks between songs */
+            radial-gradient(circle, transparent 34%, rgba(255,255,255,0.03) 34.6%, transparent 35.4%),
+            radial-gradient(circle, transparent 52%, rgba(255,255,255,0.024) 52.5%, transparent 53.2%),
+            radial-gradient(circle, transparent 70%, rgba(255,255,255,0.018) 70.5%, transparent 71.2%),
+            /* lead-in and run-out */
+            radial-gradient(circle, transparent 27%, rgba(0,0,0,0.55) 28.5%, transparent 30%),
+            radial-gradient(circle, transparent 86%, rgba(0,0,0,0.5) 88%, transparent 93%),
+            /* base tone — lit slightly off-centre so it reads as a solid */
+            radial-gradient(circle at 38% 30%, #171716 0%, #0b0b0a 54%, #060606 100%);
           box-shadow:
-            0 0 50px
-            rgba(0,0,0,0.8);
+            0 26px 52px -20px rgba(0, 0, 0, 0.92),
+            0 3px 8px rgba(0, 0, 0, 0.55),
+            inset 0 1px 1px rgba(255, 255, 255, 0.045);
           cursor: grab;
           touch-action: none;
           user-select: none;
@@ -2263,6 +2300,8 @@ export default function Hero({
             rgba(0,0,0,0.65);
         }
 
+        /* Specular sheen — two soft highlights raking across the grooves,
+           the way a real record catches a room light. Restrained on purpose. */
         .vinyl-shimmer {
           position: absolute;
           inset: 0;
@@ -2271,224 +2310,194 @@ export default function Hero({
           pointer-events: none;
           background:
             conic-gradient(
-              from var(
-                --shimmer-angle,
-                0deg
-              ),
+              from var(--shimmer-angle, 0deg),
               transparent 0deg,
-              rgba(255,255,255,0.16)
-              6deg,
-              transparent 16deg,
-              transparent 344deg,
-              rgba(255,255,255,0.1)
-              354deg,
+              rgba(255, 255, 255, 0.075) 13deg,
+              transparent 33deg,
+              transparent 150deg,
+              rgba(255, 255, 255, 0.045) 177deg,
+              transparent 203deg,
+              transparent 331deg,
+              rgba(255, 255, 255, 0.055) 345deg,
               transparent 360deg
             );
           -webkit-mask-image:
             radial-gradient(
               circle,
-              transparent 26%,
-              black 32%,
-              black 78%,
-              transparent 83%
+              transparent 28%,
+              black 34%,
+              black 88%,
+              transparent 94%
             );
           mask-image:
             radial-gradient(
               circle,
-              transparent 26%,
-              black 32%,
-              black 78%,
-              transparent 83%
+              transparent 28%,
+              black 34%,
+              black 88%,
+              transparent 94%
             );
           mix-blend-mode: screen;
-          opacity: 0.6;
+          opacity: 0.5;
         }
 
+        /* Playback control — centred on the record and revealed on approach.
+           Kept small so it reads as part of the object, not a UI widget. */
         .player-button {
-          width: 44px;
-          height: 44px;
-          margin-top: 1.5rem;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          z-index: 5;
+          transform: translate(-50%, -50%);
+          width: 34px;
+          height: 34px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border: 1px solid var(--border-mid);
+          border: 1px solid var(--glass-border);
           border-radius: 50%;
-          background:
-            rgba(
-              23,
-              23,
-              23,
-              0.6
-            );
-          color: #d4d4d4;
+          background: rgba(0, 0, 0, 0.42);
+          -webkit-backdrop-filter: blur(var(--glass-blur-1));
+          backdrop-filter: blur(var(--glass-blur-1));
+          color: var(--text);
           cursor: pointer;
-          backdrop-filter: blur(10px);
-          box-shadow:
-            0 8px 25px
-            rgba(0,0,0,0.3);
+          opacity: 0;
           transition:
-            background-color 180ms ease,
-            color 180ms ease,
-            transform 180ms ease;
+            opacity var(--dur-base) var(--ease-out),
+            background-color var(--dur-base) var(--ease-out),
+            border-color var(--dur-base) var(--ease-out);
+        }
+
+        .hero-player:hover .player-button,
+        .hero-player:focus-within .player-button {
+          opacity: 1;
         }
 
         .player-button:hover {
-          background:
-            rgba(
-              40,
-              40,
-              40,
-              0.8
-            );
-          color: #ffffff;
-          transform:
-            translateY(-1px);
+          background: rgba(0, 0, 0, 0.62);
+          border-color: var(--glass-border-hover);
         }
 
+        /* Touch devices never hover — surface the control permanently. */
+        @media (hover: none) {
+          .player-button {
+            opacity: 0.72;
+          }
+        }
+
+        /* Track name — a quiet caption beneath the record. */
         .vinyl-track-title {
-          margin-top: 0.8rem;
-          color: var(--muted);
-          font-family:
-            "JetBrains Mono",
-            monospace;
-          font-size: 0.65rem;
-          letter-spacing: 0.08em;
+          position: absolute;
+          top: calc(100% + 0.7rem);
+          left: 50%;
+          transform: translateX(-50%);
+          max-width: 18ch;
+          color: var(--text-faint);
+          font-family: var(--font-mono);
+          font-size: 0.6rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           text-align: center;
-          opacity: 0.75;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          opacity: 0;
+          transition: opacity var(--dur-base) var(--ease-out);
         }
 
-        .hero-stats {
-          position: relative;
-          z-index: 3;
-          width: 100%;
-          max-width: 1280px;
-          margin:
-            clamp(
-              2.5rem,
-              5vw,
-              5rem
-            )
-            auto 0;
-          display: flex;
-          flex-wrap: wrap;
-          gap:
-            clamp(
-              2rem,
-              5vw,
-              4rem
-            );
+        .hero-player:hover .vinyl-track-title,
+        .hero-player:focus-within .vinyl-track-title {
+          opacity: 1;
         }
 
-        .hero-stat {
-          min-width: 0;
-        }
-
-        .hero-stat-value {
-          margin:
-            0 0 0.3rem;
-          color: var(--soft-white);
-          font-size: clamp(
-            1.5rem,
-            3vw,
-            2.2rem
-          );
-          font-weight: 500;
-          line-height: 1;
-          letter-spacing: -0.03em;
-        }
-
-        .hero-stat-label {
-          margin: 0;
-          color: var(--muted);
-          font-size: 0.75rem;
-          letter-spacing: 0.04em;
+        @media (hover: none) {
+          .vinyl-track-title {
+            opacity: 0.85;
+          }
         }
 
         .hero-scroll {
           position: absolute;
           left: 50%;
-          bottom: 2.5rem;
+          bottom: 2.25rem;
           z-index: 3;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.6rem;
           transform:
             translateX(-50%);
           pointer-events: none;
         }
 
         .hero-scroll span {
-          color: var(--muted);
-          font-size: 0.65rem;
-          letter-spacing: 0.12em;
+          color: var(--text-faint);
+          font-size: 0.6rem;
+          letter-spacing: 0.22em;
           text-transform: uppercase;
         }
 
         .hero-scroll-line {
           width: 1px;
-          height: 48px;
+          height: 52px;
           background:
             linear-gradient(
               to bottom,
-              var(--border-mid),
+              var(--line-strong),
               transparent
             );
           animation:
             heroScrollPulse
-            2.5s
-            ease-in-out
+            3.2s
+            var(--ease-inout)
             infinite;
         }
 
         .hero-animate {
           opacity: 0;
           transform:
-            translateY(18px);
+            translateY(16px);
+          filter: blur(8px);
           animation:
             heroReveal
-            800ms
-            cubic-bezier(
-              0.22,
-              1,
-              0.36,
-              1
-            )
+            1100ms
+            var(--ease-out)
             forwards;
         }
 
         .hero-delay-1 {
-          animation-delay: 80ms;
+          animation-delay: 120ms;
         }
 
         .hero-delay-2 {
-          animation-delay: 160ms;
-        }
-
-        .hero-delay-3 {
-          animation-delay: 240ms;
-        }
-
-        .hero-delay-4 {
           animation-delay: 320ms;
         }
 
+        .hero-delay-3 {
+          animation-delay: 620ms;
+        }
+
+        .hero-delay-4 {
+          animation-delay: 820ms;
+        }
+
         .hero-delay-5 {
-          animation-delay: 400ms;
+          animation-delay: 1020ms;
         }
 
         @keyframes heroReveal {
           from {
             opacity: 0;
             transform:
-              translateY(18px);
+              translateY(16px);
+            filter: blur(8px);
           }
 
           to {
             opacity: 1;
             transform:
               translateY(0);
+            filter: blur(0);
           }
         }
 
@@ -2518,52 +2527,60 @@ export default function Hero({
           }
         }
 
-        @media (min-width: 1024px) {
-          .hero-content {
-            grid-template-columns:
-              minmax(0, 1fr)
-              minmax(380px, 0.85fr);
+        /* ── Short laptop displays ──
+           Compose rather than overflow: tighten the rhythm and pull the
+           wordmark back so the hero still resolves within the viewport. */
+        @media (min-width: 1024px) and (max-height: 800px) {
+          .hero-section {
+            padding-top: clamp(6rem, 10vh, 7.5rem);
+            padding-bottom: clamp(5rem, 9vh, 7rem);
           }
 
-          .hero-player {
-            min-height: 0;
+          .hero-name {
+            font-size: clamp(2.25rem, min(10vw, 11.5vh), 7.5rem);
+          }
+
+          .hero-availability {
+            margin-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
+          }
+
+          .hero-role {
+            margin-top: clamp(1.25rem, 2.5vh, 1.75rem);
+            margin-bottom: clamp(1rem, 2vh, 1.5rem);
+          }
+
+          .hero-description {
+            margin-bottom: clamp(1.5rem, 3vh, 2.25rem);
           }
         }
 
         @media (max-width: 767px) {
           .hero-section {
-            padding-top: 6rem;
-            padding-bottom: 4rem;
+            padding-top: clamp(7rem, 14vh, 9rem);
+            /* A clear band at the foot of the hero gives the record a
+               quiet place to sit without crowding the copy. */
+            padding-bottom: clamp(8rem, 18vh, 10rem);
           }
 
-          .hero-content {
-            gap: 2rem;
+          .hero-title-line {
+            max-width: 20ch;
           }
 
           .hero-description {
-            margin-bottom: 2rem;
+            max-width: 40ch;
           }
 
-          .hero-actions {
-            gap: 0.6rem;
-          }
-
+          /* Simplified, smaller, lower — present but never competing. */
           .hero-player {
-            min-height: 320px;
+            width: clamp(96px, 24vw, 128px);
+            right: 1.25rem;
+            bottom: 3rem;
+            opacity: 0.32;
           }
 
-          .vinyl-track-title {
-            max-width: 220px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          .hero-stats {
-            margin-top: 2rem;
-            gap:
-              1.75rem
-              2.5rem;
+          .hero-player:hover,
+          .hero-player:focus-within {
+            opacity: 0.85;
           }
 
           .hero-scroll {
@@ -2572,22 +2589,12 @@ export default function Hero({
         }
 
         @media (max-width: 420px) {
-          .hero-section {
-            padding-left: 1rem;
-            padding-right: 1rem;
-          }
-
-          .hero-title {
-            font-size: 2.15rem;
-          }
-
           .hero-role {
-            font-size: 0.88rem;
+            letter-spacing: 0.16em;
           }
 
-          .vinyl-stage {
-            width: 220px;
-            height: 220px;
+          .hero-player {
+            width: clamp(88px, 26vw, 110px);
           }
         }
 

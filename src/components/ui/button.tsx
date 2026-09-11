@@ -8,7 +8,7 @@ const buttonVariants = cva(
     "inline-flex items-center justify-center gap-2 whitespace-nowrap",
     "text-sm font-medium tracking-wide",
     "rounded-[4px] border transition-all duration-[220ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sand)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--charcoal-1)]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bronze)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]",
     "disabled:pointer-events-none disabled:opacity-45",
     "[&_svg]:pointer-events-none [&_svg]:size-[14px] [&_svg]:shrink-0",
     "cursor-pointer select-none",
@@ -17,26 +17,26 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: [
-          "bg-[var(--sand-light)] text-[#111] border-transparent",
-          "hover:bg-[var(--sand)] hover:-translate-y-px",
+          "bg-[var(--bronze-soft)] text-[#111] border-transparent",
+          "hover:bg-[var(--bronze)] hover:-translate-y-px",
           "active:scale-[.98] active:translate-y-0",
         ].join(" "),
 
         outline: [
-          "bg-transparent text-[var(--forest-bright)] border-[var(--forest-bright)]",
-          "hover:bg-[var(--forest-bright)] hover:text-[var(--soft-white)] hover:-translate-y-px",
+          "bg-transparent text-[var(--verde-ink)] border-[var(--verde-ink)]",
+          "hover:bg-[var(--verde-ink)] hover:text-[var(--text)] hover:-translate-y-px",
           "active:scale-[.98] active:translate-y-0",
         ].join(" "),
 
         secondary: [
-          "bg-white/[.06] text-[var(--muted-light)] border-white/10",
-          "hover:bg-white/10 hover:text-[var(--soft-white)] hover:border-white/[.18]",
+          "bg-white/[.06] text-[var(--text-soft)] border-white/10",
+          "hover:bg-white/10 hover:text-[var(--text)] hover:border-white/[.18]",
           "active:scale-[.98]",
         ].join(" "),
 
         ghost: [
-          "bg-transparent text-[var(--muted-light)] border-transparent",
-          "hover:bg-white/[.07] hover:text-[var(--soft-white)]",
+          "bg-transparent text-[var(--text-soft)] border-transparent",
+          "hover:bg-white/[.07] hover:text-[var(--text)]",
           "active:scale-[.98]",
         ].join(" "),
 
@@ -47,9 +47,9 @@ const buttonVariants = cva(
         ].join(" "),
 
         link: [
-          "bg-transparent text-[var(--sand)] border-none rounded-none",
-          "border-b border-b-[var(--sand-dark)] pb-px",
-          "hover:border-b-[var(--sand)] hover:text-[var(--sand-light)]",
+          "bg-transparent text-[var(--bronze)] border-none rounded-none",
+          "border-b border-b-[var(--bronze-faint)] pb-px",
+          "hover:border-b-[var(--bronze)] hover:text-[var(--bronze-soft)]",
           "px-0",
         ].join(" "),
       },

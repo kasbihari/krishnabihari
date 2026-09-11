@@ -1,0 +1,74 @@
+---
+/**
+ * Shared <head> contents for every layout (public, portal, admin).
+ * Single source of truth for fonts, theme bootstrap and route transitions.
+ */
+export interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+  canonical?: string;
+  ogType?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Full-stack developer and AI engineer from the Netherlands building web applications, AI-powered automations, and SaaS products.',
+  lang = 'en',
+  canonical,
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{canonical && <link rel="canonical" href={canonical} />}
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{canonical && <meta property="og:url" content={canonical} />}
+<meta property="og:locale" content={lang} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<!-- Fonts: Amsterdam Four is local; Playfair + Mukta from Google -->
+<link rel="preload" href="/fonts/Amsterdam.ttf" as="font" type="font/ttf" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+  rel="stylesheet"
+/>
+
+<!--
+  Theme bootstrap. Runs before first paint so there is never a flash of the
+  wrong theme, and so the theme persists across / → /client → /admin.
+  Dark is the primary identity: it is the default when nothing is stored.
+-->
+<script is:inline>
+  (function () {
+    try {
+      var stored = localStorage.getItem('kb-theme');
+      var theme =
+        stored === 'light' || stored === 'dark'
+          ? stored
+          : window.matchMedia('(prefers-color-scheme: light)').matches
+            ? 'light'
+            : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>

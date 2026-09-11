@@ -19,7 +19,7 @@ const STATUS_CONFIG: Record<
 > = {
   completed: {
     label: 'Completed',
-    color: 'var(--forest-bright)',
+    color: 'var(--verde-ink)',
     background:
       'rgba(74, 124, 106, 0.06)',
     border:
@@ -28,7 +28,7 @@ const STATUS_CONFIG: Record<
 
   active: {
     label: 'In progress',
-    color: 'var(--sand-light)',
+    color: 'var(--bronze-soft)',
     background:
       'rgba(200, 184, 154, 0.06)',
     border:
@@ -37,11 +37,11 @@ const STATUS_CONFIG: Record<
 
   upcoming: {
     label: 'Upcoming',
-    color: 'var(--muted-light)',
+    color: 'var(--text-soft)',
     background:
-      'rgba(255,255,255,0.018)',
+      'var(--glass-1)',
     border:
-      'rgba(255,255,255,0.06)',
+      'var(--glass-2)',
   },
 };
 
@@ -115,10 +115,10 @@ export default function ProjectMilestones({
         minWidth: 0,
         overflow: 'hidden',
         border:
-          '1px solid var(--border-mid)',
+          '1px solid var(--line)',
         borderRadius: '18px',
         background:
-          'rgba(21, 15, 10, 0.78)',
+          'var(--glass-2)',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
         boxShadow:
@@ -176,7 +176,7 @@ export default function ProjectMilestones({
                 marginBottom:
                   '0.45rem',
                 color:
-                  'var(--sand)',
+                  'var(--bronze)',
                 fontSize:
                   '0.65rem',
                 letterSpacing:
@@ -192,7 +192,7 @@ export default function ProjectMilestones({
               style={{
                 margin: 0,
                 color:
-                  'var(--soft-white)',
+                  'var(--text)',
                 fontSize:
                   'clamp(1.35rem, 3vw, 1.75rem)',
                 lineHeight: 1.1,
@@ -222,7 +222,7 @@ export default function ProjectMilestones({
             style={{
               flex: '0 0 auto',
               color:
-                'var(--muted-light)',
+                'var(--text-soft)',
               fontSize:
                 '0.62rem',
               letterSpacing:
@@ -263,11 +263,11 @@ export default function ProjectMilestones({
               borderRadius:
                 '12px',
               border:
-                '1px solid rgba(255,255,255,0.05)',
+                '1px solid var(--glass-1)',
               background:
-                'rgba(255,255,255,0.018)',
+                'var(--glass-1)',
               color:
-                'var(--muted)',
+                'var(--text-faint)',
               fontSize:
                 '0.84rem',
               lineHeight: 1.7,
@@ -388,7 +388,7 @@ export default function ProjectMilestones({
                           bottom: '-10px',
                           width: '1px',
                           background:
-                            'rgba(255,255,255,0.07)',
+                            'var(--glass-3)',
                           transformOrigin:
                             'top center',
                         }}
@@ -489,7 +489,7 @@ export default function ProjectMilestones({
                             margin: 0,
                             minWidth: 0,
                             color:
-                              'var(--soft-white)',
+                              'var(--text)',
                             fontSize:
                               '0.95rem',
                             lineHeight:
@@ -512,7 +512,7 @@ export default function ProjectMilestones({
                               flex:
                                 '0 0 auto',
                               color:
-                                'var(--muted-light)',
+                                'var(--text-soft)',
                               fontSize:
                                 '0.6rem',
                               letterSpacing:
@@ -575,7 +575,7 @@ export default function ProjectMilestones({
                           style={{
                             margin: 0,
                             color:
-                              'var(--muted)',
+                              'var(--text-faint)',
                             fontSize:
                               '0.82rem',
                             lineHeight:

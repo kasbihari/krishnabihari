@@ -1,0 +1,54 @@
+---
+export interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  external?: boolean;
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+  class?: string;
+  'aria-label'?: string;
+}
+
+const {
+  href,
+  variant = 'secondary',
+  size = 'md',
+  external = false,
+  type = 'button',
+  disabled = false,
+  class: cls = '',
+  ...rest
+} = Astro.props;
+
+const variantClass =
+  variant === 'primary' ? 'btn-primary' : variant === 'ghost' ? 'btn-ghost' : 'btn-secondary';
+
+const sizeStyle =
+  size === 'sm'
+    ? 'padding:0.6rem 1.35rem;font-size:0.8rem;'
+    : size === 'lg'
+      ? 'padding:1rem 2.3rem;font-size:0.95rem;'
+      : '';
+
+const classes = [variantClass, cls].filter(Boolean).join(' ');
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class={classes}
+      style={sizeStyle || undefined}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      {...rest}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={classes} style={sizeStyle || undefined} disabled={disabled} {...rest}>
+      <slot />
+    </button>
+  )
+}

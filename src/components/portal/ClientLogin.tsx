@@ -197,10 +197,10 @@ overflow: hidden;
       overflow: hidden;
       border:
         1px solid
-        var(--border-mid);
+        var(--line);
       border-radius: 24px;
       background:
-        rgba(21, 15, 10, 0.82);
+        var(--glass-2);
       box-shadow:
         0 24px 65px
         rgba(0, 0, 0, 0.24);
@@ -240,7 +240,7 @@ overflow: hidden;
       border-radius: 12px;
       border:
         1px solid
-        var(--border-mid);
+        var(--line);
       background:
         rgba(
           255,
@@ -252,19 +252,19 @@ overflow: hidden;
         var(--font-name);
       font-size: 1.4rem;
       color:
-        var(--sand-light);
+        var(--bronze-soft);
     }
 
     .client-login-brand-name {
       font-size: 0.64rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--sand);
+      color: var(--bronze);
     }
 
     .client-login-brand-subtitle {
       font-size: 0.9rem;
-      color: var(--muted);
+      color: var(--text-faint);
     }
 
     .client-login-eyebrow {
@@ -272,7 +272,7 @@ overflow: hidden;
       font-size: 0.68rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--sand);
+      color: var(--bronze);
     }
 
     .client-login-title {
@@ -286,14 +286,14 @@ overflow: hidden;
       line-height: 1.05;
       letter-spacing: -0.03em;
       color:
-        var(--soft-white);
+        var(--text);
     }
 
     .client-login-description {
       max-width: 44ch;
       margin-bottom: 2.25rem;
       color:
-        var(--muted);
+        var(--text-faint);
       font-size: 1rem;
       line-height: 1.8;
     }
@@ -309,7 +309,7 @@ overflow: hidden;
       align-items: center;
       gap: 0.75rem;
       color:
-        var(--off-white);
+        var(--text-soft);
       font-size: 0.96rem;
     }
 
@@ -319,7 +319,7 @@ overflow: hidden;
       flex: 0 0 8px;
       border-radius: 50%;
       background:
-        var(--forest-bright);
+        var(--verde-ink);
       box-shadow:
         0 0 10px
         rgba(
@@ -345,7 +345,7 @@ overflow: hidden;
         );
       border-top:
         1px solid
-        var(--border-mid);
+        var(--line);
     }
 
     .client-login-form-container {
@@ -359,7 +359,7 @@ overflow: hidden;
       gap: 0.45rem;
       margin-bottom: 1.75rem;
       color:
-        var(--muted);
+        var(--text-faint);
       font-size: 0.78rem;
       transition:
         color 0.2s ease,
@@ -374,7 +374,7 @@ overflow: hidden;
 
     .client-login-back:hover {
       color:
-        var(--soft-white);
+        var(--text);
       transform:
         translateX(-2px);
     }
@@ -392,14 +392,14 @@ overflow: hidden;
       font-size: 0.68rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--sand);
+      color: var(--bronze);
     }
 
     .client-login-form-title {
       margin: 0;
       font-size: 1.65rem;
       color:
-        var(--soft-white);
+        var(--text);
     }
 
     .client-login-form-icon {
@@ -418,17 +418,17 @@ overflow: hidden;
         );
       border:
         1px solid
-        var(--border-mid);
+        var(--line);
       font-size: 0.7rem;
       color:
-        var(--sand-light);
+        var(--bronze-soft);
     }
 
     .client-login-label {
       display: block;
       margin-bottom: 0.55rem;
       color:
-        var(--off-white);
+        var(--text-soft);
       font-size: 0.82rem;
     }
 
@@ -439,7 +439,7 @@ overflow: hidden;
       border-radius: 12px;
       border:
         1px solid
-        var(--border-mid);
+        var(--line);
       background:
         rgba(
           255,
@@ -448,7 +448,7 @@ overflow: hidden;
           0.03
         );
       color:
-        var(--soft-white);
+        var(--text);
       font-size: 1rem;
       margin-bottom: 0.5rem;
       outline: none;
@@ -557,7 +557,7 @@ overflow: hidden;
       .client-login-form-panel {
         border-top:
           1px solid
-          var(--border-mid);
+          var(--line);
       }
     }
 

@@ -1,0 +1,30 @@
+---
+export interface Props {
+  level?: 1 | 2 | 3;
+  radius?: 'sm' | 'md' | 'lg' | 'xl' | 'pill';
+  as?: 'div' | 'section' | 'article' | 'aside' | 'header' | 'footer' | 'li';
+  interactive?: boolean;
+  padded?: boolean;
+  class?: string;
+}
+
+const {
+  level = 2,
+  radius = 'lg',
+  as: Tag = 'div',
+  interactive = false,
+  padded = false,
+  class: cls = '',
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    `glass-${level}`,
+    `radius-${radius}`,
+    { 'glass-interactive': interactive, 'glass-padded': padded },
+    cls,
+  ]}
+>
+  <slot />
+</Tag>

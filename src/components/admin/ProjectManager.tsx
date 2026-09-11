@@ -24,9 +24,9 @@ const inputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   padding: '0.6rem 0.75rem',
   borderRadius: '8px',
-  border: '1px solid var(--border-mid)',
-  background: 'rgba(255,255,255,0.03)',
-  color: 'var(--soft-white)',
+  border: '1px solid var(--line)',
+  background: 'var(--glass-1)',
+  color: 'var(--text)',
   fontSize: '0.9rem',
   fontFamily: 'inherit',
 };
@@ -36,7 +36,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: '0.68rem',
   letterSpacing: '0.1em',
   textTransform: 'uppercase',
-  color: 'var(--muted-light)',
+  color: 'var(--text-soft)',
   marginBottom: '0.35rem',
 };
 
@@ -67,7 +67,7 @@ function SectionCard({
   return (
     <section
       style={{
-        border: '1px solid var(--border-mid)',
+        border: '1px solid var(--line)',
         borderRadius: '20px',
         background: 'rgba(21,15,10,0.7)',
         padding: '1.5rem',
@@ -84,9 +84,9 @@ function SectionCard({
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--soft-white)' }}>{title}</h2>
+          <h2 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--text)' }}>{title}</h2>
           {subtitle && (
-            <div style={{ color: 'var(--muted)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
               {subtitle}
             </div>
           )}
@@ -106,7 +106,7 @@ function Notice({ kind, children }: { kind: 'success' | 'error'; children: React
       style={{
         border: `1px solid ${isError ? 'rgba(200,80,80,0.3)' : 'rgba(92,158,131,0.3)'}`,
         background: isError ? 'rgba(200,80,80,0.1)' : 'rgba(92,158,131,0.1)',
-        color: isError ? '#e08a8a' : 'var(--forest-bright)',
+        color: isError ? '#e08a8a' : 'var(--verde-ink)',
         borderRadius: '10px',
         padding: '0.8rem 1rem',
         marginBottom: '1rem',
@@ -121,22 +121,22 @@ function Notice({ kind, children }: { kind: 'success' | 'error'; children: React
 function StatusPill({ status }: { status: EntryStatus }) {
   const color =
     status === 'completed'
-      ? 'var(--forest-bright)'
+      ? 'var(--verde-ink)'
       : status === 'active'
-        ? 'var(--sand)'
-        : 'var(--muted-light)';
+        ? 'var(--bronze)'
+        : 'var(--text-soft)';
   const bg =
     status === 'completed'
       ? 'rgba(92,158,131,0.12)'
       : status === 'active'
         ? 'rgba(200,184,154,0.1)'
-        : 'rgba(255,255,255,0.04)';
+        : 'var(--glass-2)';
   const border =
     status === 'completed'
       ? 'rgba(92,158,131,0.3)'
       : status === 'active'
         ? 'rgba(200,184,154,0.25)'
-        : 'rgba(255,255,255,0.1)';
+        : 'var(--glass-border)';
   return (
     <span
       style={{
@@ -161,9 +161,9 @@ function smallButton(disabled = false): React.CSSProperties {
   return {
     padding: '0.45rem 0.7rem',
     borderRadius: '8px',
-    border: '1px solid rgba(255,255,255,0.1)',
-    background: 'rgba(255,255,255,0.03)',
-    color: 'var(--muted-light)',
+    border: '1px solid var(--glass-border)',
+    background: 'var(--glass-1)',
+    color: 'var(--text-soft)',
     cursor: disabled ? 'default' : 'pointer',
     fontSize: '0.75rem',
     opacity: disabled ? 0.4 : 1,
@@ -533,7 +533,7 @@ export default function ProjectManager({
           <a
             href="/admin/projects"
             style={{
-              color: 'var(--sand)',
+              color: 'var(--bronze)',
               fontSize: '0.85rem',
               textDecoration: 'none',
               display: 'inline-block',
@@ -547,7 +547,7 @@ export default function ProjectManager({
               fontSize: '0.7rem',
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: 'var(--sand)',
+              color: 'var(--bronze)',
               marginBottom: '0.5rem',
             }}
           >
@@ -558,7 +558,7 @@ export default function ProjectManager({
               margin: 0,
               fontSize: 'clamp(2rem, 4vw, 3rem)',
               lineHeight: 1.1,
-              color: 'var(--soft-white)',
+              color: 'var(--text)',
             }}
           >
             {project.name}
@@ -686,7 +686,7 @@ export default function ProjectManager({
                   borderRadius: '10px',
                   border: '1px solid rgba(92,158,131,0.4)',
                   background: 'rgba(92,158,131,0.2)',
-                  color: 'var(--forest-bright)',
+                  color: 'var(--verde-ink)',
                   cursor: busy ? 'default' : 'pointer',
                   fontSize: '0.85rem',
                   fontWeight: 600,
@@ -781,7 +781,7 @@ export default function ProjectManager({
                 <button
                   onClick={saveTimeline}
                   disabled={busy}
-                  style={{ ...smallButton(), color: 'var(--forest-bright)', borderColor: 'rgba(92,158,131,0.4)' }}
+                  style={{ ...smallButton(), color: 'var(--verde-ink)', borderColor: 'rgba(92,158,131,0.4)' }}
                 >
                   {busy ? 'Saving…' : timelineEditId ? 'Save' : 'Add'}
                 </button>
@@ -790,7 +790,7 @@ export default function ProjectManager({
           )}
 
           {timeline.length === 0 && !timelineDraft ? (
-            <div style={{ color: 'var(--muted)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>
               No timeline entries yet. Add the first phase.
             </div>
           ) : (
@@ -799,7 +799,7 @@ export default function ProjectManager({
                 <div
                   key={entry.id}
                   style={{
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: '1px solid var(--glass-2)',
                     borderRadius: '12px',
                     padding: '1rem',
                     display: 'grid',
@@ -819,7 +819,7 @@ export default function ProjectManager({
                       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         <StatusPill status={entry.status} />
                         {entry.timeline_date && (
-                          <span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+                          <span style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>
                             {entry.timeline_date}
                           </span>
                         )}
@@ -827,7 +827,7 @@ export default function ProjectManager({
                       <div
                         style={{
                           fontSize: '1.05rem',
-                          color: 'var(--soft-white)',
+                          color: 'var(--text)',
                           fontWeight: 500,
                           marginTop: '0.4rem',
                         }}
@@ -835,7 +835,7 @@ export default function ProjectManager({
                         {entry.title}
                       </div>
                       {entry.description && (
-                        <div style={{ color: 'var(--muted-light)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                        <div style={{ color: 'var(--text-soft)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
                           {entry.description}
                         </div>
                       )}
@@ -951,7 +951,7 @@ export default function ProjectManager({
                 <button
                   onClick={saveMilestone}
                   disabled={busy}
-                  style={{ ...smallButton(), color: 'var(--forest-bright)', borderColor: 'rgba(92,158,131,0.4)' }}
+                  style={{ ...smallButton(), color: 'var(--verde-ink)', borderColor: 'rgba(92,158,131,0.4)' }}
                 >
                   {busy ? 'Saving…' : milestoneEditId ? 'Save' : 'Add'}
                 </button>
@@ -960,7 +960,7 @@ export default function ProjectManager({
           )}
 
           {milestones.length === 0 && !milestoneDraft ? (
-            <div style={{ color: 'var(--muted)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>
               No milestones yet. Add the first one.
             </div>
           ) : (
@@ -969,7 +969,7 @@ export default function ProjectManager({
                 <div
                   key={entry.id}
                   style={{
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: '1px solid var(--glass-2)',
                     borderRadius: '12px',
                     padding: '1rem',
                     display: 'grid',
@@ -989,7 +989,7 @@ export default function ProjectManager({
                       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         <StatusPill status={entry.status} />
                         {entry.milestone_date && (
-                          <span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+                          <span style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>
                             {entry.milestone_date}
                           </span>
                         )}
@@ -997,7 +997,7 @@ export default function ProjectManager({
                       <div
                         style={{
                           fontSize: '1.05rem',
-                          color: 'var(--soft-white)',
+                          color: 'var(--text)',
                           fontWeight: 500,
                           marginTop: '0.4rem',
                         }}
@@ -1005,7 +1005,7 @@ export default function ProjectManager({
                         {entry.title}
                       </div>
                       {entry.description && (
-                        <div style={{ color: 'var(--muted-light)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                        <div style={{ color: 'var(--text-soft)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
                           {entry.description}
                         </div>
                       )}
@@ -1069,7 +1069,7 @@ export default function ProjectManager({
                 <button
                   onClick={saveHours}
                   disabled={busy}
-                  style={{ ...smallButton(), color: 'var(--forest-bright)', borderColor: 'rgba(92,158,131,0.4)' }}
+                  style={{ ...smallButton(), color: 'var(--verde-ink)', borderColor: 'rgba(92,158,131,0.4)' }}
                 >
                   {busy ? 'Saving…' : 'Save'}
                 </button>
@@ -1087,18 +1087,18 @@ export default function ProjectManager({
             >
               <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                 <div>
-                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)' }}>
+                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)' }}>
                     Allocated
                   </div>
-                  <div style={{ fontSize: '1.6rem', color: 'var(--soft-white)', fontWeight: 600 }}>
+                  <div style={{ fontSize: '1.6rem', color: 'var(--text)', fontWeight: 600 }}>
                     {hours?.hours_allocated ?? 0}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)' }}>
+                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)' }}>
                     Used
                   </div>
-                  <div style={{ fontSize: '1.6rem', color: 'var(--sand)', fontWeight: 600 }}>
+                  <div style={{ fontSize: '1.6rem', color: 'var(--bronze)', fontWeight: 600 }}>
                     {hours?.hours_used ?? 0}
                   </div>
                 </div>
@@ -1168,7 +1168,7 @@ export default function ProjectManager({
                   onChange={(e) => setUpdateDraft({ ...updateDraft, description: e.target.value })}
                 />
               </Field>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--soft-white)', fontSize: '0.9rem', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text)', fontSize: '0.9rem', cursor: 'pointer' }}>
                 <input
                   type="checkbox"
                   checked={updateDraft.published}
@@ -1189,7 +1189,7 @@ export default function ProjectManager({
                 <button
                   onClick={saveUpdate}
                   disabled={busy}
-                  style={{ ...smallButton(), color: 'var(--forest-bright)', borderColor: 'rgba(92,158,131,0.4)' }}
+                  style={{ ...smallButton(), color: 'var(--verde-ink)', borderColor: 'rgba(92,158,131,0.4)' }}
                 >
                   {busy ? 'Saving…' : updateEditId ? 'Save' : 'Publish'}
                 </button>
@@ -1198,7 +1198,7 @@ export default function ProjectManager({
           )}
 
           {updates.length === 0 && !updateDraft ? (
-            <div style={{ color: 'var(--muted)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>
               No updates yet. Publish the first progress note.
             </div>
           ) : (
@@ -1207,7 +1207,7 @@ export default function ProjectManager({
                 <div
                   key={entry.id}
                   style={{
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: '1px solid var(--glass-2)',
                     borderRadius: '12px',
                     padding: '1rem',
                     display: 'grid',
@@ -1237,19 +1237,19 @@ export default function ProjectManager({
                               letterSpacing: '0.08em',
                               textTransform: 'uppercase',
                               fontWeight: 500,
-                              color: 'var(--muted-light)',
-                              background: 'rgba(255,255,255,0.04)',
-                              border: '1px solid rgba(255,255,255,0.1)',
+                              color: 'var(--text-soft)',
+                              background: 'var(--glass-2)',
+                              border: '1px solid var(--glass-border)',
                             }}
                           >
                             Draft
                           </span>
                         )}
                         {entry.update_type && (
-                          <span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>{entry.update_type}</span>
+                          <span style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>{entry.update_type}</span>
                         )}
                         {entry.created_at && (
-                          <span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+                          <span style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>
                             {new Date(entry.created_at).toLocaleDateString()}
                           </span>
                         )}
@@ -1257,7 +1257,7 @@ export default function ProjectManager({
                       <div
                         style={{
                           fontSize: '1.05rem',
-                          color: 'var(--soft-white)',
+                          color: 'var(--text)',
                           fontWeight: 500,
                           marginTop: '0.4rem',
                         }}
@@ -1265,7 +1265,7 @@ export default function ProjectManager({
                         {entry.title}
                       </div>
                       {entry.description && (
-                        <div style={{ color: 'var(--muted-light)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                        <div style={{ color: 'var(--text-soft)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
                           {entry.description}
                         </div>
                       )}

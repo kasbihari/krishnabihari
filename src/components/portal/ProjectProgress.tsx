@@ -118,10 +118,10 @@ export default function ProjectProgress({
         width: '100%',
         minWidth: 0,
         border:
-          '1px solid var(--border-mid)',
+          '1px solid var(--line)',
         borderRadius: '18px',
         background:
-          'rgba(21, 15, 10, 0.78)',
+          'var(--glass-2)',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
         boxShadow:
@@ -198,7 +198,7 @@ export default function ProjectProgress({
                 fontSize: '0.65rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
               }}
             >
               Project progress
@@ -206,7 +206,7 @@ export default function ProjectProgress({
 
             <div
               style={{
-                color: 'var(--soft-white)',
+                color: 'var(--text)',
                 fontSize: '1rem',
                 overflowWrap: 'anywhere',
               }}
@@ -238,7 +238,7 @@ export default function ProjectProgress({
                 'clamp(2rem, 5vw, 3rem)',
               lineHeight: 1,
               color:
-                'var(--soft-white)',
+                'var(--text)',
               fontFamily:
                 'var(--font-body)',
               whiteSpace: 'nowrap',
@@ -263,7 +263,7 @@ export default function ProjectProgress({
             overflow: 'hidden',
             borderRadius: '999px',
             background:
-              'rgba(255,255,255,0.06)',
+              'var(--glass-2)',
             marginBottom: '1.5rem',
           }}
         >
@@ -287,7 +287,7 @@ export default function ProjectProgress({
               height: '100%',
               borderRadius: 'inherit',
               background:
-                'linear-gradient(90deg, var(--forest-bright), var(--sand-light))',
+                'linear-gradient(90deg, var(--verde-ink), var(--bronze-soft))',
             }}
           />
         </div>
@@ -324,9 +324,9 @@ export default function ProjectProgress({
               '0.85rem 1rem',
             borderRadius: '12px',
             border:
-              '1px solid rgba(255,255,255,0.05)',
+              '1px solid var(--glass-1)',
             background:
-              'rgba(255,255,255,0.018)',
+              'var(--glass-1)',
           }}
         >
           <div
@@ -344,7 +344,7 @@ export default function ProjectProgress({
                 textTransform:
                   'uppercase',
                 color:
-                  'var(--muted-light)',
+                  'var(--text-soft)',
               }}
             >
               Current phase
@@ -353,7 +353,7 @@ export default function ProjectProgress({
             <div
               style={{
                 color:
-                  'var(--soft-white)',
+                  'var(--text)',
                 fontSize: '0.95rem',
                 overflowWrap:
                   'anywhere',
@@ -390,7 +390,7 @@ export default function ProjectProgress({
               background:
                 'rgba(200,184,154,0.05)',
               color:
-                'var(--sand-light)',
+                'var(--bronze-soft)',
               fontSize: '0.62rem',
               letterSpacing: '0.08em',
               textTransform:
@@ -428,7 +428,7 @@ export default function ProjectProgress({
               textTransform:
                 'uppercase',
               color:
-                'var(--muted-light)',
+                'var(--text-soft)',
             }}
           >
             Delivery stages
@@ -562,22 +562,22 @@ export default function ProjectProgress({
                           '50%',
                         border:
                           isCompleted
-                            ? '1px solid var(--forest-bright)'
+                            ? '1px solid var(--verde-ink)'
                             : isActive
-                              ? '1px solid var(--sand-light)'
-                              : '1px solid rgba(255,255,255,0.08)',
+                              ? '1px solid var(--bronze-soft)'
+                              : '1px solid var(--glass-border)',
                         background:
                           isCompleted
                             ? 'rgba(80,160,110,0.10)'
                             : isActive
                               ? 'rgba(200,184,154,0.08)'
-                              : 'rgba(255,255,255,0.025)',
+                              : 'var(--glass-1)',
                         color:
                           isCompleted
-                            ? 'var(--forest-bright)'
+                            ? 'var(--verde-ink)'
                             : isActive
-                              ? 'var(--sand-light)'
-                              : 'var(--muted)',
+                              ? 'var(--bronze-soft)'
+                              : 'var(--text-faint)',
                         fontSize:
                           '0.7rem',
                       }}
@@ -608,8 +608,8 @@ export default function ProjectProgress({
                           color:
                             isCompleted ||
                             isActive
-                              ? 'var(--soft-white)'
-                              : 'var(--muted)',
+                              ? 'var(--text)'
+                              : 'var(--text-faint)',
                           fontSize:
                             '0.88rem',
                           overflowWrap:
@@ -631,10 +631,10 @@ export default function ProjectProgress({
                             'uppercase',
                           color:
                             isCompleted
-                              ? 'var(--forest-bright)'
+                              ? 'var(--verde-ink)'
                               : isActive
-                                ? 'var(--sand-light)'
-                                : 'var(--muted)',
+                                ? 'var(--bronze-soft)'
+                                : 'var(--text-faint)',
                           whiteSpace:
                             'nowrap',
                         }}

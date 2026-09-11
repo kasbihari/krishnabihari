@@ -47,10 +47,10 @@ export default function ProjectCategoryFocus({
           width: '100%',
           minWidth: 0,
           border:
-            '1px solid var(--border-mid)',
+            '1px solid var(--line)',
           borderRadius: '18px',
           background:
-            'rgba(21, 15, 10, 0.78)',
+            'var(--glass-2)',
           padding:
             'clamp(1.1rem, 3vw, 1.5rem)',
           boxShadow:
@@ -105,7 +105,7 @@ export default function ProjectCategoryFocus({
                 letterSpacing: '0.14em',
                 textTransform:
                   'uppercase',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
               }}
             >
               Project focus
@@ -115,7 +115,7 @@ export default function ProjectCategoryFocus({
               style={{
                 margin: 0,
                 color:
-                  'var(--soft-white)',
+                  'var(--text)',
                 fontSize: '1.15rem',
                 lineHeight: 1.3,
                 fontWeight: 500,
@@ -130,7 +130,7 @@ export default function ProjectCategoryFocus({
               style={{
                 marginTop: '0.65rem',
                 marginBottom: 0,
-                color: 'var(--muted)',
+                color: 'var(--text-faint)',
                 lineHeight: 1.7,
                 maxWidth: '65ch',
                 overflowWrap:
@@ -191,11 +191,11 @@ export default function ProjectCategoryFocus({
                       '0.85rem 1rem',
                     borderRadius: '12px',
                     border:
-                      '1px solid rgba(255,255,255,0.05)',
+                      '1px solid var(--glass-1)',
                     background:
-                      'rgba(255,255,255,0.018)',
+                      'var(--glass-1)',
                     color:
-                      'var(--soft-white)',
+                      'var(--text)',
                     fontSize: '0.88rem',
                     lineHeight: 1.5,
                     overflowWrap:
@@ -222,7 +222,7 @@ export default function ProjectCategoryFocus({
                         borderRadius:
                           '50%',
                         background:
-                          'var(--forest-bright)',
+                          'var(--verde-ink)',
                         boxShadow:
                           '0 0 0 4px rgba(74,124,106,0.08)',
                       }}
@@ -242,7 +242,7 @@ export default function ProjectCategoryFocus({
                         marginLeft:
                           'auto',
                         color:
-                          'var(--muted)',
+                          'var(--text-faint)',
                         fontSize:
                           '0.7rem',
                         opacity: 0.7,

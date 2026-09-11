@@ -13,6 +13,10 @@ if (activeSession) {
 }
 ---
 
-<AdminLayout title={title} description="Secure developer sign in for the private admin workspace.">
+<AdminLayout
+  title={title}
+  description="Secure developer sign in for the private admin workspace."
+  bare={true}
+>
   <AdminLogin client:load />
 </AdminLayout>

@@ -16,16 +16,16 @@ const thumbStyle: React.CSSProperties = {
   height: '72px',
   objectFit: 'cover',
   borderRadius: '10px',
-  border: '1px solid var(--border-mid)',
-  background: 'rgba(255,255,255,0.03)',
+  border: '1px solid var(--line)',
+  background: 'var(--glass-1)',
 };
 
 const smallButton: React.CSSProperties = {
   padding: '0.35rem 0.6rem',
   borderRadius: '8px',
-  border: '1px solid rgba(255,255,255,0.1)',
-  background: 'rgba(255,255,255,0.03)',
-  color: 'var(--muted-light)',
+  border: '1px solid var(--glass-border)',
+  background: 'var(--glass-1)',
+  color: 'var(--text-soft)',
   cursor: 'pointer',
   fontSize: '0.7rem',
 };
@@ -122,7 +122,7 @@ export default function ImageUploader({
       )}
 
       {disabled ? (
-        <div style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+        <div style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>
           Save the project first to enable image uploads.
         </div>
       ) : (
@@ -134,10 +134,10 @@ export default function ImageUploader({
             onChange={upload}
             disabled={busy}
             aria-label="Upload image"
-            style={{ fontSize: '0.8rem', color: 'var(--muted-light)', maxWidth: '260px' }}
+            style={{ fontSize: '0.8rem', color: 'var(--text-soft)', maxWidth: '260px' }}
           />
           {busy && (
-            <span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>Uploading…</span>
+            <span style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>Uploading…</span>
           )}
         </div>
       )}

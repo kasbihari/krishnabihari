@@ -16,10 +16,10 @@ function StatCard({ label, value }: StatCardProps) {
   return (
     <div
       style={{
-        border: '1px solid var(--border-mid)',
+        border: '1px solid var(--line)',
         borderRadius: '20px',
         padding: '1.2rem',
-        background: 'rgba(21, 15, 10, 0.7)',
+        background: 'var(--glass-1)',
       }}
     >
       <div
@@ -27,7 +27,7 @@ function StatCard({ label, value }: StatCardProps) {
           fontSize: '0.7rem',
           textTransform: 'uppercase',
           letterSpacing: '0.12em',
-          color: 'var(--sand)',
+          color: 'var(--bronze)',
         }}
       >
         {label}
@@ -36,7 +36,7 @@ function StatCard({ label, value }: StatCardProps) {
         style={{
           fontSize: '2.2rem',
           marginTop: '0.7rem',
-          color: 'var(--soft-white)',
+          color: 'var(--text)',
         }}
       >
         {value}
@@ -65,7 +65,7 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
                 fontSize: '0.7rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
                 marginBottom: '0.5rem',
               }}
             >
@@ -77,7 +77,7 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
                 fontSize: 'clamp(2rem, 5vw, 3.4rem)',
                 lineHeight: 1.1,
                 letterSpacing: '-0.04em',
-                color: 'var(--soft-white)',
+                color: 'var(--text)',
               }}
             >
               Admin dashboard
@@ -86,11 +86,11 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
 
           <div
             style={{
-              border: '1px solid var(--border-mid)',
+              border: '1px solid var(--line)',
               borderRadius: '999px',
               padding: '0.7rem 1rem',
-              color: 'var(--muted-light)',
-              background: 'rgba(255,255,255,0.02)',
+              color: 'var(--text-soft)',
+              background: 'var(--glass-1)',
             }}
           >
             Live workspace
@@ -120,9 +120,9 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
         >
           <div
             style={{
-              border: '1px solid var(--border-mid)',
+              border: '1px solid var(--line)',
               borderRadius: '22px',
-              background: 'rgba(21, 15, 10, 0.7)',
+              background: 'var(--glass-1)',
               padding: '1.5rem',
             }}
           >
@@ -131,15 +131,15 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
                 fontSize: '0.72rem',
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
                 marginBottom: '1rem',
               }}
             >
               Delivery overview
             </div>
             <div style={{ display: 'grid', gap: '0.9rem' }}>
-              <div style={{ color: 'var(--soft-white)', fontSize: '1.1rem' }}>Average project progress: {summary.averageProgress}%</div>
-              <div style={{ color: 'var(--muted)', lineHeight: 1.8 }}>
+              <div style={{ color: 'var(--text)', fontSize: '1.1rem' }}>Average project progress: {summary.averageProgress}%</div>
+              <div style={{ color: 'var(--text-faint)', lineHeight: 1.8 }}>
                 Total tracked hours: {summary.totalHoursUsed}h across the current project set.
               </div>
             </div>
@@ -147,9 +147,9 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
 
           <div
             style={{
-              border: '1px solid var(--border-mid)',
+              border: '1px solid var(--line)',
               borderRadius: '22px',
-              background: 'rgba(21, 15, 10, 0.7)',
+              background: 'var(--glass-1)',
               padding: '1.5rem',
             }}
           >
@@ -158,15 +158,15 @@ export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
                 fontSize: '0.72rem',
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
                 marginBottom: '1rem',
               }}
             >
               Operations
             </div>
-            <ul style={{ color: 'var(--soft-white)', lineHeight: 1.9, margin: 0, paddingLeft: '1.1rem' }}>
-              <li><a href="/admin/clients" style={{ color: 'var(--soft-white)', textDecoration: 'none' }}>Manage clients</a></li>
-              <li><a href="/admin/projects" style={{ color: 'var(--soft-white)', textDecoration: 'none' }}>Manage projects</a></li>
+            <ul style={{ color: 'var(--text)', lineHeight: 1.9, margin: 0, paddingLeft: '1.1rem' }}>
+              <li><a href="/admin/clients" style={{ color: 'var(--text)', textDecoration: 'none' }}>Manage clients</a></li>
+              <li><a href="/admin/projects" style={{ color: 'var(--text)', textDecoration: 'none' }}>Manage projects</a></li>
             </ul>
           </div>
         </section>

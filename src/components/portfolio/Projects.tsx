@@ -33,6 +33,42 @@ type Project = {
 const fallbackProjects: Project[] = [
   {
     id: '01',
+    category: 'AI Receptionist & Automation',
+    projectCategory: 'ai-automation',
+    title: 'Veyro Agent',
+    tagline:
+      'AI-powered voice automation for inbound, outbound, and customer communication personalised at scale.',
+    description:
+      'Node.js and React platform for building AI-powered business receptionists and voice automations. Handles inbound and outbound calls through Twilio and ElevenLabs with configurable conversation flows, dynamic customer context, appointment scheduling, SMS actions, human handoff, call routing, and real-time monitoring. Designed as a reusable automation platform that can adapt to different businesses, workflows, and communication requirements.',
+    outcome:
+      'AI receptionist platform automating inbound and outbound business communication with real-time voice interaction, scheduling, customer actions, and workflow automation — active development.',
+    architecture: [
+      'Node.js',
+      'React',
+      'Twilio Voice API',
+      'ElevenLabs Conversational AI',
+      'WebSocket',
+      'PostgreSQL',
+      'Prisma ORM',
+      'REST API',
+    ],
+    stack: [
+      'Node.js',
+      'React',
+      'TypeScript',
+      'Twilio',
+      'ElevenLabs',
+      'PostgreSQL',
+      'Prisma',
+    ],
+    link: 'https://github.com/kasbihari/Veyro-Agent',
+    accent: 'var(--verde-ink)',
+    status: 'in-progress',
+    images: 'empty',
+  },
+
+  {
+    id: '02',
     category: 'Full-Stack Web App',
     projectCategory: 'web-development',
     title: 'Budget Buddy',
@@ -60,13 +96,13 @@ const fallbackProjects: Project[] = [
       'Doctrine ORM',
     ],
     link: 'https://github.com/kasbihari/Budget-Buddy',
-    accent: 'var(--sand-light)',
+    accent: 'var(--bronze-soft)',
     status: 'done',
     images: 'empty',
   },
 
   {
-    id: '02',
+    id: '03',
     category: 'Full-Stack Data Platform',
     projectCategory: 'web-development',
     title: 'SDG Dashboard',
@@ -92,46 +128,10 @@ const fallbackProjects: Project[] = [
       'NextAuth',
     ],
     link: 'https://github.com/kasbihari/SDG-Dashboard',
-    accent: 'var(--forest-bright)',
+    accent: 'var(--bronze-soft)',
     status: 'done',
     images: 'empty',
   },
-
-  // {
-  //   id: '03',
-  //   category: 'AI Automation',
-  //   projectCategory: 'ai-automation',
-  //   title: 'Veyro Agent',
-  //   tagline:
-  //     'AI-powered voice automation for inbound, outbound, and customer communication personalised at scale.',
-  //   description:
-  //     'Node.js and React platform for building AI-powered business receptionists and voice automations. Handles inbound and outbound calls through Twilio and ElevenLabs with configurable conversation flows, dynamic customer context, appointment scheduling, SMS actions, human handoff, call routing, and real-time monitoring. Designed as a reusable automation platform that can adapt to different businesses, workflows, and communication requirements.',
-  //   outcome:
-  //     'AI receptionist platform automating inbound and outbound business communication with real-time voice interaction, scheduling, customer actions, and workflow automation — active development.',
-  //   architecture: [
-  //     'Node.js',
-  //     'React',
-  //     'Twilio Voice API',
-  //     'ElevenLabs Conversational AI',
-  //     'WebSocket',
-  //     'PostgreSQL',
-  //     'Prisma ORM',
-  //     'REST API',
-  //   ],
-  //   stack: [
-  //     'Node.js',
-  //     'React',
-  //     'TypeScript',
-  //     'Twilio',
-  //     'ElevenLabs',
-  //     'PostgreSQL',
-  //     'Prisma',
-  //   ],
-  //   link: 'https://github.com/kasbihari/Veyro-Agent',
-  //   accent: 'var(--muted-light)',
-  //   status: 'in-progress',
-  //   images: 'empty',
-  // },
 ];
 
 function StatusBadge({
@@ -141,41 +141,8 @@ function StatusBadge({
   const isDone = status === 'done';
 
   return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '0.35rem',
-        fontSize: '0.68rem',
-        fontWeight: 500,
-        letterSpacing: '0.09em',
-        textTransform: 'uppercase',
-        padding: '0.2rem 0.55rem',
-        borderRadius: '3px',
-        border: `1px solid ${
-          isDone
-            ? 'color-mix(in srgb, var(--pine-ink) 45%, transparent)'
-            : 'color-mix(in srgb, var(--brown) 45%, transparent)'
-        }`,
-        color: isDone
-          ? 'var(--pine-ink)'
-          : 'var(--brown)',
-        background: isDone
-          ? 'color-mix(in srgb, var(--pine-ink) 10%, transparent)'
-          : 'color-mix(in srgb, var(--brown) 10%, transparent)',
-      }}
-    >
-      <span
-        style={{
-          width: '4px',
-          height: '4px',
-          borderRadius: '50%',
-          background: isDone
-            ? 'var(--pine-ink)'
-            : 'var(--brown)',
-        }}
-      />
-
+    <span className="pj-badge" data-status={isDone ? 'done' : 'progress'}>
+      <span className="pj-badge__dot" />
       {label}
     </span>
   );
@@ -259,635 +226,595 @@ export default function Projects({
   };
 
   return (
-    <section
-      id="projects"
-      className="section-padding"
-    >
-      <div className="container-main">
+    <section id="projects" className="section-padding">
+      <div className="container-wide">
+        {/* Header — centered on the axis */}
+        <div className="pj-header" data-reveal>
+          <p className="section-label section-label--center">{w.label}</p>
 
-        {/* Header */}
-        <div
-          style={{
-            marginBottom: '3rem',
-            display: 'flex',
-            justifyContent:
-              'space-between',
-            flexWrap: 'wrap',
-            gap: '1rem',
-          }}
-        >
-          <div>
-            <p className="section-label">
-              {w.label}
-            </p>
+          <h2 className="text-section-title pj-header__title">
+            {w.headingPart1}{' '}
+            <em className="pj-header__accent">{w.headingPart2}</em>
+          </h2>
 
-            <h2 className="text-section-title">
-              {w.headingPart1}{' '}
-              <em style={{ color: 'var(--pine-ink)', fontStyle: 'italic' }}>
-                {w.headingPart2}
-              </em>
-            </h2>
-          </div>
+          <div className="pj-filters" role="group" aria-label={w.label}>
+            {filters.map(({ label, value }) => {
+              const active = filter === value;
 
-          {/* Filters */}
-          <div
-            style={{
-              display: 'flex',
-              gap: '0.5rem',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
-            {filters.map(
-              ({ label, value }) => {
-                const active =
-                  filter === value;
-
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => {
-                      setFilter(value);
-                      setActiveProject(null);
-                    }}
-                    style={{
-                      padding:
-                        '0.45rem 1rem',
-                      borderRadius:
-                        '999px',
-                      border: active
-                        ? '1px solid var(--line-strong)'
-                        : '1px solid var(--line-soft)',
-                      background: active
-                        ? 'var(--surface-2)'
-                        : 'transparent',
-                      color: active
-                        ? 'var(--text)'
-                        : 'var(--muted)',
-                      cursor: 'pointer',
-                      fontSize: '0.75rem',
-                      textTransform:
-                        'uppercase',
-                      letterSpacing:
-                        '0.05em',
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              },
-            )}
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => {
+                    setFilter(value);
+                    setActiveProject(null);
+                  }}
+                  aria-pressed={active}
+                  className="pj-filter"
+                  data-active={active ? 'true' : 'false'}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Projects */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection:
-              'column',
-          }}
-        >
-          {filtered.length === 0 && (
-            <div
-              style={{
-                padding: '3rem 0',
-                textAlign: 'center',
-                color: 'var(--muted-light)',
-                fontSize: '0.9rem',
-              }}
-            >
-              {w.empty}
-            </div>
-          )}
+        {/* Projects — large cinematic presentations */}
+        <div className="pj-list">
+          {filtered.length === 0 && <div className="pj-empty">{w.empty}</div>}
 
-          {filtered.map((project) => {
-            const isOpen =
-              activeProject ===
-              project.id;
+          {filtered.map((project, index) => {
+            const isOpen = activeProject === project.id;
 
-            /*
-             * Always turn the value into an array.
-             * This keeps TypeScript happy and makes
-             * the rest of the component much cleaner.
-             */
-            const images =
-              project.images === 'empty'
-                ? []
-                : project.images;
+            const images = project.images === 'empty' ? [] : project.images;
+            const hasImages = images.length > 0;
 
-            const hasImages =
-              images.length > 0;
+            const currentSlide = hasImages
+              ? Math.min(slideIndexes[project.id] ?? 0, images.length - 1)
+              : 0;
 
-            const currentSlide =
-              hasImages
-                ? Math.min(
-                    slideIndexes[
-                      project.id
-                    ] ?? 0,
-                    images.length - 1,
-                  )
-                : 0;
+            const isLead = index === 0;
 
             return (
-              <div
+              <article
                 key={project.id}
+                className="pj-item"
+                data-lead={isLead ? 'true' : 'false'}
+                data-open={isOpen ? 'true' : 'false'}
+                data-reveal
               >
-                <div
-                  style={{
-                    height: '1px',
-                    background:
-                      'var(--line-soft)',
-                  }}
-                />
-
                 <div
                   role="button"
                   tabIndex={0}
-                  aria-expanded={
-                    isOpen
-                  }
+                  aria-expanded={isOpen}
                   aria-controls={`project-panel-${project.id}`}
-                  onClick={() =>
-                    toggleProject(
-                      project.id,
-                      isOpen,
-                    )
-                  }
+                  onClick={() => toggleProject(project.id, isOpen)}
                   onKeyDown={(e) => {
-                    if (
-                      e.key ===
-                        'Enter' ||
-                      e.key === ' '
-                    ) {
+                    if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-
-                      toggleProject(
-                        project.id,
-                        isOpen,
-                      );
+                      toggleProject(project.id, isOpen);
                     }
                   }}
-                  style={{
-                    padding: '2rem 0',
-                    cursor: 'pointer',
-                    display: 'grid',
-                    gridTemplateColumns:
-                      '1fr auto',
-                    gap: '1rem',
-                  }}
+                  className="pj-trigger"
                 >
-                  <div>
+                  {/* Number + category */}
+                  <div className="pj-meta">
+                    <span className="pj-number">{project.id}</span>
+                    <span className="pj-rule" aria-hidden="true" />
+                    <span className="pj-category" style={{ color: project.accent }}>
+                      {project.category}
+                    </span>
+                    <StatusBadge
+                      status={project.status}
+                      label={project.status === 'done' ? w.shippedBadge : w.inProgressBadge}
+                    />
+                  </div>
 
-                    {/* Top */}
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems:
-                          'center',
-                        gap: '0.7rem',
-                        flexWrap:
-                          'wrap',
-                        marginBottom:
-                          '0.5rem',
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontSize:
-                            '0.7rem',
-                          textTransform:
-                            'uppercase',
-                          letterSpacing:
-                            '0.1em',
-                          color:
-                            project.accent,
-                          margin: 0,
-                        }}
-                      >
-                        {
-                          project.category
-                        }
-                      </p>
+                  {/* Title */}
+                  <h3 className="pj-title">{project.title}</h3>
 
-                      <StatusBadge
-                        status={
-                          project.status
-                        }
-                        label={
-                          project.status === 'done'
-                            ? w.shippedBadge
-                            : w.inProgressBadge
-                        }
-                      />
-                    </div>
+                  {/* Tagline */}
+                  <p className="pj-tagline">{project.tagline}</p>
 
-                    {/* Title */}
-                    <h3
-                      style={{
-                        fontSize:
-                          'clamp(1.4rem, 3vw, 2.2rem)',
-                        color:
-                          'var(--soft-white)',
-                        marginBottom:
-                          '0.4rem',
-                        lineHeight:
-                          1.1,
-                      }}
-                    >
-                      {
-                        project.title
-                      }
-                    </h3>
+                  {/* Stack preview — secondary info, revealed on interaction */}
+                  <div className="pj-stack-preview" aria-hidden="true">
+                    {project.stack.slice(0, 4).map((tech) => (
+                      <span key={tech} className="pj-stack-chip">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
 
-                    {/* Tagline */}
-                    <p
-                      style={{
-                        color:
-                          'var(--muted-light)',
-                        maxWidth:
-                          '620px',
-                        lineHeight:
-                          1.7,
-                      }}
-                    >
-                      {
-                        project.tagline
-                      }
-                    </p>
+                  <span className="pj-explore">
+                    {isOpen ? w.close : w.explore}
+                    <span className="pj-plus" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M10 4v12M4 10h12"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                  </span>
+                </div>
 
-                    {/* Expanded content */}
-                    <div
-                      id={`project-panel-${project.id}`}
-                      style={{
-                        overflow:
-                          'hidden',
-                        maxHeight:
-                          isOpen
-                            ? '3000px'
-                            : '0',
-                        opacity:
-                          isOpen
-                            ? 1
-                            : 0,
-                        transition:
-                          'all 0.6s cubic-bezier(0.16,1,0.3,1)',
-                      }}
-                    >
-                      <div
-                        style={{
-                          paddingTop:
-                            '2rem',
-                        }}
-                      >
+                {/* Expanded panel */}
+                <div
+                  id={`project-panel-${project.id}`}
+                  className="pj-panel"
+                  data-open={isOpen ? 'true' : 'false'}
+                >
+                  <div className="pj-panel__inner">
+                    {/* Slideshow */}
+                    {hasImages && (
+                      <div className="pj-slides">
+                        <img
+                          src={images[currentSlide]}
+                          alt={`${project.title} screenshot ${currentSlide + 1}`}
+                          loading="lazy"
+                          decoding="async"
+                          className="pj-slides__img"
+                        />
 
-                        {/* Slideshow */}
-                        {hasImages && (
-                          <div
-                            style={{
-                              position:
-                                'relative',
-                              width:
-                                '100%',
-                              borderRadius:
-                                '18px',
-                              overflow:
-                                'hidden',
-                              border:
-                                '1px solid var(--line-soft)',
-                              background:
-                                'var(--bg-soft)',
-                              marginBottom:
-                                '2rem',
-                            }}
-                          >
-                            <img
-                              src={
-                                images[
-                                  currentSlide
-                                ]
-                              }
-                              alt={`${project.title} screenshot ${
-                                currentSlide + 1
-                              }`}
-                              loading="lazy"
-                              decoding="async"
-                              style={{
-                                width:
-                                  '100%',
-                                height:
-                                  '520px',
-                                objectFit:
-                                  'cover',
-                                display:
-                                  'block',
+                        {images.length > 1 && (
+                          <>
+                            <button
+                              type="button"
+                              aria-label={w.prevImage}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                prevSlide(project.id, images.length);
                               }}
-                            />
-
-                            {/* Previous button */}
-                            {images.length >
-                              1 && (
-                              <button
-                                type="button"
-                                aria-label={w.prevImage}
-                                onClick={(
-                                  e,
-                                ) => {
-                                  e.stopPropagation();
-
-                                  prevSlide(
-                                    project.id,
-                                    images.length,
-                                  );
-                                }}
-                                style={{
-                                  position:
-                                    'absolute',
-                                  top: '50%',
-                                  left: '1rem',
-                                  transform:
-                                    'translateY(-50%)',
-                                  width:
-                                    '42px',
-                                  height:
-                                    '42px',
-                                  borderRadius:
-                                    '50%',
-                                  border:
-                                    '1px solid rgba(255,255,255,0.1)',
-                                  background:
-                                    'rgba(0,0,0,0.45)',
-                                  color:
-                                    'white',
-                                  cursor:
-                                    'pointer',
-                                  backdropFilter:
-                                    'blur(8px)',
-                                  fontSize:
-                                    '1rem',
-                                }}
-                              >
-                                ←
-                              </button>
-                            )}
-
-                            {/* Next button */}
-                            {images.length >
-                              1 && (
-                              <button
-                                type="button"
-                                aria-label={w.nextImage}
-                                onClick={(
-                                  e,
-                                ) => {
-                                  e.stopPropagation();
-
-                                  nextSlide(
-                                    project.id,
-                                    images.length,
-                                  );
-                                }}
-                                style={{
-                                  position:
-                                    'absolute',
-                                  top: '50%',
-                                  right: '1rem',
-                                  transform:
-                                    'translateY(-50%)',
-                                  width:
-                                    '42px',
-                                  height:
-                                    '42px',
-                                  borderRadius:
-                                    '50%',
-                                  border:
-                                    '1px solid rgba(255,255,255,0.1)',
-                                  background:
-                                    'rgba(0,0,0,0.45)',
-                                  color:
-                                    'white',
-                                  cursor:
-                                    'pointer',
-                                  backdropFilter:
-                                    'blur(8px)',
-                                  fontSize:
-                                    '1rem',
-                                }}
-                              >
-                                →
-                              </button>
-                            )}
-
-                            {/* Dots */}
-                            {images.length >
-                              1 && (
-                              <div
-                                style={{
-                                  position:
-                                    'absolute',
-                                  bottom:
-                                    '1rem',
-                                  left:
-                                    '50%',
-                                  transform:
-                                    'translateX(-50%)',
-                                  display:
-                                    'flex',
-                                  gap:
-                                    '0.5rem',
-                                }}
-                              >
-                                {images.map(
-                                  (
-                                    image,
-                                    index,
-                                  ) => (
-                                    <button
-                                      key={`${project.id}-${image}`}
-                                      type="button"
-                                      aria-label={`${w.goToImage} ${
-                                        index + 1
-                                      }`}
-                                      onClick={(
-                                        e,
-                                      ) => {
-                                        e.stopPropagation();
-
-                                        setSlideIndexes(
-                                          (
-                                            prev,
-                                          ) => ({
-                                            ...prev,
-                                            [project.id]:
-                                              index,
-                                          }),
-                                        );
-                                      }}
-                                      style={{
-                                        width:
-                                          '8px',
-                                        height:
-                                          '8px',
-                                        padding:
-                                          0,
-                                        borderRadius:
-                                          '50%',
-                                        border:
-                                          'none',
-                                        cursor:
-                                          'pointer',
-                                        background:
-                                          currentSlide ===
-                                          index
-                                            ? 'white'
-                                            : 'rgba(255,255,255,0.4)',
-                                      }}
-                                    />
-                                  ),
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Description */}
-                        <p
-                          style={{
-                            color:
-                              'var(--muted-light)',
-                            lineHeight:
-                              1.8,
-                            marginBottom:
-                              '1.5rem',
-                          }}
-                        >
-                          {
-                            project.description
-                          }
-                        </p>
-
-                        {/* Stack */}
-                        <div
-                          style={{
-                            display:
-                              'flex',
-                            flexWrap:
-                              'wrap',
-                            gap: '0.5rem',
-                            marginBottom:
-                              '2rem',
-                          }}
-                        >
-                          {project.stack.map(
-                            (tech) => (
-                              <span
-                                key={
-                                  tech
-                                }
-                                style={{
-                                  padding:
-                                    '0.3rem 0.7rem',
-                                  border:
-                                    '1px solid var(--line-soft)',
-                                  borderRadius:
-                                    '5px',
-                                  fontSize:
-                                    '0.75rem',
-                                  color:
-                                    'var(--muted-light)',
-                                  fontFamily:
-                                    'JetBrains Mono, monospace',
-                                }}
-                              >
-                                {tech}
-                              </span>
-                            ),
-                          )}
-                        </div>
-
-                        {/* Buttons */}
-                        <div
-                          style={{
-                            display:
-                              'flex',
-                            gap:
-                              '0.8rem',
-                            flexWrap:
-                              'wrap',
-                          }}
-                        >
-                          <a
-                            href={
-                              project.link
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(
-                              e,
-                            ) =>
-                              e.stopPropagation()
-                            }
-                            className="btn-secondary"
-                          >
-                            GitHub
-                          </a>
-
-                          {project.live && (
-                            <a
-                              href={
-                                project.live
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(
-                                e,
-                              ) =>
-                                e.stopPropagation()
-                              }
-                              className="btn-primary"
+                              className="pj-slides__nav pj-slides__nav--prev"
                             >
-                              Live Site
-                            </a>
-                          )}
-                        </div>
+                              ←
+                            </button>
+
+                            <button
+                              type="button"
+                              aria-label={w.nextImage}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                nextSlide(project.id, images.length);
+                              }}
+                              className="pj-slides__nav pj-slides__nav--next"
+                            >
+                              →
+                            </button>
+
+                            <div className="pj-slides__dots">
+                              {images.map((image, i) => (
+                                <button
+                                  key={`${project.id}-${image}`}
+                                  type="button"
+                                  aria-label={`${w.goToImage} ${i + 1}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSlideIndexes((prev) => ({
+                                      ...prev,
+                                      [project.id]: i,
+                                    }));
+                                  }}
+                                  className="pj-slides__dot"
+                                  data-active={currentSlide === i ? 'true' : 'false'}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="pj-panel__grid">
+                      <div>
+                        <p className="pj-panel__label">{w.overview}</p>
+                        <p className="pj-panel__body">{project.description}</p>
+                      </div>
+
+                      <div>
+                        <p className="pj-panel__label">{w.outcome}</p>
+                        <p className="pj-panel__body pj-panel__body--soft">{project.outcome}</p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Plus icon */}
-                  <div
-                    style={{
-                      transform:
-                        isOpen
-                          ? 'rotate(45deg)'
-                          : 'rotate(0deg)',
-                      transition:
-                        '0.3s',
-                      color:
-                        'var(--muted)',
-                    }}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M10 4v12M4 10h12"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
+                    {/* Stack */}
+                    <div className="pj-stack">
+                      {project.stack.map((tech) => (
+                        <span key={tech} className="pj-stack-chip">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="pj-actions">
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="btn-secondary"
+                      >
+                        GitHub
+                      </a>
+
+                      {project.live && (
+                        <a
+                          href={project.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="btn-primary"
+                        >
+                          Live Site
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
       </div>
+
+      <style>{`
+        .pj-header {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          margin-bottom: clamp(4.5rem, 9vw, 8rem);
+        }
+
+        .pj-header__title {
+          margin-top: 1.75rem;
+          max-width: 22ch;
+        }
+
+        .pj-header__accent {
+          font-style: italic;
+          color: var(--text-faint);
+        }
+
+        .pj-filters {
+          display: flex;
+          gap: 0.5rem;
+          align-items: center;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-top: 2.5rem;
+        }
+
+        .pj-filter {
+          padding: 0.45rem 1.1rem;
+          border-radius: var(--radius-pill);
+          border: 1px solid var(--line-soft);
+          background: transparent;
+          color: var(--text-faint);
+          cursor: pointer;
+          font-family: var(--font-body);
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          transition:
+            color var(--dur-base) var(--ease-out),
+            border-color var(--dur-base) var(--ease-out),
+            background var(--dur-base) var(--ease-out);
+        }
+
+        .pj-filter[data-active='true'] {
+          border-color: var(--glass-border-hover);
+          background: var(--glass-2);
+          color: var(--text);
+        }
+
+        .pj-filter:hover[data-active='false'] {
+          color: var(--text-soft);
+          border-color: var(--line);
+        }
+
+        .pj-list {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .pj-empty {
+          padding: 4rem 0;
+          text-align: center;
+          color: var(--text-faint);
+          font-size: 0.9rem;
+        }
+
+        /* ── One project = one case study, given real room ──
+           No rules or separators: spacing and scale do the structuring. */
+        .pj-item {
+          position: relative;
+        }
+
+        .pj-trigger {
+          position: relative;
+          padding: clamp(3.5rem, 8vw, 6.5rem) 0;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          transition: opacity var(--dur-slow) var(--ease-out);
+        }
+
+        .pj-item:first-child .pj-trigger {
+          padding-top: 0;
+        }
+
+        .pj-item[data-open='false'] .pj-trigger:hover {
+          opacity: 0.82;
+        }
+
+        .pj-meta {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.85rem;
+          flex-wrap: wrap;
+          margin-bottom: 1.5rem;
+        }
+
+        .pj-number {
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          letter-spacing: 0.14em;
+          color: var(--text-faint);
+        }
+
+        .pj-rule {
+          width: 22px;
+          height: 1px;
+          background: var(--line);
+        }
+
+        .pj-category {
+          font-size: 0.68rem;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+        }
+
+        .pj-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.62rem;
+          font-weight: 500;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          padding: 0.22rem 0.6rem;
+          border-radius: var(--radius-pill);
+          border: 1px solid var(--line-soft);
+          color: var(--text-faint);
+        }
+
+        .pj-badge__dot {
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: currentColor;
+        }
+
+        .pj-badge[data-status='done'] {
+          color: var(--verde-ink);
+          border-color: color-mix(in srgb, var(--verde-ink) 32%, transparent);
+        }
+
+        .pj-badge[data-status='progress'] {
+          color: var(--bronze-soft);
+          border-color: color-mix(in srgb, var(--bronze-soft) 32%, transparent);
+        }
+
+        .pj-title {
+          font-family: var(--font-display);
+          font-size: clamp(2.2rem, 6vw, 4.2rem);
+          font-weight: 400;
+          line-height: 1.04;
+          letter-spacing: -0.028em;
+          color: var(--text);
+          margin-bottom: 1.25rem;
+          transition: color var(--dur-slow) var(--ease-out);
+        }
+
+        /* The flagship gets a genuinely different scale, not a bigger card. */
+        .pj-item[data-lead='true'] .pj-title {
+          font-size: clamp(2.8rem, 9vw, 6.5rem);
+          letter-spacing: -0.035em;
+        }
+
+        .pj-tagline {
+          max-width: 50ch;
+          color: var(--text-faint);
+          font-size: clamp(1rem, 1.4vw, 1.2rem);
+          line-height: 1.7;
+        }
+
+        .pj-stack-preview {
+          display: flex;
+          gap: 0.45rem;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-top: 1.75rem;
+          opacity: 0.55;
+          transition: opacity var(--dur-slow) var(--ease-out);
+        }
+
+        .pj-item[data-open='false'] .pj-trigger:hover .pj-stack-preview {
+          opacity: 1;
+        }
+
+        .pj-stack-chip {
+          font-family: var(--font-mono);
+          font-size: 0.66rem;
+          letter-spacing: 0.06em;
+          padding: 0.28rem 0.65rem;
+          border: 1px solid var(--line-soft);
+          border-radius: var(--radius-pill);
+          color: var(--text-faint);
+          white-space: nowrap;
+        }
+
+        .pj-explore {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-top: 2rem;
+          font-size: 0.68rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--text-faint);
+          transition: color var(--dur-base) var(--ease-out);
+        }
+
+        .pj-item[data-open='false'] .pj-trigger:hover .pj-explore {
+          color: var(--verde-ink);
+        }
+
+        .pj-plus {
+          display: inline-flex;
+          transition: transform var(--dur-base) var(--ease-out);
+        }
+
+        .pj-item[data-open='true'] .pj-plus {
+          transform: rotate(45deg);
+        }
+
+        /* ── Panel ── */
+        .pj-panel {
+          overflow: hidden;
+          max-height: 0;
+          opacity: 0;
+          transition:
+            max-height var(--dur-slow) var(--ease-out),
+            opacity var(--dur-slow) var(--ease-out);
+        }
+
+        .pj-panel[data-open='true'] {
+          max-height: 3200px;
+          opacity: 1;
+        }
+
+        .pj-panel__inner {
+          padding: 0 0 clamp(2.5rem, 5vw, 4rem);
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        .pj-slides {
+          position: relative;
+          width: 100%;
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          border: 1px solid var(--glass-border);
+          background: var(--surface);
+          margin-bottom: 2.5rem;
+        }
+
+        .pj-slides__img {
+          width: 100%;
+          height: clamp(240px, 46vw, 520px);
+          object-fit: cover;
+          display: block;
+        }
+
+        .pj-slides__nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          border: 1px solid var(--glass-border);
+          background: var(--glass-2);
+          -webkit-backdrop-filter: blur(var(--glass-blur-1));
+          backdrop-filter: blur(var(--glass-blur-1));
+          color: var(--text);
+          cursor: pointer;
+          font-size: 1rem;
+        }
+
+        .pj-slides__nav--prev { left: 1rem; }
+        .pj-slides__nav--next { right: 1rem; }
+
+        .pj-slides__dots {
+          position: absolute;
+          bottom: 1rem;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .pj-slides__dot {
+          width: 7px;
+          height: 7px;
+          padding: 0;
+          border-radius: 50%;
+          border: none;
+          cursor: pointer;
+          background: var(--line-strong);
+        }
+
+        .pj-slides__dot[data-active='true'] {
+          background: var(--text);
+        }
+
+        .pj-panel__grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: clamp(1.75rem, 4vw, 3rem);
+          margin-bottom: 2.25rem;
+        }
+
+        .pj-panel__label {
+          font-size: 0.64rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--bronze);
+          margin-bottom: 0.85rem;
+        }
+
+        .pj-panel__body {
+          color: var(--text-soft);
+          line-height: 1.8;
+          font-size: 0.94rem;
+        }
+
+        .pj-panel__body--soft {
+          color: var(--text-faint);
+        }
+
+        .pj-stack {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-bottom: 2.25rem;
+        }
+
+        .pj-actions {
+          display: flex;
+          gap: 0.8rem;
+          flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+          .pj-trigger {
+            padding: 2rem 0;
+          }
+
+          .pj-stack-preview {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -187,10 +187,10 @@ export default function ProjectProgressHistory({
         width: '100%',
         overflow: 'hidden',
         border:
-          '1px solid var(--border-mid)',
+          '1px solid var(--line)',
         borderRadius: '18px',
         background:
-          'rgba(21, 15, 10, 0.78)',
+          'var(--glass-2)',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
         boxShadow:
@@ -245,7 +245,7 @@ export default function ProjectProgressHistory({
             <div
               style={{
                 marginBottom: '0.45rem',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
                 fontSize: '0.65rem',
                 letterSpacing:
                   '0.14em',
@@ -260,7 +260,7 @@ export default function ProjectProgressHistory({
               style={{
                 margin: 0,
                 color:
-                  'var(--soft-white)',
+                  'var(--text)',
                 fontSize:
                   'clamp(1.35rem, 3vw, 1.75rem)',
                 lineHeight: 1.1,
@@ -301,7 +301,7 @@ export default function ProjectProgressHistory({
                   textTransform:
                     'uppercase',
                   color:
-                    'var(--muted-light)',
+                    'var(--text-soft)',
                   marginBottom:
                     '0.25rem',
                 }}
@@ -312,7 +312,7 @@ export default function ProjectProgressHistory({
               <div
                 style={{
                   color:
-                    'var(--soft-white)',
+                    'var(--text)',
                   fontSize:
                     'clamp(1.7rem, 5vw, 2.4rem)',
                   lineHeight: 1,
@@ -331,11 +331,11 @@ export default function ProjectProgressHistory({
               padding: '1rem',
               borderRadius: '12px',
               border:
-                '1px solid rgba(255,255,255,0.05)',
+                '1px solid var(--glass-1)',
               background:
-                'rgba(255,255,255,0.018)',
+                'var(--glass-1)',
               color:
-                'var(--muted)',
+                'var(--text-faint)',
               fontSize: '0.84rem',
               lineHeight: 1.7,
             }}
@@ -394,14 +394,14 @@ export default function ProjectProgressHistory({
                             paddingX
                           }
                           y2={y}
-                          stroke="rgba(255,255,255,0.06)"
+                          stroke="var(--glass-2)"
                           strokeWidth="1"
                         />
 
                         <text
                           x="0"
                           y={y + 4}
-                          fill="var(--muted-light)"
+                          fill="var(--text-soft)"
                           fontSize="10"
                         >
                           {value}
@@ -436,7 +436,7 @@ export default function ProjectProgressHistory({
                   <motion.path
                     d={path}
                     fill="none"
-                    stroke="var(--forest-bright)"
+                    stroke="var(--verde-ink)"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -493,7 +493,7 @@ export default function ProjectProgressHistory({
                         cy={point.y}
                         r="6"
                         fill="rgba(21,15,10,0.95)"
-                        stroke="var(--sand-light)"
+                        stroke="var(--bronze-soft)"
                         strokeWidth="2"
                       />
 
@@ -525,7 +525,7 @@ export default function ProjectProgressHistory({
                     key={`${point.id}-label`}
                     style={{
                       color:
-                        'var(--muted-light)',
+                        'var(--text-soft)',
                       fontSize:
                         '0.58rem',
                       textAlign:
@@ -574,9 +574,9 @@ export default function ProjectProgressHistory({
                   padding: '0.8rem',
                   borderRadius: '12px',
                   border:
-                    '1px solid rgba(255,255,255,0.05)',
+                    '1px solid var(--glass-1)',
                   background:
-                    'rgba(255,255,255,0.02)',
+                    'var(--glass-1)',
                 }}
               >
                 <div
@@ -584,7 +584,7 @@ export default function ProjectProgressHistory({
                     marginBottom:
                       '0.3rem',
                     color:
-                      'var(--muted-light)',
+                      'var(--text-soft)',
                     fontSize:
                       '0.58rem',
                     letterSpacing:
@@ -599,7 +599,7 @@ export default function ProjectProgressHistory({
                 <div
                   style={{
                     color:
-                      'var(--soft-white)',
+                      'var(--text)',
                     fontSize:
                       '1.15rem',
                   }}
@@ -614,9 +614,9 @@ export default function ProjectProgressHistory({
                   padding: '0.8rem',
                   borderRadius: '12px',
                   border:
-                    '1px solid rgba(255,255,255,0.05)',
+                    '1px solid var(--glass-1)',
                   background:
-                    'rgba(255,255,255,0.02)',
+                    'var(--glass-1)',
                 }}
               >
                 <div
@@ -624,7 +624,7 @@ export default function ProjectProgressHistory({
                     marginBottom:
                       '0.3rem',
                     color:
-                      'var(--muted-light)',
+                      'var(--text-soft)',
                     fontSize:
                       '0.58rem',
                     letterSpacing:
@@ -640,7 +640,7 @@ export default function ProjectProgressHistory({
                   style={{
                     color:
                       progressDelta >= 0
-                        ? 'var(--forest-bright)'
+                        ? 'var(--verde-ink)'
                         : '#c8a050',
                     fontSize:
                       '1.15rem',
@@ -659,9 +659,9 @@ export default function ProjectProgressHistory({
                   padding: '0.8rem',
                   borderRadius: '12px',
                   border:
-                    '1px solid rgba(255,255,255,0.05)',
+                    '1px solid var(--glass-1)',
                   background:
-                    'rgba(255,255,255,0.02)',
+                    'var(--glass-1)',
                 }}
               >
                 <div
@@ -669,7 +669,7 @@ export default function ProjectProgressHistory({
                     marginBottom:
                       '0.3rem',
                     color:
-                      'var(--muted-light)',
+                      'var(--text-soft)',
                     fontSize:
                       '0.58rem',
                     letterSpacing:
@@ -684,7 +684,7 @@ export default function ProjectProgressHistory({
                 <div
                   style={{
                     color:
-                      'var(--soft-white)',
+                      'var(--text)',
                     fontSize:
                       '0.9rem',
                     overflowWrap:
@@ -717,7 +717,7 @@ export default function ProjectProgressHistory({
                   marginTop:
                     '0.8rem',
                   color:
-                    'var(--muted)',
+                    'var(--text-faint)',
                   fontSize:
                     '0.78rem',
                   lineHeight: 1.7,

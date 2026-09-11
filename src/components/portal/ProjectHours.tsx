@@ -71,9 +71,9 @@ export default function ProjectHours({
         minWidth: 0,
         overflow: 'hidden',
         border:
-          '1px solid var(--border-mid)',
+          '1px solid var(--line)',
         background:
-          'rgba(21, 15, 10, 0.78)',
+          'var(--glass-2)',
         borderRadius: '18px',
         padding:
           'clamp(1.1rem, 3vw, 1.5rem)',
@@ -119,7 +119,7 @@ export default function ProjectHours({
             fontSize: '0.68rem',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: 'var(--sand)',
+            color: 'var(--bronze)',
             marginBottom: '1.25rem',
           }}
         >
@@ -181,9 +181,9 @@ export default function ProjectHours({
               style={{
                 minWidth: 0,
                 border:
-                  '1px solid rgba(255,255,255,0.05)',
+                  '1px solid var(--glass-1)',
                 background:
-                  'rgba(255,255,255,0.02)',
+                  'var(--glass-1)',
                 borderRadius: '12px',
                 padding: '0.8rem',
               }}
@@ -195,7 +195,7 @@ export default function ProjectHours({
                   textTransform:
                     'uppercase',
                   color:
-                    'var(--muted-light)',
+                    'var(--text-soft)',
                   marginBottom: '0.25rem',
                   overflowWrap:
                     'anywhere',
@@ -208,7 +208,7 @@ export default function ProjectHours({
                 style={{
                   fontSize: '1.2rem',
                   color:
-                    'var(--soft-white)',
+                    'var(--text)',
                   lineHeight: 1.2,
                 }}
               >
@@ -237,7 +237,7 @@ export default function ProjectHours({
                 textTransform:
                   'uppercase',
                 color:
-                  'var(--muted-light)',
+                  'var(--text-soft)',
               }}
             >
               Usage
@@ -247,7 +247,7 @@ export default function ProjectHours({
               style={{
                 fontSize: '0.68rem',
                 color:
-                  'var(--muted-light)',
+                  'var(--text-soft)',
                 whiteSpace:
                   'nowrap',
               }}
@@ -263,7 +263,7 @@ export default function ProjectHours({
               height: '10px',
               borderRadius: '999px',
               background:
-                'rgba(255,255,255,0.06)',
+                'var(--glass-2)',
               overflow: 'hidden',
             }}
           >
@@ -288,7 +288,7 @@ export default function ProjectHours({
                 borderRadius:
                   'inherit',
                 background:
-                  'linear-gradient(90deg, var(--sand-light), var(--forest-bright))',
+                  'linear-gradient(90deg, var(--bronze-soft), var(--verde-ink))',
               }}
             />
           </div>

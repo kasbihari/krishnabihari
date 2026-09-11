@@ -131,7 +131,7 @@ function getUpdateAccent(
   ) {
     case 'milestone':
       return {
-        dot: 'var(--forest-bright)',
+        dot: 'var(--verde-ink)',
         border:
           'rgba(74, 124, 106, 0.22)',
         background:
@@ -140,7 +140,7 @@ function getUpdateAccent(
 
     case 'development':
       return {
-        dot: 'var(--sand-light)',
+        dot: 'var(--bronze-soft)',
         border:
           'rgba(200, 184, 154, 0.2)',
         background:
@@ -149,7 +149,7 @@ function getUpdateAccent(
 
     case 'design':
       return {
-        dot: 'var(--sand)',
+        dot: 'var(--bronze)',
         border:
           'rgba(200, 184, 154, 0.16)',
         background:
@@ -158,7 +158,7 @@ function getUpdateAccent(
 
     case 'testing':
       return {
-        dot: 'var(--forest-bright)',
+        dot: 'var(--verde-ink)',
         border:
           'rgba(74, 124, 106, 0.18)',
         background:
@@ -167,20 +167,20 @@ function getUpdateAccent(
 
     case 'launch':
       return {
-        dot: 'var(--soft-white)',
+        dot: 'var(--text)',
         border:
-          'rgba(255,255,255,0.16)',
+          'var(--line)',
         background:
-          'rgba(255,255,255,0.04)',
+          'var(--glass-2)',
       };
 
     default:
       return {
-        dot: 'var(--muted-light)',
+        dot: 'var(--text-soft)',
         border:
-          'rgba(255,255,255,0.08)',
+          'var(--glass-border)',
         background:
-          'rgba(255,255,255,0.02)',
+          'var(--glass-1)',
       };
   }
 }
@@ -225,10 +225,10 @@ export default function ProjectUpdates({
           minWidth: 0,
           overflow: 'hidden',
           border:
-            '1px solid var(--border-mid)',
+            '1px solid var(--line)',
           borderRadius: '18px',
           background:
-            'rgba(21, 15, 10, 0.78)',
+            'var(--glass-2)',
           padding:
             'clamp(1.1rem, 3vw, 1.5rem)',
           boxShadow:
@@ -290,7 +290,7 @@ export default function ProjectUpdates({
                     '0.14em',
                   textTransform:
                     'uppercase',
-                  color: 'var(--sand)',
+                  color: 'var(--bronze)',
                 }}
               >
                 Project updates
@@ -300,7 +300,7 @@ export default function ProjectUpdates({
                 style={{
                   margin: 0,
                   color:
-                    'var(--soft-white)',
+                    'var(--text)',
                   fontSize:
                     'clamp(1.35rem, 3vw, 1.75rem)',
                   lineHeight: 1.1,
@@ -331,7 +331,7 @@ export default function ProjectUpdates({
                 flex: '0 0 auto',
                 fontSize: '0.65rem',
                 color:
-                  'var(--muted-light)',
+                  'var(--text-soft)',
                 letterSpacing:
                   '0.1em',
                 textTransform:
@@ -370,9 +370,9 @@ export default function ProjectUpdates({
                 borderRadius:
                   '12px',
                 border:
-                  '1px solid rgba(255,255,255,0.05)',
+                  '1px solid var(--glass-1)',
                 background:
-                  'rgba(255,255,255,0.018)',
+                  'var(--glass-1)',
               }}
             >
               <div
@@ -380,7 +380,7 @@ export default function ProjectUpdates({
                   marginBottom:
                     '0.35rem',
                   color:
-                    'var(--soft-white)',
+                    'var(--text)',
                   fontSize:
                     '0.92rem',
                 }}
@@ -392,7 +392,7 @@ export default function ProjectUpdates({
               <div
                 style={{
                   color:
-                    'var(--muted)',
+                    'var(--text-faint)',
                   fontSize:
                     '0.84rem',
                   lineHeight: 1.7,
@@ -485,12 +485,12 @@ export default function ProjectUpdates({
                         border: `1px solid ${
                           isLatest
                             ? accent.border
-                            : 'rgba(255,255,255,0.05)'
+                            : 'var(--glass-1)'
                         }`,
                         background:
                           isLatest
                             ? accent.background
-                            : 'rgba(255,255,255,0.018)',
+                            : 'var(--glass-1)',
                       }}
                     >
                       <motion.div
@@ -525,7 +525,7 @@ export default function ProjectUpdates({
                             '50%',
                           border: `1px solid ${accent.border}`,
                           background:
-                            'rgba(255,255,255,0.02)',
+                            'var(--glass-1)',
                           marginTop:
                             '0.1rem',
                         }}
@@ -604,7 +604,7 @@ export default function ProjectUpdates({
                               style={{
                                 margin: 0,
                                 color:
-                                  'var(--soft-white)',
+                                  'var(--text)',
                                 fontSize:
                                   '0.96rem',
                                 lineHeight:
@@ -645,7 +645,7 @@ export default function ProjectUpdates({
                                   background:
                                     'rgba(200,184,154,0.05)',
                                   color:
-                                    'var(--sand-light)',
+                                    'var(--bronze-soft)',
                                   fontSize:
                                     '0.52rem',
                                   letterSpacing:
@@ -667,7 +667,7 @@ export default function ProjectUpdates({
                               flex:
                                 '0 0 auto',
                               color:
-                                'var(--muted-light)',
+                                'var(--text-soft)',
                               fontSize:
                                 '0.62rem',
                               letterSpacing:
@@ -726,7 +726,7 @@ export default function ProjectUpdates({
                             style={{
                               margin: 0,
                               color:
-                                'var(--muted)',
+                                'var(--text-faint)',
                               fontSize:
                                 '0.84rem',
                               lineHeight:

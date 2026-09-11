@@ -146,7 +146,7 @@ padding: 1rem;
           );
         border:
           1px solid
-          var(--border-mid);
+          var(--line);
         border-radius: 18px;
         background:
           rgba(
@@ -171,7 +171,7 @@ padding: 1rem;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color:
-          var(--sand);
+          var(--bronze);
       }
 
       .portal-loading-track {
@@ -198,8 +198,8 @@ padding: 1rem;
         background:
           linear-gradient(
             90deg,
-            var(--forest-bright),
-            var(--sand-light)
+            var(--verde-ink),
+            var(--bronze-soft)
           );
         animation:
           portal-loading
@@ -210,7 +210,7 @@ padding: 1rem;
 
       .portal-loading-copy {
         color:
-          var(--muted);
+          var(--text-faint);
         line-height: 1.8;
       }
 
@@ -293,7 +293,7 @@ padding: 1rem;
           );
         border:
           1px solid
-          var(--border-mid);
+          var(--line);
         border-radius: 18px;
         background:
           rgba(
@@ -316,7 +316,7 @@ padding: 1rem;
         margin-bottom:
           0.75rem;
         color:
-          var(--soft-white);
+          var(--text);
         font-size:
           clamp(
             1.3rem,
@@ -328,7 +328,7 @@ padding: 1rem;
 
       .portal-error-copy {
         color:
-          var(--muted);
+          var(--text-faint);
         line-height: 1.8;
       }
 
@@ -466,7 +466,7 @@ clamp(0.85rem, 3vw, 1.25rem)
         );
       border:
         1px solid
-        var(--border-mid);
+        var(--line);
       border-radius: 18px;
       background:
         rgba(
@@ -504,7 +504,7 @@ clamp(0.85rem, 3vw, 1.25rem)
         50%;
       border:
         1px solid
-        var(--border-mid);
+        var(--line);
       background:
         rgba(
           200,
@@ -513,7 +513,7 @@ clamp(0.85rem, 3vw, 1.25rem)
           0.08
         );
       color:
-        var(--sand-light);
+        var(--bronze-soft);
       font-weight: 600;
       font-size:
         0.72rem;
@@ -531,7 +531,7 @@ clamp(0.85rem, 3vw, 1.25rem)
       overflow:
         hidden;
       color:
-        var(--sand);
+        var(--bronze);
       font-size:
         0.65rem;
       letter-spacing:
@@ -547,7 +547,7 @@ clamp(0.85rem, 3vw, 1.25rem)
     .portal-dashboard__title {
       margin: 0;
       color:
-        var(--soft-white);
+        var(--text);
       font-size:
         clamp(
           1.45rem,
@@ -564,7 +564,7 @@ clamp(0.85rem, 3vw, 1.25rem)
       margin-top:
         0.3rem;
       color:
-        var(--muted);
+        var(--text-faint);
       font-family:
         'JetBrains Mono',
         monospace;
@@ -805,8 +805,8 @@ clamp(0.85rem, 3vw, 1.25rem)
               }}
               style={{
                 background: "transparent",
-                border: "1px solid var(--border-mid)",
-                color: "var(--soft-white)",
+                border: "1px solid var(--line)",
+                color: "var(--text)",
               }}
             >
               Log out

@@ -1,0 +1,18 @@
+---
+export interface Props {
+  delay?: 0 | 100 | 150 | 200 | 300 | 400 | 500;
+  variant?: 'up' | 'scale' | 'fade';
+  as?: 'div' | 'section' | 'article' | 'li' | 'header' | 'footer' | 'span' | 'p';
+  class?: string;
+}
+
+const { delay = 0, variant = 'up', as: Tag = 'div', class: cls = '' } = Astro.props;
+---
+
+<Tag
+  data-reveal={variant === 'up' ? '' : variant}
+  data-delay={delay ? String(delay) : undefined}
+  class={cls || undefined}
+>
+  <slot />
+</Tag>

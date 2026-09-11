@@ -300,10 +300,10 @@ export default function ProjectOverview({
           overflow: hidden;
           border:
             1px solid
-            var(--border-mid);
+            var(--line);
           border-radius: 18px;
           background:
-            rgba(21, 15, 10, 0.78);
+            var(--glass-2);
           box-shadow:
             0 20px 45px
             rgba(0, 0, 0, 0.18);
@@ -371,7 +371,7 @@ export default function ProjectOverview({
           font-size: 0.68rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: var(--sand);
+          color: var(--bronze);
         }
 
         .project-overview__title {
@@ -383,7 +383,7 @@ export default function ProjectOverview({
               2.3rem
             );
           line-height: 1.1;
-          color: var(--soft-white);
+          color: var(--text);
           overflow-wrap: anywhere;
         }
 
@@ -416,7 +416,7 @@ export default function ProjectOverview({
               154,
               0.06
             );
-          color: var(--sand-light);
+          color: var(--bronze-soft);
           font-size: 0.68rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
@@ -453,7 +453,7 @@ export default function ProjectOverview({
           flex: 0 0 7px;
           border-radius: 50%;
           background:
-            var(--sand-light);
+            var(--bronze-soft);
           box-shadow:
             0 0 0 4px
             rgba(
@@ -545,13 +545,13 @@ export default function ProjectOverview({
           font-size: 0.64rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--muted-light);
+          color: var(--text-soft);
         }
 
         .project-overview__meta-value {
           font-size: 0.96rem;
           line-height: 1.45;
-          color: var(--soft-white);
+          color: var(--text);
           overflow-wrap: anywhere;
         }
 
@@ -609,11 +609,11 @@ export default function ProjectOverview({
           font-size: 0.64rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--muted-light);
+          color: var(--text-soft);
         }
 
         .project-overview__category-description {
-          color: var(--soft-white);
+          color: var(--text);
           font-size: 0.95rem;
           line-height: 1.6;
           overflow-wrap: anywhere;
@@ -631,12 +631,12 @@ export default function ProjectOverview({
           font-size: 0.7rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--muted-light);
+          color: var(--text-soft);
         }
 
         .project-overview__progress-value {
           font-size: 1.5rem;
-          color: var(--soft-white);
+          color: var(--text);
           font-family:
             var(--font-body);
           white-space: nowrap;
@@ -667,8 +667,8 @@ export default function ProjectOverview({
           background:
             linear-gradient(
               90deg,
-              var(--forest-bright),
-              var(--sand-light)
+              var(--verde-ink),
+              var(--bronze-soft)
             );
           animation:
             project-overview-progress
@@ -686,7 +686,7 @@ export default function ProjectOverview({
         .project-overview__description {
           margin: 0;
           max-width: 60ch;
-          color: var(--muted);
+          color: var(--text-faint);
           font-size: 0.98rem;
           line-height: 1.8;
           overflow-wrap: anywhere;

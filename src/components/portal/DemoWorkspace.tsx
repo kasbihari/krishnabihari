@@ -98,10 +98,10 @@ export default function DemoWorkspace({
         width: '100%',
         overflow: 'hidden',
         border:
-          '1px solid var(--border-mid)',
+          '1px solid var(--line)',
         borderRadius: '20px',
         background:
-          'rgba(21, 15, 10, 0.78)',
+          'var(--glass-2)',
         boxShadow:
           '0 20px 45px rgba(0, 0, 0, 0.16)',
       }}
@@ -473,7 +473,7 @@ export default function DemoWorkspace({
 
         .demo-workspace__eyebrow {
           margin: 0 0 0.55rem;
-          color: var(--sand);
+          color: var(--bronze);
           font-size: 0.65rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
@@ -481,7 +481,7 @@ export default function DemoWorkspace({
 
         .demo-workspace__title {
           margin: 0;
-          color: var(--soft-white);
+          color: var(--text);
           font-size:
             clamp(
               1.8rem,
@@ -494,7 +494,7 @@ export default function DemoWorkspace({
 
         .demo-workspace__code {
           margin-top: 0.5rem;
-          color: var(--muted);
+          color: var(--text-faint);
           font-family:
             'JetBrains Mono',
             monospace;
@@ -527,7 +527,7 @@ export default function DemoWorkspace({
               0.06
             );
           color:
-            var(--sand-light);
+            var(--bronze-soft);
           font-size: 0.66rem;
           letter-spacing: 0.1em;
           text-transform:
@@ -570,7 +570,7 @@ export default function DemoWorkspace({
           flex: 0 0 7px;
           border-radius: 50%;
           background:
-            var(--sand-light);
+            var(--bronze-soft);
           box-shadow:
             0 0 0 4px
             rgba(
@@ -586,7 +586,7 @@ export default function DemoWorkspace({
           margin:
             0 0
             1.5rem;
-          color: var(--muted);
+          color: var(--text-faint);
           font-size: 0.98rem;
           line-height: 1.8;
           overflow-wrap: anywhere;
@@ -614,7 +614,7 @@ export default function DemoWorkspace({
 
         .demo-workspace__section-label {
           margin-bottom: 0.8rem;
-          color: var(--muted-light);
+          color: var(--text-soft);
           font-size: 0.64rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -693,7 +693,7 @@ export default function DemoWorkspace({
               255,
               0.015
             );
-          color: var(--muted);
+          color: var(--text-faint);
           text-align: center;
           line-height: 1.7;
         }

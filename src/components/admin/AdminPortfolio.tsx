@@ -69,7 +69,7 @@ const EMPTY_FORM: FormState = {
   stack: '',
   github_url: '',
   live_url: '',
-  accent: 'var(--sand-light)',
+  accent: 'var(--bronze-soft)',
   status: 'done',
   published: false,
   featured: false,
@@ -108,9 +108,9 @@ const inputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
   padding: '0.6rem 0.75rem',
   borderRadius: '8px',
-  border: '1px solid var(--border-mid)',
-  background: 'rgba(255,255,255,0.03)',
-  color: 'var(--soft-white)',
+  border: '1px solid var(--line)',
+  background: 'var(--glass-1)',
+  color: 'var(--text)',
   fontSize: '0.9rem',
   fontFamily: 'inherit',
 };
@@ -120,7 +120,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: '0.68rem',
   letterSpacing: '0.1em',
   textTransform: 'uppercase',
-  color: 'var(--muted-light)',
+  color: 'var(--text-soft)',
   marginBottom: '0.35rem',
 };
 
@@ -374,7 +374,7 @@ export default function AdminPortfolio({
                 fontSize: '0.7rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--sand)',
+                color: 'var(--bronze)',
                 marginBottom: '0.5rem',
               }}
             >
@@ -385,12 +385,12 @@ export default function AdminPortfolio({
                 margin: 0,
                 fontSize: 'clamp(2rem, 4vw, 3rem)',
                 lineHeight: 1.1,
-                color: 'var(--soft-white)',
+                color: 'var(--text)',
               }}
             >
               Portfolio projects
             </h1>
-            <div style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
               {projects.length} {projects.length === 1 ? 'project' : 'projects'} ·{' '}
               {projects.filter((p) => p.published).length} published
             </div>
@@ -403,7 +403,7 @@ export default function AdminPortfolio({
               borderRadius: '10px',
               border: '1px solid rgba(92,158,131,0.4)',
               background: 'rgba(92,158,131,0.15)',
-              color: 'var(--forest-bright)',
+              color: 'var(--verde-ink)',
               fontSize: '0.85rem',
               fontWeight: 600,
               cursor: 'pointer',
@@ -418,7 +418,7 @@ export default function AdminPortfolio({
             style={{
               border: '1px solid rgba(92,158,131,0.3)',
               background: 'rgba(92,158,131,0.1)',
-              color: 'var(--forest-bright)',
+              color: 'var(--verde-ink)',
               borderRadius: '10px',
               padding: '0.8rem 1rem',
               marginBottom: '1rem',
@@ -448,7 +448,7 @@ export default function AdminPortfolio({
         {editorOpen && (
           <section
             style={{
-              border: '1px solid var(--border-mid)',
+              border: '1px solid var(--line)',
               borderRadius: '20px',
               background: 'rgba(21,15,10,0.7)',
               padding: '1.5rem',
@@ -463,15 +463,15 @@ export default function AdminPortfolio({
                 marginBottom: '1.25rem',
               }}
             >
-              <h2 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--soft-white)' }}>
+              <h2 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--text)' }}>
                 {isCreating ? 'New project' : 'Edit project'}
               </h2>
               <button
                 onClick={closeEditor}
                 style={{
                   background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'var(--muted-light)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-soft)',
                   borderRadius: '8px',
                   padding: '0.4rem 0.8rem',
                   cursor: 'pointer',
@@ -587,7 +587,7 @@ export default function AdminPortfolio({
                     style={inputStyle}
                     value={form.accent}
                     onChange={(e) => setField('accent', e.target.value)}
-                    placeholder="var(--sand-light)"
+                    placeholder="var(--bronze-soft)"
                   />
                 </Field>
                 <Field label="Status">
@@ -614,7 +614,7 @@ export default function AdminPortfolio({
                   }}
                 />
                 <div style={{ marginTop: '0.75rem' }}>
-                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted-light)', marginBottom: '0.35rem' }}>
+                  <div style={{ fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-soft)', marginBottom: '0.35rem' }}>
                     Or paste image URLs (one per line)
                   </div>
                   <textarea
@@ -630,7 +630,7 @@ export default function AdminPortfolio({
               </Field>
 
               <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--soft-white)', fontSize: '0.9rem', cursor: 'pointer' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text)', fontSize: '0.9rem', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={form.published}
@@ -638,7 +638,7 @@ export default function AdminPortfolio({
                   />
                   Published
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--soft-white)', fontSize: '0.9rem', cursor: 'pointer' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text)', fontSize: '0.9rem', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={form.featured}
@@ -654,9 +654,9 @@ export default function AdminPortfolio({
                   style={{
                     padding: '0.7rem 1.2rem',
                     borderRadius: '10px',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: '1px solid var(--glass-border)',
                     background: 'transparent',
-                    color: 'var(--muted-light)',
+                    color: 'var(--text-soft)',
                     cursor: 'pointer',
                     fontSize: '0.85rem',
                   }}
@@ -671,7 +671,7 @@ export default function AdminPortfolio({
                     borderRadius: '10px',
                     border: '1px solid rgba(92,158,131,0.4)',
                     background: 'rgba(92,158,131,0.2)',
-                    color: 'var(--forest-bright)',
+                    color: 'var(--verde-ink)',
                     cursor: saving ? 'default' : 'pointer',
                     fontSize: '0.85rem',
                     fontWeight: 600,
@@ -688,14 +688,14 @@ export default function AdminPortfolio({
         {projects.length === 0 ? (
           <div
             style={{
-              border: '1px solid var(--border-mid)',
+              border: '1px solid var(--line)',
               borderRadius: '18px',
               background: 'rgba(21,15,10,0.7)',
               padding: '2rem',
               textAlign: 'center',
             }}
           >
-            <div style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.8 }}>
+            <div style={{ color: 'var(--text-faint)', fontSize: '1rem', lineHeight: 1.8 }}>
               No portfolio projects yet. Click “New project” to add your first one.
             </div>
           </div>
@@ -705,7 +705,7 @@ export default function AdminPortfolio({
               <div
                 key={project.id}
                 style={{
-                  border: '1px solid var(--border-mid)',
+                  border: '1px solid var(--line)',
                   borderRadius: '18px',
                   background: 'rgba(21,15,10,0.7)',
                   padding: '1.5rem',
@@ -716,15 +716,15 @@ export default function AdminPortfolio({
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'start' }}>
                   <div>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                      <Badge color="var(--sand)" background="rgba(200,184,154,0.08)" border="rgba(200,184,154,0.2)">
+                      <Badge color="var(--bronze)" background="rgba(200,184,154,0.08)" border="rgba(200,184,154,0.2)">
                         {CATEGORY_LABELS[project.category]}
                       </Badge>
                       {project.published ? (
-                        <Badge color="var(--forest-bright)" background="rgba(92,158,131,0.12)" border="rgba(92,158,131,0.3)">
+                        <Badge color="var(--verde-ink)" background="rgba(92,158,131,0.12)" border="rgba(92,158,131,0.3)">
                           Published
                         </Badge>
                       ) : (
-                        <Badge color="var(--muted-light)" background="rgba(255,255,255,0.04)" border="rgba(255,255,255,0.1)">
+                        <Badge color="var(--text-soft)" background="var(--glass-2)" border="var(--glass-border)">
                           Draft
                         </Badge>
                       )}
@@ -733,15 +733,15 @@ export default function AdminPortfolio({
                           Featured
                         </Badge>
                       )}
-                      <Badge color="var(--muted-light)" background="rgba(255,255,255,0.04)" border="rgba(255,255,255,0.1)">
+                      <Badge color="var(--text-soft)" background="var(--glass-2)" border="var(--glass-border)">
                         {project.status === 'done' ? 'Shipped' : 'In Progress'}
                       </Badge>
                     </div>
-                    <h2 style={{ margin: '0 0 0.4rem', fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: 'var(--soft-white)' }}>
+                    <h2 style={{ margin: '0 0 0.4rem', fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: 'var(--text)' }}>
                       {project.title}
                     </h2>
                     {project.tagline && (
-                      <div style={{ color: 'var(--muted-light)', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                      <div style={{ color: 'var(--text-soft)', fontSize: '0.9rem', lineHeight: 1.6 }}>
                         {project.tagline}
                       </div>
                     )}
@@ -809,9 +809,9 @@ function iconButtonStyle(disabled: boolean): React.CSSProperties {
   return {
     padding: '0.45rem 0.7rem',
     borderRadius: '8px',
-    border: '1px solid rgba(255,255,255,0.1)',
-    background: 'rgba(255,255,255,0.03)',
-    color: 'var(--muted-light)',
+    border: '1px solid var(--glass-border)',
+    background: 'var(--glass-1)',
+    color: 'var(--text-soft)',
     cursor: disabled ? 'default' : 'pointer',
     fontSize: '0.75rem',
     opacity: disabled ? 0.4 : 1,

@@ -123,10 +123,10 @@ export default function ProjectGallery({
           width: '100%',
           overflow: 'hidden',
           border:
-            '1px solid var(--border-mid)',
+            '1px solid var(--line)',
           borderRadius: '18px',
           background:
-            'rgba(21, 15, 10, 0.78)',
+            'var(--glass-2)',
           padding: '1.5rem',
           minHeight: '180px',
           display: 'grid',
@@ -144,7 +144,7 @@ export default function ProjectGallery({
                 '0.14em',
               textTransform:
                 'uppercase',
-              color: 'var(--sand)',
+              color: 'var(--bronze)',
             }}
           >
             Project media
@@ -153,7 +153,7 @@ export default function ProjectGallery({
           <div
             style={{
               color:
-                'var(--soft-white)',
+                'var(--text)',
               marginBottom:
                 '0.35rem',
             }}
@@ -164,7 +164,7 @@ export default function ProjectGallery({
           <div
             style={{
               color:
-                'var(--muted)',
+                'var(--text-faint)',
               fontSize: '0.85rem',
               lineHeight: 1.6,
             }}
@@ -227,11 +227,11 @@ export default function ProjectGallery({
         style={{
           position: 'relative',
           border:
-            '1px solid var(--border-mid)',
+            '1px solid var(--line)',
           borderRadius: '18px',
           overflow: 'hidden',
           background:
-            'rgba(21, 15, 10, 0.78)',
+            'var(--glass-2)',
           boxShadow:
             '0 20px 45px rgba(0, 0, 0, 0.16)',
         }}
@@ -257,7 +257,7 @@ export default function ProjectGallery({
             padding:
               '1.15rem clamp(1rem, 2.5vw, 1.4rem)',
             borderBottom:
-              '1px solid rgba(255,255,255,0.05)',
+              '1px solid var(--glass-1)',
           }}
         >
           <div
@@ -267,7 +267,7 @@ export default function ProjectGallery({
                 '0.14em',
               textTransform:
                 'uppercase',
-              color: 'var(--sand)',
+              color: 'var(--bronze)',
               marginBottom:
                 '0.3rem',
             }}
@@ -278,7 +278,7 @@ export default function ProjectGallery({
           <div
             style={{
               color:
-                'var(--soft-white)',
+                'var(--text)',
               fontSize: '1.05rem',
             }}
           >
@@ -290,7 +290,7 @@ export default function ProjectGallery({
           style={{
             position: 'relative',
             background:
-              'rgba(255,255,255,0.015)',
+              'var(--glass-1)',
           }}
         >
           <button
@@ -379,11 +379,11 @@ export default function ProjectGallery({
                   borderRadius:
                     '50%',
                   border:
-                    '1px solid rgba(255,255,255,0.12)',
+                    '1px solid var(--glass-border)',
                   background:
                     'rgba(0,0,0,0.48)',
                   color:
-                    'var(--soft-white)',
+                    'var(--text)',
                   cursor: 'pointer',
                   backdropFilter:
                     'blur(10px)',
@@ -420,11 +420,11 @@ export default function ProjectGallery({
                   borderRadius:
                     '50%',
                   border:
-                    '1px solid rgba(255,255,255,0.12)',
+                    '1px solid var(--glass-border)',
                   background:
                     'rgba(0,0,0,0.48)',
                   color:
-                    'var(--soft-white)',
+                    'var(--text)',
                   cursor: 'pointer',
                   backdropFilter:
                     'blur(10px)',
@@ -520,7 +520,7 @@ export default function ProjectGallery({
                         borderRadius:
                           '50%',
                         background:
-                          'var(--soft-white)',
+                          'var(--text)',
                         cursor:
                           'pointer',
                       }}
@@ -557,7 +557,7 @@ export default function ProjectGallery({
               gap: '0.55rem',
               padding: '0.75rem',
               borderTop:
-                '1px solid rgba(255,255,255,0.05)',
+                '1px solid var(--glass-1)',
             }}
           >
             {validImages.map(
@@ -598,10 +598,10 @@ export default function ProjectGallery({
                     border:
                       activeIndex ===
                       index
-                        ? '1px solid var(--sand-light)'
-                        : '1px solid rgba(255,255,255,0.06)',
+                        ? '1px solid var(--bronze-soft)'
+                        : '1px solid var(--glass-2)',
                     background:
-                      'rgba(255,255,255,0.03)',
+                      'var(--glass-1)',
                     cursor:
                       'pointer',
                     opacity:
@@ -706,11 +706,11 @@ export default function ProjectGallery({
                 borderRadius:
                   '50%',
                 border:
-                  '1px solid rgba(255,255,255,0.12)',
+                  '1px solid var(--glass-border)',
                 background:
-                  'rgba(255,255,255,0.06)',
+                  'var(--glass-2)',
                 color:
-                  'var(--soft-white)',
+                  'var(--text)',
                 cursor:
                   'pointer',
                 fontSize: '1.2rem',
@@ -797,11 +797,11 @@ export default function ProjectGallery({
                     borderRadius:
                       '50%',
                     border:
-                      '1px solid rgba(255,255,255,0.12)',
+                      '1px solid var(--glass-border)',
                     background:
-                      'rgba(255,255,255,0.06)',
+                      'var(--glass-2)',
                     color:
-                      'var(--soft-white)',
+                      'var(--text)',
                     cursor:
                       'pointer',
                     fontSize:
@@ -841,11 +841,11 @@ export default function ProjectGallery({
                     borderRadius:
                       '50%',
                     border:
-                      '1px solid rgba(255,255,255,0.12)',
+                      '1px solid var(--glass-border)',
                     background:
-                      'rgba(255,255,255,0.06)',
+                      'var(--glass-2)',
                     color:
-                      'var(--soft-white)',
+                      'var(--text)',
                     cursor:
                       'pointer',
                     fontSize:

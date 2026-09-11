@@ -1,0 +1,13 @@
+---
+export interface Props {
+  align?: 'start' | 'center';
+  as?: 'p' | 'span' | 'div';
+  class?: string;
+}
+
+const { align = 'start', as: Tag = 'p', class: cls = '' } = Astro.props;
+---
+
+<Tag class:list={['section-label', { 'section-label--center': align === 'center' }, cls]}>
+  <slot />
+</Tag>
