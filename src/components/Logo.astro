@@ -1,21 +1,29 @@
 ---
-// Static SVG logo – zero JS
----
-<div class="fixed top-8 left-8 z-40 animate-pulse-slow">
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- K -->
-    <path d="M14 14V34H18V25L24 34H29L22 24L29 14H24L18 22V14H14Z" fill="white" fill-opacity="0.9"/>
-    <!-- B -->
-    <path d="M32 14V34H37C39.5 34 42 31.5 42 28V20C42 16.5 39.5 14 37 14H32ZM36 18H38C39.1 18 40 18.9 40 20V28C40 29.1 39.1 30 38 30H36V18Z" fill="white" fill-opacity="0.9"/>
-  </svg>
-</div>
+/**
+ * The brand mark, for non-interactive placements.
+ *
+ * This renders the supplied artwork itself (`/images/logo-mark.svg`) rather
+ * than redrawing it, so every placement on the site shows the same asset as
+ * the navigation. Tone is adapted per theme by `.kb-logo-mark` in global.css,
+ * which is required because the artwork is a white mark on transparency.
+ *
+ * `size` is the visible mark; the artwork carries its own internal padding.
+ */
+export interface Props {
+  size?: number;
+  class?: string;
+}
 
-<style>
-  @keyframes slowPulse {
-    0%, 100% { opacity: 0.9; }
-    50% { opacity: 1; }
-  }
-  .animate-pulse-slow {
-    animation: slowPulse 4s ease-in-out infinite;
-  }
-</style>
+const { size = 40, class: className = '' } = Astro.props;
+---
+
+<img
+  src="/images/logo-mark.svg"
+  alt=""
+  aria-hidden="true"
+  class:list={['kb-logo-mark', className]}
+  style={`--kb-logo-size: ${size}px`}
+  width="500"
+  height="500"
+  decoding="async"
+/>

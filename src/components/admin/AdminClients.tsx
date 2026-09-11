@@ -132,7 +132,7 @@ export default function AdminClients({ clients: initialClients }: AdminClientsPr
   const editorOpen = creating || editingId !== null;
 
   return (
-    <main style={{ minHeight: '100vh', padding: '2rem 1.25rem 4rem' }}>
+    <main style={{ minHeight: '100svh', padding: '2rem 1.25rem 4rem' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
           <div>

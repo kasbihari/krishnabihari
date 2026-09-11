@@ -16,8 +16,11 @@ export const nl: TranslationDict = {
     clientPortal: 'Klantportaal',
     openMenu: 'Menu openen',
     closeMenu: 'Menu sluiten',
-    switchTheme: 'Kleurthema wisselen',
+    switchTheme: 'Kleurthema',
     switchLanguage: 'Taal wijzigen',
+    themeLight: 'Licht',
+    themeDark: 'Donker',
+    themeSystem: 'Systeem',
   },
   hero: {
     availability: 'Beschikbaar voor nieuwe projecten',

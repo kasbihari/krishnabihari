@@ -14,8 +14,11 @@ export const en = {
     clientPortal: 'Client portal',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
-    switchTheme: 'Toggle colour theme',
+    switchTheme: 'Colour theme',
     switchLanguage: 'Change language',
+    themeLight: 'Light',
+    themeDark: 'Dark',
+    themeSystem: 'System',
   },
   hero: {
     availability: 'Available for new projects',

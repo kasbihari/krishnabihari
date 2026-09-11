@@ -2,6 +2,9 @@
 import '../styles/global.css';
 import AdminNav from '../components/admin/AdminNav';
 import HeadMeta from '../components/system/HeadMeta.astro';
+import GlobalBackground from '../components/system/GlobalBackground.astro';
+import { getLangFromCookies } from '../i18n/server';
+import { getDict } from '../i18n';
 
 export interface Props {
   title?: string;
@@ -15,6 +18,15 @@ const {
   description = 'Private developer dashboard for managing clients and projects.',
   bare = false,
 } = Astro.props;
+
+/*
+  The admin shares the site's one language and theme system. Its own copy is
+  still English-only, so `lang` keeps describing the content accurately and no
+  language picker is offered here — a control that changes nothing would be a
+  lie. The theme picker is offered because it genuinely applies.
+*/
+const lang = getLangFromCookies(Astro.cookies);
+const t = getDict(lang);
 
 const canonicalURL = new URL(
   Astro.url.pathname,
@@ -35,7 +47,20 @@ const canonicalURL = new URL(
   </head>
 
   <body>
-    {!bare && <AdminNav currentPath={Astro.url.pathname} />}
+    <GlobalBackground />
+
+    {!bare && (
+      <AdminNav
+        currentPath={Astro.url.pathname}
+        themeLabels={{
+          light: t.nav.themeLight,
+          dark: t.nav.themeDark,
+          system: t.nav.themeSystem,
+        }}
+        themeAriaLabel={t.nav.switchTheme}
+        client:load
+      />
+    )}
     <slot />
   </body>
 </html>

@@ -667,7 +667,7 @@ export default function DemoWorkspace({
           width: 100%;
           height: auto;
           max-height: 640px;
-          object-fit: cover;
+          object-fit: contain;
           transform-origin:
             center center;
         }

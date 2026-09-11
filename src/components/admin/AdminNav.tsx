@@ -1,3 +1,6 @@
+import ThemeSwitcher from '../ThemeSwitcher';
+import type { ThemeMode } from '../../lib/client/theme';
+
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', match: /^\/admin\/?$/ },
   { href: '/admin/portfolio', label: 'Portfolio', match: /^\/admin\/portfolio/ },
@@ -5,7 +8,17 @@ const NAV_ITEMS = [
   { href: '/admin/clients', label: 'Clients', match: /^\/admin\/clients/ },
 ];
 
-export default function AdminNav({ currentPath }: { currentPath: string }) {
+type Props = {
+  currentPath: string;
+  themeLabels: Record<ThemeMode, string>;
+  themeAriaLabel: string;
+};
+
+export default function AdminNav({
+  currentPath,
+  themeLabels,
+  themeAriaLabel,
+}: Props) {
   return (
     <nav
       aria-label="Admin navigation"
@@ -75,6 +88,14 @@ export default function AdminNav({ currentPath }: { currentPath: string }) {
               </a>
             );
           })}
+
+          {/* Same theme control as the public site — one store, one source
+              of truth, so the choice carries across every route. */}
+          <ThemeSwitcher
+            size="sm"
+            ariaLabel={themeAriaLabel}
+            labels={themeLabels}
+          />
 
           <a
             href="/admin/logout"

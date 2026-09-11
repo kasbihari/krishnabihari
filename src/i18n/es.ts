@@ -16,8 +16,11 @@ export const es: TranslationDict = {
     clientPortal: 'Portal de clientes',
     openMenu: 'Abrir menú',
     closeMenu: 'Cerrar menú',
-    switchTheme: 'Cambiar tema de color',
+    switchTheme: 'Tema de color',
     switchLanguage: 'Cambiar idioma',
+    themeLight: 'Claro',
+    themeDark: 'Oscuro',
+    themeSystem: 'Sistema',
   },
   hero: {
     availability: 'Disponible para nuevos proyectos',

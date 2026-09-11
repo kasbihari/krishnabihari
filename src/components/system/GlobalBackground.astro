@@ -1,0 +1,25 @@
+---
+/**
+ * The site-wide identity backdrop.
+ *
+ * Mounted exactly ONCE per layout — never inside a section. It is a single
+ * fixed layer sitting behind everything:
+ *
+ *     image.png                        (the brand texture)
+ *       ↓
+ *     theme-dependent veil             (light or dark translucent wash)
+ *       ↓
+ *     existing ambient gradients       (body::before, z -2)
+ *       ↓
+ *     page content                     (z 1)
+ *
+ * The layer is inert: `aria-hidden` plus `pointer-events: none`, so it never
+ * intercepts a click, a selection or the keyboard. Styling lives in
+ * global.css next to the other design tokens.
+ */
+---
+
+<div class="kb-backdrop" aria-hidden="true">
+  <div class="kb-backdrop__image"></div>
+  <div class="kb-backdrop__veil"></div>
+</div>

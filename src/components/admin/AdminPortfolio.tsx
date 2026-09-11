@@ -356,7 +356,7 @@ export default function AdminPortfolio({
   const editorOpen = isCreating || editingId !== null;
 
   return (
-    <main style={{ minHeight: '100vh', padding: '2rem 1.25rem 4rem' }}>
+    <main style={{ minHeight: '100svh', padding: '2rem 1.25rem 4rem' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <header
           style={{

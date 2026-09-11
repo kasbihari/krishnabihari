@@ -527,7 +527,7 @@ export default function ProjectManager({
     'Unknown client';
 
   return (
-    <main style={{ minHeight: '100vh', padding: '2rem 1.25rem 4rem' }}>
+    <main style={{ minHeight: '100svh', padding: '2rem 1.25rem 4rem' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gap: '1.5rem' }}>
         <header>
           <a

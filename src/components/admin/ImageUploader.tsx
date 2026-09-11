@@ -14,7 +14,7 @@ const ACCEPT =
 const thumbStyle: React.CSSProperties = {
   width: '72px',
   height: '72px',
-  objectFit: 'cover',
+  objectFit: 'contain',
   borderRadius: '10px',
   border: '1px solid var(--line)',
   background: 'var(--glass-1)',

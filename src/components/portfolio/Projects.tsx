@@ -716,12 +716,14 @@ export default function Projects({
           border: 1px solid var(--glass-border);
           background: var(--surface);
           margin-bottom: 2.5rem;
+          display: grid;
+          place-items: center;
         }
 
         .pj-slides__img {
           width: 100%;
           height: clamp(240px, 46vw, 520px);
-          object-fit: cover;
+          object-fit: contain;
           display: block;
         }
 

@@ -47,7 +47,7 @@ function StatCard({ label, value }: StatCardProps) {
 
 export default function AdminDashboard({ summary }: { summary: AdminSummary }) {
   return (
-    <main style={{ minHeight: '100vh', padding: '2rem 1.25rem 4rem' }}>
+    <main style={{ minHeight: '100svh', padding: '2rem 1.25rem 4rem' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <header
           style={{

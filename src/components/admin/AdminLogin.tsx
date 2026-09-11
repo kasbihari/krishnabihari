@@ -225,7 +225,7 @@ export default function AdminLogin() {
 
       <style>{`
         .term {
-          min-height: 100vh;
+          min-height: 100svh;
           display: grid;
           place-items: center;
           padding: clamp(1.5rem, 5vw, 3rem) var(--container-pad);

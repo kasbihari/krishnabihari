@@ -71,6 +71,26 @@
   --glass-blur-3: 32px;
   --glass-sat: 1.4;
 
+  /* ── Glass surface contract ──
+     One reusable surface used by anything that reads as an interactive
+     boundary (navigation, dialogs, toolbars). Section content stays flat. */
+  --glass-surface: var(--glass-2);
+  --glass-surface-hover: var(--glass-3);
+  --glass-radius: var(--radius-lg);
+  --glass-radius-sm: var(--radius-md);
+  --glass-blur: var(--glass-blur-2);
+
+  /* ── Global identity backdrop ──
+     A single site-wide layer, never repeated per section. The image is the
+     brand's quiet texture; the veil keeps it behind the typography. */
+  --bg-image: url('/images/image.png');
+  --bg-image-position: 50% 40%;
+  --bg-image-size: cover;
+  --bg-image-repeat: no-repeat;
+
+  /* ── Reading width guards ── */
+  --container-ultrawide: 1680px;
+
   /* ── Motion ── */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
@@ -82,6 +102,7 @@
   --dur-theme: 520ms;
 
   /* ── Z-index ── */
+  --z-backdrop: -3;
   --z-ambient: -2;
   --z-grain: -1;
   --z-content: 1;
@@ -145,6 +166,24 @@
   --glow-1: rgba(44, 107, 87, 0.12);
   --glow-2: rgba(138, 115, 84, 0.05);
   --vignette: rgba(0, 0, 0, 0.46);
+
+  /*
+    Identity backdrop, dark. The artwork is drawn light-on-dark, so it is
+    inverted: its light ground becomes near-black and disappears into the
+    page, leaving the mark as a faint light texture. The veil is a vertical
+    falloff, densest at the bottom so the layer never competes with body copy.
+
+    `opacity` and the veil alpha together decide how present the texture is;
+    they are the two knobs worth tuning once the artwork is in place.
+  */
+  --bg-image-opacity: 0.3;
+  --bg-image-filter: invert(1);
+  --bg-veil: linear-gradient(
+    180deg,
+    rgba(8, 8, 8, 0.22) 0%,
+    rgba(8, 8, 8, 0.5) 52%,
+    rgba(8, 8, 8, 0.68) 100%
+  );
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -194,6 +233,20 @@
   --glow-1: rgba(30, 74, 61, 0.08);
   --glow-2: rgba(133, 109, 78, 0.055);
   --vignette: rgba(60, 55, 45, 0.09);
+
+  /*
+    Identity backdrop, light. The artwork is used as authored: its light ground
+    sits invisibly against near-white paper and only its mark darkens the
+    surface, so the texture reads as a watermark rather than a picture.
+  */
+  --bg-image-opacity: 0.28;
+  --bg-image-filter: none;
+  --bg-veil: linear-gradient(
+    180deg,
+    rgba(241, 239, 233, 0.42) 0%,
+    rgba(241, 239, 233, 0.62) 52%,
+    rgba(241, 239, 233, 0.76) 100%
+  );
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -269,6 +322,11 @@ html {
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   background-color: var(--bg);
+  /* The identity layer is fixed and full-bleed; nothing may push the page
+     sideways. `clip` is used rather than `hidden` so it does not create a
+     scroll container that would break `position: sticky` descendants. */
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
@@ -277,15 +335,92 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
-  min-height: 100vh;
-  overflow-x: hidden;
+  min-height: 100svh;
+  overflow-x: clip;
+  max-width: 100%;
   transition:
     background-color var(--dur-theme) var(--ease-out),
     color var(--dur-theme) var(--ease-out);
 }
 
+/* Media can never force a horizontal scrollbar on narrow viewports. */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* ── Identity backdrop ──
+   ONE layer for the whole site, mounted once per layout. It is deliberately
+   position: fixed rather than `background-attachment: fixed`: on iOS the
+   latter is repainted on every scroll frame, whereas a fixed composited
+   element is promoted once and left alone. On small screens the layer is
+   scaled up and dimmed further so it stays texture, not imagery, and so the
+   decode/repaint cost is bounded. */
+
+.kb-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-backdrop);
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+.kb-backdrop__image {
+  position: absolute;
+  inset: 0;
+  background-image: var(--bg-image);
+  background-position: var(--bg-image-position);
+  background-size: var(--bg-image-size);
+  background-repeat: var(--bg-image-repeat);
+  opacity: var(--bg-image-opacity);
+  filter: var(--bg-image-filter);
+  transition:
+    opacity var(--dur-theme) var(--ease-out),
+    filter var(--dur-theme) var(--ease-out);
+}
+
+/*
+  Deliberately no `mix-blend-mode` here.
+
+  `.kb-backdrop` carries a negative z-index and `contain: strict`, so it is a
+  stacking context — an isolation boundary. A blend mode on this child would
+  therefore composite against a transparent group rather than against the page
+  background, which silently turns `multiply` and `screen` into no-ops and lets
+  the artwork's ground wash out the theme. Tone is controlled with per-theme
+  `opacity` and `filter` instead, both of which compose predictably.
+*/
+
+.kb-backdrop__veil {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-veil);
+  transition: background var(--dur-theme) var(--ease-out);
+}
+
+@media (max-width: 640px) {
+  .kb-backdrop__image {
+    /* Larger scale hides the artwork's edges behind the viewport, which is
+       what keeps it reading as a field rather than as a cropped picture. */
+    background-size: cover;
+    opacity: calc(var(--bg-image-opacity) * 0.75);
+  }
+}
+
+@media (prefers-reduced-data: reduce) {
+  .kb-backdrop__image {
+    opacity: 0;
+  }
+}
+
 /* ── Atmospheric canvas: layered ambient light, vignette, grain ──
-   Depth should be felt, not noticed. No single layer is visible on its own. */
+   Depth should be felt, not noticed. No single layer is visible on its own.
+
+   These layers sit ABOVE .kb-backdrop (z -3) and are therefore never fully
+   opaque: the base colour comes from the body background so the identity
+   image stays readable through the atmosphere. */
 
 body::before {
   content: '';
@@ -296,8 +431,7 @@ body::before {
     radial-gradient(ellipse 130% 85% at 50% -12%, var(--glow-1) 0%, transparent 56%),
     radial-gradient(ellipse 72% 62% at 88% 90%, var(--glow-2) 0%, transparent 62%),
     radial-gradient(ellipse 95% 75% at 6% 58%, var(--glow-1) 0%, transparent 66%),
-    radial-gradient(ellipse 145% 105% at 50% 50%, transparent 38%, var(--vignette) 100%),
-    var(--bg);
+    radial-gradient(ellipse 145% 105% at 50% 50%, transparent 38%, var(--vignette) 100%);
   pointer-events: none;
   transition: background var(--dur-theme) var(--ease-out);
 }
@@ -404,6 +538,18 @@ a {
   max-width: var(--container-wide);
   margin: 0 auto;
   padding: 0 var(--container-pad);
+}
+
+/*
+  Ultrawide. Rather than letting the shell track the viewport until the
+  measure becomes unreadable, the wide container grows once and then stops;
+  from there every extra pixel becomes intentional margin.
+*/
+@media (min-width: 1900px) {
+  :root {
+    --container-wide: var(--container-ultrawide);
+    --container-pad: clamp(3rem, 5vw, 6rem);
+  }
 }
 
 .full-screen {
@@ -564,6 +710,146 @@ a {
   .glass-interactive:hover {
     transform: none;
   }
+}
+
+/* ── Canonical surface ──
+   The one glass treatment. Reserved for things that genuinely are an
+   interactive boundary — navigation, dialogs, toolbars. Editorial content
+   stays flat so the interface does not turn into a wall of cards. */
+.glass-surface {
+  border: 1px solid var(--glass-border);
+  background: var(--glass-surface);
+  border-radius: var(--glass-radius);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: var(--glass-inner), var(--glass-shadow);
+}
+
+/* Without backdrop blur, translucency alone would let text through. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-surface {
+    background: var(--surface-2);
+  }
+}
+
+/* ── Brand mark ──
+   The supplied logo is a white mark on transparency, so on paper it would be
+   invisible. The artwork itself is used exactly as provided; only its tone is
+   adapted per theme, which preserves the geometry while giving light mode a
+   dark mark. */
+.kb-logo-mark {
+  display: block;
+  width: var(--kb-logo-size, 34px);
+  height: var(--kb-logo-size, 34px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: filter var(--dur-theme) var(--ease-out);
+}
+
+[data-theme='light'] .kb-logo-mark {
+  filter: invert(1);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   10b · SEGMENTED CONTROL · SHARED CONTROLS
+   One control primitive, used by the theme and language selectors so the two
+   read as a single pair wherever they appear.
+   ────────────────────────────────────────────────────────────── */
+
+.kb-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.18rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-1);
+}
+
+.kb-seg__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 30px;
+  height: 28px;
+  padding: 0 0.5rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-faint);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.kb-seg__item--mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.kb-seg__item--icon {
+  min-width: 28px;
+  padding: 0;
+}
+
+.kb-seg__item[data-active='true'] {
+  color: var(--text);
+  background: var(--glass-3);
+}
+
+.kb-seg__item:hover[data-active='false'] {
+  color: var(--text-soft);
+}
+
+.kb-seg[data-size='md'] .kb-seg__item {
+  height: 32px;
+  min-width: 34px;
+  padding: 0 0.6rem;
+  font-size: 0.7rem;
+}
+
+.kb-seg[data-size='md'] .kb-seg__item--icon {
+  min-width: 32px;
+  padding: 0;
+}
+
+/* Touch: the control grows to a comfortable target on small screens. */
+@media (max-width: 640px) {
+  .kb-seg__item,
+  .kb-seg[data-size='md'] .kb-seg__item {
+    height: 40px;
+    min-width: 42px;
+    padding: 0 0.7rem;
+  }
+
+  .kb-seg .kb-seg__item--icon,
+  .kb-seg[data-size='md'] .kb-seg__item--icon {
+    min-width: 40px;
+    padding: 0;
+  }
+}
+
+/* Available to assistive tech, invisible on screen. */
+.kb-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ──────────────────────────────────────────────────────────────

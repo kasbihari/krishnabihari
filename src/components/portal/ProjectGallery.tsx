@@ -343,7 +343,7 @@ export default function ProjectGallery({
                   width: '100%',
                   height:
                     'clamp(220px, 45vw, 520px)',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   willChange:
                     'transform, opacity',
                 }}
@@ -630,7 +630,7 @@ export default function ProjectGallery({
                       width: '100%',
                       height: '100%',
                       objectFit:
-                        'cover',
+                        'contain',
                       display:
                         'block',
                     }}

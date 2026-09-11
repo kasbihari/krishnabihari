@@ -54,21 +54,45 @@ const {
 <!--
   Theme bootstrap. Runs before first paint so there is never a flash of the
   wrong theme, and so the theme persists across / → /client → /admin.
-  Dark is the primary identity: it is the default when nothing is stored.
+
+  Three modes: light, dark, system. `system` is the default and follows
+  prefers-color-scheme; the listener is installed here, outside the React
+  islands, so even a route with no interactive controls still tracks the OS.
+  Dark is the primary identity when the OS expresses no preference.
 -->
 <script is:inline>
   (function () {
+    var KEY = 'kb-theme';
+    var root = document.documentElement;
+    var mode = 'system';
+
     try {
-      var stored = localStorage.getItem('kb-theme');
-      var theme =
-        stored === 'light' || stored === 'dark'
-          ? stored
-          : window.matchMedia('(prefers-color-scheme: light)').matches
-            ? 'light'
-            : 'dark';
-      document.documentElement.setAttribute('data-theme', theme);
+      var stored = window.localStorage.getItem(KEY);
+      if (stored === 'light' || stored === 'dark' || stored === 'system') {
+        mode = stored;
+      }
     } catch (e) {
-      document.documentElement.setAttribute('data-theme', 'dark');
+      /* storage blocked — system mode still works */
+    }
+
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function resolved(target) {
+      return target === 'system' ? (mq.matches ? 'dark' : 'light') : target;
+    }
+
+    root.setAttribute('data-theme', resolved(mode));
+    root.setAttribute('data-theme-mode', mode);
+
+    function onSystemChange() {
+      if (root.getAttribute('data-theme-mode') !== 'system') return;
+      root.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
+    }
+
+    if (mq.addEventListener) {
+      mq.addEventListener('change', onSystemChange);
+    } else if (mq.addListener) {
+      mq.addListener(onSystemChange);
     }
   })();
 </script>
