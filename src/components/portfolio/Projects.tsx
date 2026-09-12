@@ -260,11 +260,11 @@ export default function Projects({
           </div>
         </div>
 
-        {/* Projects — large cinematic presentations */}
-        <div className="pj-list">
+        {/* Projects — responsive card grid */}
+        <div className="pj-grid">
           {filtered.length === 0 && <div className="pj-empty">{w.empty}</div>}
 
-          {filtered.map((project, index) => {
+          {filtered.map((project) => {
             const isOpen = activeProject === project.id;
 
             const images = project.images === 'empty' ? [] : project.images;
@@ -274,13 +274,10 @@ export default function Projects({
               ? Math.min(slideIndexes[project.id] ?? 0, images.length - 1)
               : 0;
 
-            const isLead = index === 0;
-
             return (
               <article
                 key={project.id}
-                className="pj-item"
-                data-lead={isLead ? 'true' : 'false'}
+                className="pj-card"
                 data-open={isOpen ? 'true' : 'false'}
                 data-reveal
               >
@@ -298,47 +295,72 @@ export default function Projects({
                   }}
                   className="pj-trigger"
                 >
-                  {/* Number + category */}
-                  <div className="pj-meta">
-                    <span className="pj-number">{project.id}</span>
-                    <span className="pj-rule" aria-hidden="true" />
-                    <span className="pj-category" style={{ color: project.accent }}>
-                      {project.category}
-                    </span>
-                    <StatusBadge
-                      status={project.status}
-                      label={project.status === 'done' ? w.shippedBadge : w.inProgressBadge}
-                    />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="pj-title">{project.title}</h3>
-
-                  {/* Tagline */}
-                  <p className="pj-tagline">{project.tagline}</p>
-
-                  {/* Stack preview — secondary info, revealed on interaction */}
-                  <div className="pj-stack-preview" aria-hidden="true">
-                    {project.stack.slice(0, 4).map((tech) => (
-                      <span key={tech} className="pj-stack-chip">
-                        {tech}
+                  {/* Cover — real screenshot when one exists, otherwise a
+                      typographic plate so the grid keeps a consistent rhythm. */}
+                  <div className="pj-cover" data-empty={hasImages ? 'false' : 'true'}>
+                    {hasImages ? (
+                      <img
+                        src={images[currentSlide]}
+                        alt={`${project.title} screenshot ${currentSlide + 1}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="pj-cover__img"
+                      />
+                    ) : (
+                      <span className="pj-cover__mark" aria-hidden="true">
+                        {project.title
+                          .split(' ')
+                          .map((word) => word.charAt(0))
+                          .join('')
+                          .slice(0, 2)
+                          .toUpperCase()}
                       </span>
-                    ))}
+                    )}
+
+                    <span className="pj-cover__badge">
+                      <StatusBadge
+                        status={project.status}
+                        label={project.status === 'done' ? w.shippedBadge : w.inProgressBadge}
+                      />
+                    </span>
                   </div>
 
-                  <span className="pj-explore">
-                    {isOpen ? w.close : w.explore}
-                    <span className="pj-plus" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-                        <path
-                          d="M10 4v12M4 10h12"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
+                  {/* Body */}
+                  <div className="pj-card__body">
+                    <div className="pj-meta">
+                      <span className="pj-number">{project.id}</span>
+                      <span className="pj-rule" aria-hidden="true" />
+                      <span className="pj-category" style={{ color: project.accent }}>
+                        {project.category}
+                      </span>
+                    </div>
+
+                    <h3 className="pj-title">{project.title}</h3>
+
+                    <p className="pj-tagline">{project.tagline}</p>
+
+                    <div className="pj-stack-preview" aria-hidden="true">
+                      {project.stack.slice(0, 3).map((tech) => (
+                        <span key={tech} className="pj-stack-chip">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    <span className="pj-explore">
+                      {isOpen ? w.close : w.explore}
+                      <span className="pj-plus" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M10 4v12M4 10h12"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </span>
                     </span>
-                  </span>
+                  </div>
                 </div>
 
                 {/* Expanded panel */}
@@ -348,8 +370,8 @@ export default function Projects({
                   data-open={isOpen ? 'true' : 'false'}
                 >
                   <div className="pj-panel__inner">
-                    {/* Slideshow */}
-                    {hasImages && (
+                    {/* Slideshow — only when there is more than the cover */}
+                    {images.length > 1 && (
                       <div className="pj-slides">
                         <img
                           src={images[currentSlide]}
@@ -359,52 +381,48 @@ export default function Projects({
                           className="pj-slides__img"
                         />
 
-                        {images.length > 1 && (
-                          <>
+                        <button
+                          type="button"
+                          aria-label={w.prevImage}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            prevSlide(project.id, images.length);
+                          }}
+                          className="pj-slides__nav pj-slides__nav--prev"
+                        >
+                          ←
+                        </button>
+
+                        <button
+                          type="button"
+                          aria-label={w.nextImage}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            nextSlide(project.id, images.length);
+                          }}
+                          className="pj-slides__nav pj-slides__nav--next"
+                        >
+                          →
+                        </button>
+
+                        <div className="pj-slides__dots">
+                          {images.map((image, i) => (
                             <button
+                              key={`${project.id}-${image}`}
                               type="button"
-                              aria-label={w.prevImage}
+                              aria-label={`${w.goToImage} ${i + 1}`}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                prevSlide(project.id, images.length);
+                                setSlideIndexes((prev) => ({
+                                  ...prev,
+                                  [project.id]: i,
+                                }));
                               }}
-                              className="pj-slides__nav pj-slides__nav--prev"
-                            >
-                              ←
-                            </button>
-
-                            <button
-                              type="button"
-                              aria-label={w.nextImage}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                nextSlide(project.id, images.length);
-                              }}
-                              className="pj-slides__nav pj-slides__nav--next"
-                            >
-                              →
-                            </button>
-
-                            <div className="pj-slides__dots">
-                              {images.map((image, i) => (
-                                <button
-                                  key={`${project.id}-${image}`}
-                                  type="button"
-                                  aria-label={`${w.goToImage} ${i + 1}`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSlideIndexes((prev) => ({
-                                      ...prev,
-                                      [project.id]: i,
-                                    }));
-                                  }}
-                                  className="pj-slides__dot"
-                                  data-active={currentSlide === i ? 'true' : 'false'}
-                                />
-                              ))}
-                            </div>
-                          </>
-                        )}
+                              className="pj-slides__dot"
+                              data-active={currentSlide === i ? 'true' : 'false'}
+                            />
+                          ))}
+                        </div>
                       </div>
                     )}
 
@@ -467,7 +485,7 @@ export default function Projects({
           flex-direction: column;
           align-items: center;
           text-align: center;
-          margin-bottom: clamp(4.5rem, 9vw, 8rem);
+          margin-bottom: clamp(3.5rem, 7vw, 6rem);
         }
 
         .pj-header__title {
@@ -517,76 +535,152 @@ export default function Projects({
           border-color: var(--line);
         }
 
-        .pj-list {
-          display: flex;
-          flex-direction: column;
+        /* ── Grid ──
+           Mobile 1 · small tablet 2 · desktop 3 · wide 4.
+           auto-fit with a min track keeps the columns honest at every
+           width without a stack of breakpoints. */
+        .pj-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+          gap: clamp(1.25rem, 2.5vw, 2rem);
+          align-items: start;
         }
 
         .pj-empty {
+          grid-column: 1 / -1;
           padding: 4rem 0;
           text-align: center;
           color: var(--text-faint);
           font-size: 0.9rem;
         }
 
-        /* ── One project = one case study, given real room ──
-           No rules or separators: spacing and scale do the structuring. */
-        .pj-item {
+        /* ── Card ── */
+        .pj-card {
           position: relative;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid var(--glass-border);
+          border-radius: var(--radius-lg);
+          background: var(--glass-1);
+          -webkit-backdrop-filter: blur(var(--glass-blur-1));
+          backdrop-filter: blur(var(--glass-blur-1));
+          overflow: hidden;
+          transition:
+            border-color var(--dur-base) var(--ease-out),
+            transform var(--dur-base) var(--ease-out);
+        }
+
+        .pj-card:hover {
+          border-color: var(--glass-border-hover);
+          transform: translateY(-3px);
+        }
+
+        .pj-card[data-open='true'] {
+          border-color: var(--glass-border-hover);
         }
 
         .pj-trigger {
-          position: relative;
-          padding: clamp(3.5rem, 8vw, 6.5rem) 0;
-          cursor: pointer;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          text-align: center;
-          transition: opacity var(--dur-slow) var(--ease-out);
+          cursor: pointer;
+          flex: 1;
         }
 
-        .pj-item:first-child .pj-trigger {
-          padding-top: 0;
+        /* ── Cover ── */
+        .pj-cover {
+          position: relative;
+          aspect-ratio: 16 / 10;
+          overflow: hidden;
+          background: var(--surface);
+          border-bottom: 1px solid var(--glass-border);
         }
 
-        .pj-item[data-open='false'] .pj-trigger:hover {
-          opacity: 0.82;
+        .pj-cover__img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform var(--dur-slow) var(--ease-out);
+        }
+
+        .pj-card:hover .pj-cover__img {
+          transform: scale(1.03);
+        }
+
+        /* Typographic plate for projects without a screenshot. */
+        .pj-cover[data-empty='true'] {
+          display: grid;
+          place-items: center;
+          background:
+            radial-gradient(
+              120% 120% at 50% 0%,
+              color-mix(in srgb, var(--verde-ink) 12%, transparent),
+              transparent 70%
+            ),
+            var(--surface);
+        }
+
+        .pj-cover__mark {
+          font-family: var(--font-display);
+          font-size: clamp(2.5rem, 6vw, 3.75rem);
+          font-style: italic;
+          letter-spacing: -0.03em;
+          color: var(--text-faint);
+          opacity: 0.5;
+        }
+
+        .pj-cover__badge {
+          position: absolute;
+          top: 0.85rem;
+          right: 0.85rem;
+        }
+
+        .pj-cover__badge .pj-badge {
+          background: var(--glass-2);
+          -webkit-backdrop-filter: blur(var(--glass-blur-1));
+          backdrop-filter: blur(var(--glass-blur-1));
+        }
+
+        /* ── Card body ── */
+        .pj-card__body {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          padding: clamp(1.25rem, 2vw, 1.6rem);
         }
 
         .pj-meta {
           display: flex;
           align-items: center;
-          justify-content: center;
-          gap: 0.85rem;
+          gap: 0.7rem;
           flex-wrap: wrap;
-          margin-bottom: 1.5rem;
+          margin-bottom: 0.9rem;
         }
 
         .pj-number {
           font-family: var(--font-mono);
-          font-size: 0.72rem;
+          font-size: 0.68rem;
           letter-spacing: 0.14em;
           color: var(--text-faint);
         }
 
         .pj-rule {
-          width: 22px;
+          width: 18px;
           height: 1px;
           background: var(--line);
         }
 
         .pj-category {
-          font-size: 0.68rem;
+          font-size: 0.62rem;
           text-transform: uppercase;
-          letter-spacing: 0.16em;
+          letter-spacing: 0.14em;
         }
 
         .pj-badge {
           display: inline-flex;
           align-items: center;
           gap: 0.4rem;
-          font-size: 0.62rem;
+          font-size: 0.6rem;
           font-weight: 500;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -594,6 +688,7 @@ export default function Projects({
           border-radius: var(--radius-pill);
           border: 1px solid var(--line-soft);
           color: var(--text-faint);
+          white-space: nowrap;
         }
 
         .pj-badge__dot {
@@ -615,47 +710,48 @@ export default function Projects({
 
         .pj-title {
           font-family: var(--font-display);
-          font-size: clamp(2.2rem, 6vw, 4.2rem);
+          font-size: clamp(1.35rem, 2vw, 1.7rem);
           font-weight: 400;
-          line-height: 1.04;
-          letter-spacing: -0.028em;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
           color: var(--text);
-          margin-bottom: 1.25rem;
-          transition: color var(--dur-slow) var(--ease-out);
+          margin-bottom: 0.7rem;
+          transition: color var(--dur-base) var(--ease-out);
         }
 
-        /* The flagship gets a genuinely different scale, not a bigger card. */
-        .pj-item[data-lead='true'] .pj-title {
-          font-size: clamp(2.8rem, 9vw, 6.5rem);
-          letter-spacing: -0.035em;
+        .pj-card:hover .pj-title {
+          color: var(--verde-ink);
         }
 
         .pj-tagline {
-          max-width: 50ch;
           color: var(--text-faint);
-          font-size: clamp(1rem, 1.4vw, 1.2rem);
-          line-height: 1.7;
+          font-size: 0.9rem;
+          line-height: 1.65;
+          /* Keep every card's footer aligned regardless of copy length. */
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
 
         .pj-stack-preview {
           display: flex;
-          gap: 0.45rem;
+          gap: 0.4rem;
           flex-wrap: wrap;
-          justify-content: center;
-          margin-top: 1.75rem;
-          opacity: 0.55;
-          transition: opacity var(--dur-slow) var(--ease-out);
+          margin-top: 1.1rem;
+          opacity: 0.6;
+          transition: opacity var(--dur-base) var(--ease-out);
         }
 
-        .pj-item[data-open='false'] .pj-trigger:hover .pj-stack-preview {
+        .pj-card:hover .pj-stack-preview {
           opacity: 1;
         }
 
         .pj-stack-chip {
           font-family: var(--font-mono);
-          font-size: 0.66rem;
+          font-size: 0.62rem;
           letter-spacing: 0.06em;
-          padding: 0.28rem 0.65rem;
+          padding: 0.24rem 0.6rem;
           border: 1px solid var(--line-soft);
           border-radius: var(--radius-pill);
           color: var(--text-faint);
@@ -666,15 +762,16 @@ export default function Projects({
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          margin-top: 2rem;
-          font-size: 0.68rem;
+          margin-top: auto;
+          padding-top: 1.4rem;
+          font-size: 0.64rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
           color: var(--text-faint);
           transition: color var(--dur-base) var(--ease-out);
         }
 
-        .pj-item[data-open='false'] .pj-trigger:hover .pj-explore {
+        .pj-card:hover .pj-explore {
           color: var(--verde-ink);
         }
 
@@ -683,7 +780,7 @@ export default function Projects({
           transition: transform var(--dur-base) var(--ease-out);
         }
 
-        .pj-item[data-open='true'] .pj-plus {
+        .pj-card[data-open='true'] .pj-plus {
           transform: rotate(45deg);
         }
 
@@ -703,26 +800,25 @@ export default function Projects({
         }
 
         .pj-panel__inner {
-          padding: 0 0 clamp(2.5rem, 5vw, 4rem);
-          max-width: 900px;
-          margin: 0 auto;
+          padding: clamp(1.25rem, 2vw, 1.6rem);
+          border-top: 1px solid var(--glass-border);
         }
 
         .pj-slides {
           position: relative;
           width: 100%;
-          border-radius: var(--radius-lg);
+          border-radius: var(--radius-md);
           overflow: hidden;
           border: 1px solid var(--glass-border);
           background: var(--surface);
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.5rem;
           display: grid;
           place-items: center;
         }
 
         .pj-slides__img {
           width: 100%;
-          height: clamp(240px, 46vw, 520px);
+          height: clamp(180px, 30vw, 340px);
           object-fit: contain;
           display: block;
         }
@@ -731,8 +827,8 @@ export default function Projects({
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          width: 42px;
-          height: 42px;
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
           border: 1px solid var(--glass-border);
           background: var(--glass-2);
@@ -740,24 +836,24 @@ export default function Projects({
           backdrop-filter: blur(var(--glass-blur-1));
           color: var(--text);
           cursor: pointer;
-          font-size: 1rem;
+          font-size: 0.9rem;
         }
 
-        .pj-slides__nav--prev { left: 1rem; }
-        .pj-slides__nav--next { right: 1rem; }
+        .pj-slides__nav--prev { left: 0.6rem; }
+        .pj-slides__nav--next { right: 0.6rem; }
 
         .pj-slides__dots {
           position: absolute;
-          bottom: 1rem;
+          bottom: 0.7rem;
           left: 50%;
           transform: translateX(-50%);
           display: flex;
-          gap: 0.5rem;
+          gap: 0.45rem;
         }
 
         .pj-slides__dot {
-          width: 7px;
-          height: 7px;
+          width: 6px;
+          height: 6px;
           padding: 0;
           border-radius: 50%;
           border: none;
@@ -771,23 +867,22 @@ export default function Projects({
 
         .pj-panel__grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: clamp(1.75rem, 4vw, 3rem);
-          margin-bottom: 2.25rem;
+          gap: 1.25rem;
+          margin-bottom: 1.5rem;
         }
 
         .pj-panel__label {
-          font-size: 0.64rem;
+          font-size: 0.6rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
           color: var(--bronze);
-          margin-bottom: 0.85rem;
+          margin-bottom: 0.6rem;
         }
 
         .pj-panel__body {
           color: var(--text-soft);
-          line-height: 1.8;
-          font-size: 0.94rem;
+          line-height: 1.75;
+          font-size: 0.88rem;
         }
 
         .pj-panel__body--soft {
@@ -797,23 +892,34 @@ export default function Projects({
         .pj-stack {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-bottom: 2.25rem;
+          gap: 0.45rem;
+          margin-bottom: 1.5rem;
         }
 
         .pj-actions {
           display: flex;
-          gap: 0.8rem;
+          gap: 0.7rem;
           flex-wrap: wrap;
         }
 
-        @media (max-width: 640px) {
-          .pj-trigger {
-            padding: 2rem 0;
+        /* ── Column counts ──
+           auto-fit already collapses to one column on phones; these
+           breakpoints pin the intended 2 / 3 / 4 progression. */
+        @media (min-width: 640px) {
+          .pj-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
+        }
 
-          .pj-stack-preview {
-            opacity: 1;
+        @media (min-width: 1024px) {
+          .pj-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+
+        @media (min-width: 1440px) {
+          .pj-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
           }
         }
       `}</style>

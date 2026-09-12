@@ -7,11 +7,13 @@ const CHAR_SPEED = 28; // ms per character
 const LINE_PAUSE = 600; // pause after each line completes
 const CHAPTER_PAUSE = 1200;
 
+type Chapter = { id: string; label: string; lines: readonly string[] };
+
 export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
   const { t } = useI18n(initialLang);
   const s = t.story;
 
-  const chapters = [
+  const chapters: Chapter[] = [
     { id: 'origin', label: s.chapters.origin, lines: s.origin },
     { id: 'spark', label: s.chapters.spark, lines: s.spark },
     { id: 'craft', label: s.chapters.craft, lines: s.craft },
@@ -22,61 +24,123 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startedRef = useRef(false);
 
+  /*
+   * The typewriter reads its script from a ref rather than from the
+   * `chapters` array directly.
+   *
+   * `chapters` is rebuilt on every render (it is derived from the i18n
+   * strings), so any callback that closed over it would get a new identity
+   * on every render. Because the animation calls setState once per
+   * character, that meant one render per character — and any effect
+   * depending on such a callback would tear down and re-run on every
+   * keystroke, cancelling the pending timeout and freezing the animation
+   * after a single character.
+   *
+   * Keeping the script in a ref lets the animation loop be created once
+   * and stay stable for the lifetime of the component.
+   */
+  const chaptersRef = useRef<Chapter[]>(chapters);
+  chaptersRef.current = chapters;
+
+  // Monotonic id: bumping it invalidates any in-flight animation loop.
+  const runIdRef = useRef(0);
+
   const [chapterIdx, setChapterIdx] = useState(0);
   const [revealedLines, setRevealedLines] = useState<number>(0);
   const [charCount, setCharCount] = useState(0);
   const [done, setDone] = useState(false);
   const [started, setStarted] = useState(false);
 
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
   // ── Core typewriter engine ────────────────────────────────────────────────
+  // Stable identity: reads the script from a ref, so it never needs to be
+  // recreated and never cancels itself mid-run.
   const typeChar = useCallback(
-    (cIdx: number, lIdx: number, chars: number) => {
-      const ch = chapters[cIdx];
-      const line = ch.lines[lIdx];
+    (runId: number, cIdx: number, lIdx: number, chars: number) => {
+      // A newer run (replay, language change, unmount) supersedes this one.
+      if (runId !== runIdRef.current) return;
+
+      const script = chaptersRef.current;
+      const ch = script[cIdx];
+      if (!ch) return;
+
+      const line = ch.lines[lIdx] ?? '';
 
       if (chars < line.length) {
         setCharCount(chars + 1);
-        timerRef.current = setTimeout(() => typeChar(cIdx, lIdx, chars + 1), CHAR_SPEED);
-      } else {
-        const nextLine = lIdx + 1;
-        if (nextLine < ch.lines.length) {
-          timerRef.current = setTimeout(() => {
-            setRevealedLines(nextLine);
-            setCharCount(0);
-            typeChar(cIdx, nextLine, 0);
-          }, LINE_PAUSE);
-        } else {
-          const nextChapter = cIdx + 1;
-          if (nextChapter < chapters.length) {
-            timerRef.current = setTimeout(() => {
-              setChapterIdx(nextChapter);
-              setRevealedLines(0);
-              setCharCount(0);
-              typeChar(nextChapter, 0, 0);
-            }, CHAPTER_PAUSE);
-          } else {
-            timerRef.current = setTimeout(() => setDone(true), LINE_PAUSE);
-          }
-        }
+        timerRef.current = setTimeout(
+          () => typeChar(runId, cIdx, lIdx, chars + 1),
+          CHAR_SPEED,
+        );
+        return;
       }
+
+      const nextLine = lIdx + 1;
+      if (nextLine < ch.lines.length) {
+        timerRef.current = setTimeout(() => {
+          if (runId !== runIdRef.current) return;
+          setRevealedLines(nextLine);
+          setCharCount(0);
+          typeChar(runId, cIdx, nextLine, 0);
+        }, LINE_PAUSE);
+        return;
+      }
+
+      const nextChapter = cIdx + 1;
+      if (nextChapter < script.length) {
+        timerRef.current = setTimeout(() => {
+          if (runId !== runIdRef.current) return;
+          setChapterIdx(nextChapter);
+          setRevealedLines(0);
+          setCharCount(0);
+          typeChar(runId, nextChapter, 0, 0);
+        }, CHAPTER_PAUSE);
+        return;
+      }
+
+      timerRef.current = setTimeout(() => {
+        if (runId !== runIdRef.current) return;
+        setDone(true);
+      }, LINE_PAUSE);
     },
-    [chapters],
+    [],
   );
 
   const start = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
+    clearTimer();
+    const runId = runIdRef.current + 1;
+    runIdRef.current = runId;
+
     setChapterIdx(0);
     setRevealedLines(0);
     setCharCount(0);
     setDone(false);
     setStarted(true);
-    typeChar(0, 0, 0);
-  }, [typeChar]);
 
-  // Auto-start on scroll into view
+    typeChar(runId, 0, 0, 0);
+  }, [clearTimer, typeChar]);
+
+  // Auto-start on scroll into view. Depends only on stable callbacks, so it
+  // runs exactly once and never cancels a running animation.
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      startedRef.current = true;
+      setStarted(true);
+      setDone(true);
+      setChapterIdx(chaptersRef.current.length - 1);
+      setRevealedLines(chaptersRef.current.at(-1)?.lines.length ?? 0);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !startedRef.current) {
@@ -88,11 +152,22 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
       { threshold: 0.25 },
     );
     observer.observe(el);
+
     return () => {
       observer.disconnect();
-      if (timerRef.current) clearTimeout(timerRef.current);
+      // Invalidate any in-flight loop and drop the pending timer.
+      runIdRef.current += 1;
+      clearTimer();
     };
-  }, [start]);
+  }, [start, clearTimer]);
+
+  // Replay the story from the top when the language changes.
+  const langRef = useRef(initialLang);
+  useEffect(() => {
+    if (langRef.current === initialLang) return;
+    langRef.current = initialLang;
+    if (startedRef.current) start();
+  }, [initialLang, start]);
 
   const totalLines = chapters.reduce((sum, c) => sum + c.lines.length, 0);
   const completedLines =
@@ -118,12 +193,12 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
 
         <div className="container-main about-stage__inner">
           {/* Section label */}
-          <p data-reveal className="section-label section-label--center about-label">
+          <p className="section-label section-label--center about-label">
             {s.label}
           </p>
 
           {/* Chapter tabs */}
-          <div className="about-tabs" data-reveal data-delay="100">
+          <div className="about-tabs">
             {chapters.map((ch, i) => {
               const isPast = i < chapterIdx;
               const isCurrent = i === chapterIdx && started;
