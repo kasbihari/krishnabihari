@@ -2,7 +2,14 @@ import type { APIRoute } from 'astro';
 
 import {
 supabaseAdmin,
+reportSupabaseError,
 } from '../../../lib/server/supabase-admin';
+
+import {
+canonicalProjectCode,
+projectCodeLikePattern,
+projectCodeMatches,
+} from '../../../lib/server/project-code';
 
 import {
 createProjectPortalSession,
@@ -64,11 +71,10 @@ const rawCode =
     ? body.projectCode
     : '';
 
-const normalized = rawCode
-  .trim()
-  .toUpperCase();
+const canonical =
+  canonicalProjectCode(rawCode);
 
-if (!normalized) {
+if (!canonical) {
   return new Response(
     JSON.stringify({
       success: false,
@@ -99,16 +105,77 @@ if (!supabaseAdmin) {
   );
 }
 
+/*
+ * Case-insensitive exact match.
+ *
+ * The stored code is the source of truth and may not be upper-case, so a
+ * literal `.eq()` on the canonical key would miss it. `ilike` with an
+ * escaped pattern matches without regard to case, and the rows it returns
+ * are then re-checked for true equality — so a pattern that over-matched
+ * can never be accepted as the requested project.
+ *
+ * The id and code are the only columns read, and the result is capped at
+ * two rows, so a broad pattern cannot be used to enumerate projects.
+ */
 const {
-  data: projectData,
+  data: projectCandidates,
   error: projectError,
 } = await supabaseAdmin
   .from('projects')
   .select('id, project_code')
-  .eq('project_code', normalized)
-  .maybeSingle();
+  .ilike(
+    'project_code',
+    projectCodeLikePattern(canonical),
+  )
+  .order('created_at', {
+    ascending: true,
+  })
+  .limit(2);
 
-if (projectError || !projectData) {
+if (projectError) {
+  /*
+   * A failed query is not an invalid code. Reporting it as one is what made
+   * this issue hard to diagnose, so the two are separated and the real error
+   * is recorded server-side. The response stays generic.
+   */
+  reportSupabaseError(
+    'client-login/project lookup',
+    projectError,
+  );
+
+  return new Response(
+    JSON.stringify({
+      success: false,
+      message:
+        'Unable to validate the project code.',
+    }),
+    {
+      status: 503,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}
+
+const candidates =
+  projectCandidates ?? [];
+
+if (candidates.length > 1) {
+  console.warn(
+    '[client-login] more than one project shares this code; using the oldest.',
+  );
+}
+
+const projectData =
+  candidates.find((row) =>
+    projectCodeMatches(
+      row.project_code,
+      canonical,
+    ),
+  );
+
+if (!projectData) {
   return new Response(
     JSON.stringify({
       success: false,
@@ -124,11 +191,12 @@ if (projectError || !projectData) {
 }
 
 const projectCode =
-  typeof projectData.project_code === 'string'
-    ? projectData.project_code
-        .trim()
-        .toUpperCase()
-    : normalized;
+  typeof projectData.project_code ===
+  'string'
+    ? canonicalProjectCode(
+        projectData.project_code,
+      )
+    : canonical;
 
 const session =
   createProjectPortalSession(

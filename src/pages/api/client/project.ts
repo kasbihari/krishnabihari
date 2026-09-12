@@ -8,6 +8,10 @@ import {
 supabaseAdmin,
 } from '../../../lib/server/supabase-admin';
 
+import {
+projectCodeLikePattern,
+} from '../../../lib/server/project-code';
+
 type ProjectRow = {
 id: string;
 client_id: string;
@@ -207,9 +211,9 @@ const {
     'id',
     session.projectId,
   )
-  .eq(
+  .ilike(
     'project_code',
-    session.projectCode,
+    projectCodeLikePattern(session.projectCode),
   )
   .maybeSingle();
 
