@@ -221,6 +221,14 @@ export default function AdminLogin() {
             </div>
           )}
         </div>
+
+        {/* Quiet exit for visitors who are not the admin. Kept secondary so
+            signing in stays the primary action. */}
+        <div className="term__footer">
+          <a href="/" className="term__back">
+            <span aria-hidden="true">←</span> Back to portfolio
+          </a>
+        </div>
       </div>
 
       <style>{`
@@ -280,6 +288,32 @@ export default function AdminLogin() {
 
         .term__body {
           padding: clamp(1.75rem, 4vw, 2.75rem);
+        }
+
+        /* Footer bar — mirrors the chrome on top so the window stays balanced
+           and the escape hatch reads as part of the frame, not a rival CTA. */
+        .term__footer {
+          display: flex;
+          justify-content: center;
+          padding: 0.8rem 1.25rem;
+          border-top: 1px solid var(--line-soft);
+        }
+
+        .term__back {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          letter-spacing: 0.08em;
+          color: var(--text-faint);
+          text-decoration: none;
+          transition: color var(--dur-base) var(--ease-out);
+        }
+
+        .term__back:hover,
+        .term__back:focus-visible {
+          color: var(--verde-ink);
         }
 
         .term__brand {

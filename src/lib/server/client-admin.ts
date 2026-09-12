@@ -227,22 +227,45 @@ export type ProjectInput = {
 export async function createProject(input: ProjectInput): Promise<{ id: string } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
   const projectCode = input.project_code?.trim().toUpperCase() || generateProjectCode(input.name);
+
+  /*
+   * `status`, `phase` and `type` are backed by PostgreSQL enums whose labels
+   * live in the database — they are not declared anywhere in this codebase.
+   * Inventing a default here (the previous code sent 'Active', 'Planning'
+   * and 'Project') sends a label the enum may not define, and PostgreSQL
+   * then rejects the entire statement with
+   *   invalid input value for enum project_status: "Active"
+   * which is exactly how project creation was failing.
+   *
+   * So each of these columns is only included when the caller actually
+   * supplied a value. When it is omitted the database applies its own
+   * column default, which is by definition a valid label and keeps the
+   * database as the single source of truth.
+   */
+  const payload: Record<string, unknown> = {
+    client_id: input.client_id,
+    project_code: projectCode,
+    name: input.name,
+    description: input.description ?? '',
+    category: input.category ?? 'web-development',
+    progress: Math.min(100, Math.max(0, input.progress ?? 0)),
+    expected_launch: input.expected_launch ?? null,
+    live_demo_url: input.live_demo_url ?? null,
+    images: input.images ?? [],
+  };
+
+  const status = input.status?.trim();
+  if (status) payload.status = status;
+
+  const phase = input.phase?.trim();
+  if (phase) payload.phase = phase;
+
+  const type = input.type?.trim();
+  if (type) payload.type = type;
+
   const { data, error } = await supabaseAdmin
     .from('projects')
-    .insert({
-      client_id: input.client_id,
-      project_code: projectCode,
-      name: input.name,
-      description: input.description ?? '',
-      type: input.type ?? 'Project',
-      category: input.category ?? 'web-development',
-      status: input.status ?? 'Active',
-      phase: input.phase ?? 'Planning',
-      progress: Math.min(100, Math.max(0, input.progress ?? 0)),
-      expected_launch: input.expected_launch ?? null,
-      live_demo_url: input.live_demo_url ?? null,
-      images: input.images ?? [],
-    })
+    .insert(payload)
     .select('id')
     .single();
   if (error) {
@@ -258,10 +281,21 @@ export async function updateProject(id: string, input: Partial<ProjectInput>): P
   if (input.client_id !== undefined) payload.client_id = input.client_id;
   if (input.name !== undefined) payload.name = input.name;
   if (input.description !== undefined) payload.description = input.description;
-  if (input.type !== undefined) payload.type = input.type;
   if (input.category !== undefined) payload.category = input.category;
-  if (input.status !== undefined) payload.status = input.status;
-  if (input.phase !== undefined) payload.phase = input.phase;
+
+  /*
+   * `type`, `status` and `phase` are enum-backed. An empty string is not a
+   * valid enum label, so writing one would fail the whole update — these keys
+   * are skipped instead, leaving the stored value untouched.
+   */
+  const status = input.status?.trim();
+  if (status) payload.status = status;
+
+  const phase = input.phase?.trim();
+  if (phase) payload.phase = phase;
+
+  const type = input.type?.trim();
+  if (type) payload.type = type;
   if (input.progress !== undefined) payload.progress = Math.min(100, Math.max(0, input.progress));
   if (input.expected_launch !== undefined) payload.expected_launch = input.expected_launch;
   if (input.live_demo_url !== undefined) payload.live_demo_url = input.live_demo_url;

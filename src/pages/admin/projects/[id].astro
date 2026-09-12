@@ -3,6 +3,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 import ProjectManager from '../../../components/admin/ProjectManager';
 import { fetchProjectDetail } from '../../../lib/server/client-admin';
 import { fetchAdminClients } from '../../../lib/server/admin-data';
+import { fetchProjectStatusOptions } from '../../../lib/server/project-enums';
 import { getAdminSession } from '../../../lib/server/session';
 
 export const prerender = false;
@@ -25,8 +26,21 @@ if (!detail) {
 }
 
 const clients = await fetchAdminClients();
+
+/*
+ * Status is a PostgreSQL enum whose labels only exist in the database, so the
+ * options are read back from the projects that already carry them. The
+ * project's own value is always included, which keeps the editor showing the
+ * true stored label.
+ */
+const statusOptions = await fetchProjectStatusOptions(detail.project.status ?? '');
 ---
 
 <AdminLayout title={title} description="Manage a client project and its workspace.">
-  <ProjectManager detail={detail} clients={clients} client:load />
+  <ProjectManager
+    detail={detail}
+    clients={clients}
+    statusOptions={statusOptions}
+    client:load
+  />
 </AdminLayout>

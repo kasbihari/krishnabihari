@@ -184,13 +184,7 @@ export default function Hero({
 }) {
   const { t } = useI18n(initialLang);
 
-  const containerRef =
-    useRef<HTMLDivElement>(null);
-
   const vinylContainerRef =
-    useRef<HTMLDivElement>(null);
-
-  const shimmerRef =
     useRef<HTMLDivElement>(null);
 
   const glowRef =
@@ -214,14 +208,6 @@ export default function Hero({
   /* ---------------------------------------------------------------
      General UI state
   ---------------------------------------------------------------- */
-
-  const [
-    spotlight,
-    setSpotlight,
-  ] = useState({
-    x: 50,
-    y: 50,
-  });
 
   const [
     roleIndex,
@@ -1438,90 +1424,6 @@ export default function Hero({
     };
 
   /* ---------------------------------------------------------------
-     Mouse spotlight / shimmer
-  ---------------------------------------------------------------- */
-
-  useEffect(() => {
-    const container =
-      containerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    const handleMouseMove =
-      (e: MouseEvent): void => {
-        const rect =
-          container.getBoundingClientRect();
-
-        const x =
-          ((e.clientX -
-            rect.left) /
-            rect.width) *
-          100;
-
-        const y =
-          ((e.clientY -
-            rect.top) /
-            rect.height) *
-          100;
-
-        setSpotlight({
-          x,
-          y,
-        });
-
-        const vinyl =
-          vinylContainerRef.current;
-
-        const shimmer =
-          shimmerRef.current;
-
-        if (
-          vinyl &&
-          shimmer
-        ) {
-          const rect =
-            vinyl.getBoundingClientRect();
-
-          const centerX =
-            rect.left +
-            rect.width / 2;
-
-          const centerY =
-            rect.top +
-            rect.height / 2;
-
-          const angle =
-            Math.atan2(
-              e.clientY -
-                centerY,
-              e.clientX -
-                centerX,
-            ) *
-            (180 / Math.PI);
-
-          shimmer.style.setProperty(
-            "--shimmer-angle",
-            `${angle}deg`,
-          );
-        }
-      };
-
-    container.addEventListener(
-      "mousemove",
-      handleMouseMove,
-    );
-
-    return () => {
-      container.removeEventListener(
-        "mousemove",
-        handleMouseMove,
-      );
-    };
-  }, []);
-
-  /* ---------------------------------------------------------------
      Typewriter
   ---------------------------------------------------------------- */
 
@@ -1638,22 +1540,8 @@ export default function Hero({
   return (
     <section
       id="home"
-      ref={containerRef}
       className="hero-section"
     >
-      {/* Spotlight — ambient light that follows the pointer */}
-      <div
-        aria-hidden="true"
-        className="hero-spotlight"
-        style={{
-          background: `radial-gradient(
-            ellipse 720px 560px at ${spotlight.x}% ${spotlight.y}%,
-            var(--verde-glow) 0%,
-            transparent 68%
-          )`,
-        }}
-      />
-
       {/* Grain */}
       <div
         aria-hidden="true"
@@ -1855,11 +1743,10 @@ export default function Hero({
               </motion.div>
             </div>
 
-            {/* Shimmer */}
+            {/* Shimmer — a fixed specular sheen. It previously rotated with
+                the pointer; it is static now, so nothing in the hero tracks
+                the cursor. */}
             <div
-              ref={
-                shimmerRef
-              }
               aria-hidden="true"
               className="vinyl-shimmer"
             />
@@ -1920,14 +1807,6 @@ export default function Hero({
             clamp(7rem, 13vh, 11rem)
             var(--container-pad)
             clamp(7rem, 15vh, 12rem);
-        }
-
-        .hero-spotlight {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          z-index: 0;
-          transition: background 900ms var(--ease-out);
         }
 
         .hero-grain {
@@ -2301,7 +2180,8 @@ export default function Hero({
         }
 
         /* Specular sheen — two soft highlights raking across the grooves,
-           the way a real record catches a room light. Restrained on purpose. */
+           the way a real record catches a room light. Restrained on purpose,
+           and fixed: the angle used to follow the pointer. */
         .vinyl-shimmer {
           position: absolute;
           inset: 0;
@@ -2310,7 +2190,7 @@ export default function Hero({
           pointer-events: none;
           background:
             conic-gradient(
-              from var(--shimmer-angle, 0deg),
+              from 0deg,
               transparent 0deg,
               rgba(255, 255, 255, 0.075) 13deg,
               transparent 33deg,

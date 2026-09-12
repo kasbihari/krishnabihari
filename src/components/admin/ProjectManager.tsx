@@ -9,6 +9,7 @@ import type {
   UpdateRow,
 } from '../../lib/server/client-admin';
 import type { AdminClientsView } from '../../lib/server/admin-data';
+import type { ProjectStatusOption } from '../../lib/server/project-enums';
 
 const STATUS_OPTIONS = ['completed', 'active', 'upcoming'] as const;
 type EntryStatus = (typeof STATUS_OPTIONS)[number];
@@ -173,9 +174,11 @@ function smallButton(disabled = false): React.CSSProperties {
 export default function ProjectManager({
   detail,
   clients,
+  statusOptions = [],
 }: {
   detail: ProjectDetail;
   clients: AdminClientsView[];
+  statusOptions?: ProjectStatusOption[];
 }) {
   const [project, setProject] = useState<ProjectRow>(detail.project);
   const [timeline, setTimeline] = useState<TimelineRow[]>(detail.timeline);
@@ -623,11 +626,35 @@ export default function ProjectManager({
                 />
               </Field>
               <Field label="Status">
-                <input
-                  style={inputStyle}
-                  value={overview.status}
-                  onChange={(e) => setOverviewField('status', e.target.value)}
-                />
+                {statusOptions.length > 0 ? (
+                  <select
+                    style={inputStyle}
+                    value={overview.status}
+                    onChange={(e) => setOverviewField('status', e.target.value)}
+                  >
+                    {/* A stored value that is not in the sampled list still
+                        has to be selectable, otherwise saving would silently
+                        rewrite the project's current status. */}
+                    {overview.status &&
+                      !statusOptions.some((option) => option.value === overview.status) && (
+                        <option value={overview.status}>{overview.status}</option>
+                      )}
+                    {statusOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  // No stored values to learn the enum labels from yet — fall
+                  // back to free text rather than inventing a list.
+                  <input
+                    style={inputStyle}
+                    value={overview.status}
+                    onChange={(e) => setOverviewField('status', e.target.value)}
+                    placeholder="Status"
+                  />
+                )}
               </Field>
               <Field label="Phase">
                 <input

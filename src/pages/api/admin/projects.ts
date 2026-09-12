@@ -32,10 +32,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     client_id,
     name,
     description: cleanString(body.description),
-    type: cleanString(body.type) || 'Project',
+    /*
+     * `type`, `status` and `phase` are enum-backed, with their labels defined
+     * in the database. Leave them undefined when the caller did not supply a
+     * value so `createProject` omits the column and PostgreSQL applies its
+     * own default — sending a hardcoded 'Active' is what produced
+     * `invalid input value for enum project_status: "Active"`.
+     */
+    type: cleanString(body.type) || undefined,
     category: cleanString(body.category) || 'web-development',
-    status: cleanString(body.status) || 'Active',
-    phase: cleanString(body.phase) || 'Planning',
+    status: cleanString(body.status) || undefined,
+    phase: cleanString(body.phase) || undefined,
     progress: Math.min(100, Math.max(0, cleanNumber(body.progress))),
     expected_launch: cleanNullableString(body.expected_launch) ?? undefined,
     live_demo_url: cleanNullableString(body.live_demo_url) ?? undefined,
