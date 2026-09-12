@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "./supabase-admin";
+import { supabaseAdmin, reportSupabaseError } from "./supabase-admin";
 
 export type AdminClientsView = {
   id: string;
@@ -51,7 +51,7 @@ export async function fetchAdminClients(): Promise<AdminClientsView[]> {
       .select("*");
 
     if (clientsError || !clients) {
-      console.error("Failed to fetch clients:", clientsError?.message);
+      reportSupabaseError("fetchAdminClients/clients", clientsError);
       return [];
     }
 
@@ -61,7 +61,7 @@ export async function fetchAdminClients(): Promise<AdminClientsView[]> {
       .select("client_id");
 
     if (projectsError) {
-      console.error("Failed to fetch project counts:", projectsError?.message);
+      reportSupabaseError("fetchAdminClients/projects", projectsError);
     }
 
     const projectCountMap = new Map<string, number>();
@@ -95,7 +95,7 @@ export async function fetchAdminProjects(): Promise<AdminProjectsView[]> {
       .select("*");
 
     if (projectsError || !projects) {
-      console.error("Failed to fetch projects:", projectsError?.message);
+      reportSupabaseError("fetchAdminProjects/projects", projectsError);
       return [];
     }
 
@@ -105,10 +105,7 @@ export async function fetchAdminProjects(): Promise<AdminProjectsView[]> {
       .select("*");
 
     if (clientsError) {
-      console.error(
-        "Failed to fetch clients for projects:",
-        clientsError?.message,
-      );
+      reportSupabaseError("fetchAdminProjects/clients", clientsError);
     }
 
     const clientMap = new Map<string, ClientRow>();

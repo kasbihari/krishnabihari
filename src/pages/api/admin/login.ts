@@ -1,9 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createAdminSession, setAdminSessionCookie } from '../../../lib/server/session';
 import { safeEqual, createRateLimiter, clientIp } from '../../../lib/server/security';
-
-const configuredEmail = (import.meta.env.ADMIN_EMAIL ?? '').trim().toLowerCase();
-const configuredPassword = import.meta.env.ADMIN_PASSWORD ?? '';
+import { serverEnv } from '../../../lib/server/env';
 
 // Best-effort per-instance throttle on the login endpoint.
 const loginLimiter = createRateLimiter({ windowMs: 60_000, max: 10 });
@@ -17,6 +15,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     );
   }
 
+  /*
+   * Read the configured credentials at REQUEST time, not at module scope.
+   *
+   * `import.meta.env.ADMIN_EMAIL` is statically replaced by Vite during the
+   * build, so the value is frozen into the server bundle and never re-read.
+   * When these were unset at build time the check compiled down to
+   * `if ("" && "") ...` and every sign-in was rejected with
+   * "Invalid email or password" regardless of the credentials entered.
+   * See src/lib/server/env.ts.
+   */
+  const configuredEmail = serverEnv('ADMIN_EMAIL').trim().toLowerCase();
+  const configuredPassword = serverEnv('ADMIN_PASSWORD');
+
   try {
     const body = await request.json();
     const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
@@ -29,6 +40,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       isValidAdmin = safeEqual(email, configuredEmail) && safeEqual(password, configuredPassword);
     } else if (devFallbackAllowed) {
       isValidAdmin = safeEqual(email, 'admin@localhost') && safeEqual(password, 'admin');
+    } else {
+      // Misconfiguration, not a bad password. Log a clear reason (never a
+      // value) so the cause is obvious in the deployment logs.
+      console.error(
+        '[admin-login] ADMIN_EMAIL and/or ADMIN_PASSWORD are not configured for this ' +
+          'deployment, so no sign-in can succeed. Set them in the hosting ' +
+          'environment (they are read at runtime).',
+      );
     }
 
     if (!isValidAdmin) {

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, reportSupabaseError } from './supabase-admin';
 
 export type AdminDashboardSummary = {
   totalClients: number;
@@ -31,6 +31,9 @@ export async function fetchAdminDashboardSummary(): Promise<AdminDashboardSummar
     ]);
 
     if (clientsResult.error || projectsResult.error || hoursResult.error) {
+      reportSupabaseError('fetchAdminDashboardSummary/clients', clientsResult.error);
+      reportSupabaseError('fetchAdminDashboardSummary/projects', projectsResult.error);
+      reportSupabaseError('fetchAdminDashboardSummary/hours', hoursResult.error);
       return emptySummary;
     }
 

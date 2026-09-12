@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, reportSupabaseError } from './supabase-admin';
+import { serverEnv } from './env';
 
 /**
  * Public-read Supabase Storage bucket for project / portfolio images.
@@ -44,13 +45,15 @@ export function buildStoragePath(
 
 /** Full public URL for a stored object path. */
 export function publicImageUrl(path: string): string {
-  const base = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+  // Read at runtime — see src/lib/server/env.ts.
+  const base = serverEnv('PUBLIC_SUPABASE_URL');
   return `${base}/storage/v1/object/public/${STORAGE_BUCKET}/${path}`;
 }
 
 /** True when the URL is a full public URL pointing into our bucket. */
 export function isManagedImageUrl(url: string): boolean {
-  const base = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+  // Read at runtime — see src/lib/server/env.ts.
+  const base = serverEnv('PUBLIC_SUPABASE_URL');
   if (!base) return false;
   const prefix = `${base}/storage/v1/object/public/${STORAGE_BUCKET}/`;
   return url.startsWith(prefix);
@@ -58,7 +61,8 @@ export function isManagedImageUrl(url: string): boolean {
 
 /** Inverse of publicImageUrl: extract the object path from a managed URL. */
 export function extractStoragePathFromUrl(url: string): string | null {
-  const base = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+  // Read at runtime — see src/lib/server/env.ts.
+  const base = serverEnv('PUBLIC_SUPABASE_URL');
   if (!base) return null;
   const prefix = `${base}/storage/v1/object/public/${STORAGE_BUCKET}/`;
   if (!url.startsWith(prefix)) return null;
@@ -106,6 +110,7 @@ export async function uploadImage(
     .upload(path, bytes, { contentType: mime, upsert: false });
 
   if (error) {
+    reportSupabaseError('uploadImage', error);
     return { error: `Upload failed: ${error.message}` };
   }
 

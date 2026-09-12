@@ -2,6 +2,8 @@ import crypto from 'node:crypto';
 
 import type { AstroCookies } from 'astro';
 
+import { serverEnv } from './env';
+
 /* =========================================================
    PROJECT PORTAL SESSION
    ========================================================= */
@@ -22,8 +24,10 @@ function getProjectSessionSecret(): string {
   const devFallback =
     'local-dev-project-session-secret';
 
+  // Read at runtime — import.meta.env would freeze the build-time value
+  // into the bundle. See src/lib/server/env.ts.
   const configuredSecret =
-    import.meta.env.CLIENT_SESSION_SECRET;
+    serverEnv('CLIENT_SESSION_SECRET');
 
   if (
     configuredSecret &&
@@ -231,9 +235,11 @@ const ADMIN_SESSION_TTL_MS =
   1000 * 60 * 60 * 8;
 
 function getAdminSessionSecret(): string {
+  // Read at runtime — import.meta.env would freeze the build-time value
+  // into the bundle. See src/lib/server/env.ts.
   const configuredSecret =
-    import.meta.env.ADMIN_SESSION_SECRET ??
-    import.meta.env.CLIENT_SESSION_SECRET;
+    serverEnv('ADMIN_SESSION_SECRET') ||
+    serverEnv('CLIENT_SESSION_SECRET');
 
   if (
     configuredSecret &&

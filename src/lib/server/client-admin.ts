@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, reportSupabaseError } from './supabase-admin';
 import { deleteAllManagedImages, deleteOrphanedImages } from './storage';
 
 /**
@@ -174,7 +174,10 @@ export async function createClient(input: ClientInput): Promise<{ id: string } |
     .insert({ name: input.name, company: input.company, client_code: input.client_code.trim().toUpperCase() })
     .select('id')
     .single();
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { id: data.id };
 }
 
@@ -185,14 +188,20 @@ export async function updateClient(id: string, input: Partial<ClientInput>): Pro
   if (input.company !== undefined) payload.company = input.company;
   if (input.client_code !== undefined) payload.client_code = input.client_code.trim().toUpperCase();
   const { error } = await supabaseAdmin.from('clients').update(payload).eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
 export async function deleteClient(id: string): Promise<{ ok: true } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
   const { error } = await supabaseAdmin.from('clients').delete().eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
@@ -236,7 +245,10 @@ export async function createProject(input: ProjectInput): Promise<{ id: string }
     })
     .select('id')
     .single();
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { id: data.id };
 }
 
@@ -263,7 +275,10 @@ export async function updateProject(id: string, input: Partial<ProjectInput>): P
     .maybeSingle();
 
   const { error } = await supabaseAdmin.from('projects').update(payload).eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
 
   if (input.images !== undefined) {
     const previous = Array.isArray(existing?.images)
@@ -285,7 +300,10 @@ export async function deleteProject(id: string): Promise<{ ok: true } | { error:
     .maybeSingle();
 
   const { error } = await supabaseAdmin.from('projects').delete().eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
 
   if (Array.isArray(existing?.images)) {
     await deleteAllManagedImages(existing.images as string[]);
@@ -321,7 +339,10 @@ export async function createTimelineEntry(input: TimelineInput): Promise<{ id: s
     })
     .select('id')
     .single();
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { id: data.id };
 }
 
@@ -334,14 +355,20 @@ export async function updateTimelineEntry(id: string, input: Partial<TimelineInp
   if (input.timeline_date !== undefined) payload.timeline_date = input.timeline_date;
   if (input.sort_order !== undefined) payload.sort_order = input.sort_order;
   const { error } = await supabaseAdmin.from('project_timeline').update(payload).eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
 export async function deleteTimelineEntry(id: string): Promise<{ ok: true } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
   const { error } = await supabaseAdmin.from('project_timeline').delete().eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
@@ -372,7 +399,10 @@ export async function createMilestone(input: MilestoneInput): Promise<{ id: stri
     })
     .select('id')
     .single();
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { id: data.id };
 }
 
@@ -385,14 +415,20 @@ export async function updateMilestone(id: string, input: Partial<MilestoneInput>
   if (input.milestone_date !== undefined) payload.milestone_date = input.milestone_date;
   if (input.sort_order !== undefined) payload.sort_order = input.sort_order;
   const { error } = await supabaseAdmin.from('project_milestones').update(payload).eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
 export async function deleteMilestone(id: string): Promise<{ ok: true } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
   const { error } = await supabaseAdmin.from('project_milestones').delete().eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
@@ -417,7 +453,10 @@ export async function upsertHours(input: HoursInput): Promise<{ ok: true } | { e
     },
     { onConflict: 'project_id' },
   );
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
@@ -446,7 +485,10 @@ export async function createUpdate(input: UpdateInput): Promise<{ id: string } |
     })
     .select('id')
     .single();
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { id: data.id };
 }
 
@@ -458,13 +500,19 @@ export async function updateUpdate(id: string, input: Partial<UpdateInput>): Pro
   if (input.update_type !== undefined) payload.update_type = input.update_type;
   if (input.published !== undefined) payload.published = input.published;
   const { error } = await supabaseAdmin.from('project_updates').update(payload).eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }
 
 export async function deleteUpdate(id: string): Promise<{ ok: true } | { error: string }> {
   if (!supabaseAdmin) return { error: 'Supabase is not configured.' };
   const { error } = await supabaseAdmin.from('project_updates').delete().eq('id', id);
-  if (error) return { error: error.message };
+  if (error) {
+    reportSupabaseError('client-admin write', error);
+    return { error: error.message };
+  }
   return { ok: true };
 }

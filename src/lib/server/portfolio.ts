@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, reportSupabaseError } from './supabase-admin';
 import { deleteAllManagedImages, deleteOrphanedImages } from './storage';
 
 export const PORTFOLIO_CATEGORIES = [
@@ -351,7 +351,7 @@ export async function fetchPublishedPortfolioProjects(): Promise<PortfolioProjec
       .order('created_at', { ascending: true });
 
     if (error || !data) {
-      console.error('Failed to fetch published portfolio projects:', error?.message);
+      reportSupabaseError('fetchPublishedPortfolioProjects', error);
       return [];
     }
 
@@ -378,7 +378,7 @@ export async function fetchAdminPortfolioProjects(): Promise<PortfolioProjectRow
       .order('created_at', { ascending: true });
 
     if (error || !data) {
-      console.error('Failed to fetch admin portfolio projects:', error?.message);
+      reportSupabaseError('fetchAdminPortfolioProjects', error);
       return [];
     }
 
