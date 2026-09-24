@@ -311,7 +311,7 @@ padding: 1rem;
     );
   }
 
-  if (!portalData) {
+  if (view === "workspace" && !portalData) {
     return (
       <>
         {" "}
