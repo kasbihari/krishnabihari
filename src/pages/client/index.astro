@@ -1,17 +1,17 @@
 ---
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import ClientLogin from '../../components/portal/ClientLogin';
-import { getProjectPortalSession } from '../../lib/server/session';
+import { getClientPortalSession } from '../../lib/server/session';
 
 export const prerender = false;
 
-const projectSession = getProjectPortalSession(Astro.cookies);
+const clientSession = getClientPortalSession(Astro.cookies);
 
-if (projectSession) {
+if (clientSession) {
   return Astro.redirect('/client/dashboard');
 }
 ---
 
-<PortalLayout title="Project Portal">
+<PortalLayout title="Client Portal">
   <ClientLogin client:load />
 </PortalLayout>

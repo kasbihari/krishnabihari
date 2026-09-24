@@ -1,10 +1,15 @@
 import type {
   ClientPortalData,
+  ClientProjectsData,
   ProjectMilestoneRecord,
   ProjectProgressHistoryRecord,
   ProjectRecord,
   ProjectUpdateRecord,
   TimelineRecord,
+} from './types';
+
+import {
+  normalizeProjectCategory,
 } from './types';
 
 const fallbackProject: ProjectRecord = {
@@ -490,10 +495,12 @@ function normalizePortalData(
   };
 }
 
-export async function fetchPortalDataByProjectSession(): Promise<ClientPortalData | null> {
+export async function fetchPortalDataByProjectId(
+  projectId: string,
+): Promise<ClientPortalData | null> {
   try {
     const response = await fetch(
-      '/api/client/project',
+      `/api/client/project?projectId=${encodeURIComponent(projectId)}`,
       {
         method: 'GET',
         credentials: 'include',
@@ -547,6 +554,159 @@ export async function fetchPortalDataByProjectSession(): Promise<ClientPortalDat
     });
   } catch {
     return getFallbackPortalData();
+  }
+}
+
+export async function fetchClientProjects(): Promise<ClientProjectsData | null> {
+  try {
+    const response = await fetch(
+      '/api/client/projects',
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+        },
+      },
+    );
+
+    if (!response.ok) {
+      if (
+        response.status === 401 ||
+        response.status === 403
+      ) {
+        return null;
+      }
+
+      throw new Error(
+        `Client projects request failed with status ${response.status}.`,
+      );
+    }
+
+    const data =
+      (await response.json()) as Partial<ClientProjectsData>;
+
+    if (
+      !data?.client ||
+      !Array.isArray(data.projects)
+    ) {
+      throw new Error(
+        'Invalid client projects response.',
+      );
+    }
+
+    return {
+      client: {
+        id: data.client.id,
+        name:
+          typeof data.client.name ===
+            'string' &&
+          data.client.name.trim().length > 0
+            ? data.client.name.trim()
+            : 'Client',
+        company:
+          typeof data.client.company ===
+            'string'
+            ? data.client.company.trim()
+            : '',
+        client_code:
+          typeof data.client.client_code ===
+            'string'
+            ? data.client.client_code
+                .trim()
+                .toUpperCase()
+            : '',
+      },
+      projects: data.projects.map(
+        (project) => ({
+          id: project.id,
+          project_code:
+            typeof project.project_code ===
+              'string'
+              ? project.project_code
+                  .trim()
+                  .toUpperCase()
+              : '',
+          name:
+            typeof project.name ===
+              'string' &&
+            project.name.trim().length > 0
+              ? project.name.trim()
+              : 'Project',
+          description:
+            typeof project.description ===
+              'string'
+              ? project.description.trim()
+              : '',
+          type:
+            typeof project.type ===
+              'string' &&
+            project.type.trim().length > 0
+              ? project.type.trim()
+              : 'Project',
+          category:
+            typeof project.category ===
+              'string' &&
+            project.category.trim().length > 0
+              ? normalizeProjectCategory(
+                  project.category,
+                )
+              : 'web-development',
+          status:
+            typeof project.status ===
+              'string' &&
+            project.status.trim().length > 0
+              ? project.status.trim()
+              : 'Active',
+          phase:
+            typeof project.phase ===
+              'string' &&
+            project.phase.trim().length > 0
+              ? project.phase.trim()
+              : 'Planning',
+          progress: Math.min(
+            Math.max(
+              typeof project.progress ===
+                'number'
+                ? project.progress
+                : 0,
+              0,
+            ),
+            100,
+          ),
+          expected_launch:
+            typeof project.expected_launch ===
+              'string'
+              ? project.expected_launch.trim()
+              : '',
+          live_demo_url:
+            typeof project.live_demo_url ===
+              'string' &&
+            project.live_demo_url.trim()
+              .length > 0
+              ? project.live_demo_url.trim()
+              : null,
+          images: Array.isArray(
+            project.images,
+          )
+            ? project.images.filter(
+                (
+                  image,
+                ): image is string =>
+                  typeof image ===
+                    'string' &&
+                  image.trim().length > 0,
+              )
+            : [],
+          created_at:
+            project.created_at,
+          updated_at:
+            project.updated_at,
+        }),
+      ),
+    };
+  } catch {
+    return null;
   }
 }
 

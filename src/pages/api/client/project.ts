@@ -1,16 +1,12 @@
 import type { APIRoute } from 'astro';
 
 import {
-getProjectPortalSession,
+  getClientPortalSession,
 } from '../../../lib/server/session';
 
 import {
-supabaseAdmin,
+  supabaseAdmin,
 } from '../../../lib/server/supabase-admin';
-
-import {
-projectCodeLikePattern,
-} from '../../../lib/server/project-code';
 
 type ProjectRow = {
 id: string;
@@ -147,103 +143,121 @@ typeof value === 'number'
 }
 
 export const GET: APIRoute = async ({
-cookies,
+  cookies,
+  url,
 }) => {
-const session =
-getProjectPortalSession(cookies);
+  const session =
+    getClientPortalSession(cookies);
 
-if (!session) {
-return json(
-{
-success: false,
-message:
-'Project session is invalid or expired.',
-},
-401,
-);
-}
+  if (!session) {
+    return json(
+      {
+        success: false,
+        message:
+          'Client session is invalid or expired.',
+      },
+      401,
+    );
+  }
 
-if (!supabaseAdmin) {
-return json(
-{
-success: false,
-message:
-'Portal is not configured for production access.',
-},
-503,
-);
-}
+  if (!supabaseAdmin) {
+    return json(
+      {
+        success: false,
+        message:
+          'Portal is not configured for production access.',
+      },
+      503,
+    );
+  }
 
-try {
-/*
-* Authorization is based entirely on the
-* signed httpOnly project session.
-*
-* The browser does not supply projectId
-* or projectCode to this endpoint.
-*/
+  try {
+    /*
+     * Authorization is based entirely on the
+     * signed httpOnly client session.
+     *
+     * The browser supplies only the project id it
+     * wants to open; the project is accepted only
+     * when it belongs to the authenticated client
+     * (`projects.client_id = session.clientId`).
+     * A project id from another client can never
+     * resolve to a row here.
+     */
 
-const {
-  data: projectData,
-  error: projectError,
-} = await supabaseAdmin
-  .from('projects')
-  .select(
-    [
-      'id',
-      'client_id',
-      'project_code',
-      'name',
-      'description',
-      'type',
-      'category',
-      'status',
-      'phase',
-      'progress',
-      'expected_launch',
-      'live_demo_url',
-      'images',
-      'created_at',
-      'updated_at',
-    ].join(', '),
-  )
-  .eq(
-    'id',
-    session.projectId,
-  )
-  .ilike(
-    'project_code',
-    projectCodeLikePattern(session.projectCode),
-  )
-  .maybeSingle();
+    const projectId =
+      url.searchParams.get('projectId');
 
-if (
-  projectError ||
-  !projectData
-) {
-  console.error(
-    '[project-debug] project lookup failed:',
-    {
-      projectId: session.projectId,
-      projectCode:
-        session.projectCode,
-      error: projectError?.message,
-      details: projectError?.details,
-      hint: projectError?.hint,
-      code: projectError?.code,
-      projectData,
-    },
-  );
+    if (!projectId) {
+      return json(
+        {
+          success: false,
+          message:
+            'A project id is required.',
+        },
+        400,
+      );
+    }
 
-  return json(
-    {
-      success: false,
-      message:
-        'The requested project workspace could not be found.',
-    },
-    403,
-  );
-}
+    const {
+      data: projectData,
+      error: projectError,
+    } = await supabaseAdmin
+      .from('projects')
+      .select(
+        [
+          'id',
+          'client_id',
+          'project_code',
+          'name',
+          'description',
+          'type',
+          'category',
+          'status',
+          'phase',
+          'progress',
+          'expected_launch',
+          'live_demo_url',
+          'images',
+          'created_at',
+          'updated_at',
+        ].join(', '),
+      )
+      .eq(
+        'id',
+        projectId,
+      )
+      .eq(
+        'client_id',
+        session.clientId,
+      )
+      .maybeSingle();
+
+    if (
+      projectError ||
+      !projectData
+    ) {
+      console.error(
+        '[project-debug] project lookup failed:',
+        {
+          projectId,
+          clientId: session.clientId,
+          error: projectError?.message,
+          details: projectError?.details,
+          hint: projectError?.hint,
+          code: projectError?.code,
+          projectData,
+        },
+      );
+
+      return json(
+        {
+          success: false,
+          message:
+            'The requested project workspace could not be found.',
+        },
+        403,
+      );
+    }
 
 const project =
   projectData as unknown as ProjectRow;

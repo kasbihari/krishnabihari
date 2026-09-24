@@ -32,8 +32,8 @@ delay,
 
 export default function ClientLogin() {
 const [
-projectCode,
-setProjectCode,
+clientCode,
+setClientCode,
 ] = useState('');
 
 const [
@@ -54,13 +54,13 @@ event.preventDefault();
 setError('');
 
 const normalized =
-  projectCode
+  clientCode
     .trim()
     .toUpperCase();
 
 if (!normalized) {
   setError(
-    'Please enter your project code.',
+    'Please enter your client code.',
   );
   return;
 }
@@ -79,7 +79,7 @@ try {
         },
         credentials: 'include',
         body: JSON.stringify({
-          projectCode:
+          clientCode:
             normalized,
         }),
       },
@@ -92,7 +92,7 @@ try {
         () => ({
           success: false,
           message:
-            'Unable to validate the project code.',
+            'Unable to validate the client code.',
         }),
       );
 
@@ -102,23 +102,23 @@ try {
   ) {
     setError(
       result?.message ||
-        'That project code is invalid. Please check the code and try again.',
+        'That client code is invalid. Please check the code and try again.',
     );
     return;
   }
 
   if (
-    !result.project?.id ||
-    !result.project?.project_code
+    !result.client?.id ||
+    !result.client?.client_code
   ) {
     setError(
-      'The project workspace could not be initialized.',
+      'The client workspace could not be initialized.',
     );
     return;
   }
 
   /*
-   * The authenticated project is now represented
+   * The authenticated client is now represented
    * by the secure httpOnly cookie created by the
    * server-side login endpoint.
    *
@@ -130,7 +130,7 @@ try {
     '/client/dashboard';
 } catch {
   setError(
-    'Unable to connect to the project portal. Please try again.',
+    'Unable to connect to the client portal. Please try again.',
   );
 } finally {
   setIsSubmitting(false);
@@ -641,7 +641,7 @@ overflow: hidden;
             </div>
 
             <div className="client-login-brand-subtitle">
-              Project Portal
+              Client Portal
             </div>
           </div>
         </motion.div>
@@ -654,7 +654,7 @@ overflow: hidden;
           </p>
 
           <h1 className="client-login-title">
-            Open your project workspace.
+            Open your client workspace.
           </h1>
         </motion.div>
 
@@ -662,15 +662,16 @@ overflow: hidden;
           className="client-login-description"
           {...fadeUp(0.28)}
         >
-          Use your unique project code to
-          access project progress, milestones,
-          timeline, visual updates, and
-          delivery information.
+          Use your unique client code to
+          access all your project workspaces —
+          progress, milestones, timeline,
+          visual updates, and delivery
+          information.
         </motion.p>
 
         <div className="client-login-features">
           {[
-            'Project progress and delivery milestones',
+            'Every project under your client account',
             'Current phase, timeline, and next steps',
             'Visual updates and live project access',
           ].map((item, index) => (
@@ -712,7 +713,7 @@ overflow: hidden;
           >
             <div>
               <div className="client-login-form-eyebrow">
-                Project access
+                Client access
               </div>
 
               <h2 className="client-login-form-title">
@@ -737,7 +738,7 @@ overflow: hidden;
                 delay: 0.34,
               }}
             >
-              PC
+              CC
             </motion.div>
           </motion.div>
 
@@ -747,29 +748,29 @@ overflow: hidden;
             {...fadeUp(0.34)}
           >
             <label
-              htmlFor="project-code"
+              htmlFor="client-code"
               className="client-login-label"
             >
-              Project code
+              Client code
             </label>
 
             <motion.input
-              id="project-code"
+              id="client-code"
               type="text"
-              value={projectCode}
+              value={clientCode}
               onChange={(event) =>
-                setProjectCode(
+                setClientCode(
                   event.target.value,
                 )
               }
               disabled={isSubmitting}
-              placeholder="PROJECT-2026-X7K9"
+              placeholder="ACM-4821"
               autoComplete="off"
               autoCapitalize="characters"
               spellCheck={false}
               aria-describedby={
                 error
-                  ? 'project-code-error'
+                  ? 'client-code-error'
                   : undefined
               }
               className="client-login-input"
@@ -784,7 +785,7 @@ overflow: hidden;
 
             {error && (
               <motion.p
-                id="project-code-error"
+                id="client-code-error"
                 role="alert"
                 className="client-login-error"
                 initial={{

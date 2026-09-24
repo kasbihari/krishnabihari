@@ -5,24 +5,24 @@ import type { AstroCookies } from 'astro';
 import { serverEnv } from './env';
 
 /* =========================================================
-   PROJECT PORTAL SESSION
+   CLIENT PORTAL SESSION
    ========================================================= */
 
-export type ProjectPortalSession = {
-  projectId: string;
-  projectCode: string;
+export type ClientPortalSession = {
+  clientId: string;
+  clientCode: string;
   expiresAt: number;
 };
 
-const PROJECT_SESSION_COOKIE_NAME =
-  'project_portal_session';
+const CLIENT_SESSION_COOKIE_NAME =
+  'client_portal_session';
 
-const PROJECT_SESSION_TTL_MS =
+const CLIENT_SESSION_TTL_MS =
   1000 * 60 * 60 * 8;
 
-function getProjectSessionSecret(): string {
+function getClientSessionSecret(): string {
   const devFallback =
-    'local-dev-project-session-secret';
+    'local-dev-client-session-secret';
 
   // Read at runtime — import.meta.env would freeze the build-time value
   // into the bundle. See src/lib/server/env.ts.
@@ -45,38 +45,38 @@ function getProjectSessionSecret(): string {
   );
 }
 
-function serializeProjectSession(
-  session: ProjectPortalSession,
+function serializeClientSession(
+  session: ClientPortalSession,
 ): string {
   return JSON.stringify({
-    projectId: session.projectId,
-    projectCode: session.projectCode,
+    clientId: session.clientId,
+    clientCode: session.clientCode,
     expiresAt: session.expiresAt,
   });
 }
 
-export function createProjectPortalSession(
-  projectId: string,
-  projectCode: string,
-): ProjectPortalSession {
+export function createClientPortalSession(
+  clientId: string,
+  clientCode: string,
+): ClientPortalSession {
   return {
-    projectId,
-    projectCode: projectCode.trim().toUpperCase(),
+    clientId,
+    clientCode: clientCode.trim().toUpperCase(),
     expiresAt:
-      Date.now() + PROJECT_SESSION_TTL_MS,
+      Date.now() + CLIENT_SESSION_TTL_MS,
   };
 }
 
-export function signProjectSessionPayload(
-  session: ProjectPortalSession,
+export function signClientSessionPayload(
+  session: ClientPortalSession,
 ): string {
   const payload =
-    serializeProjectSession(session);
+    serializeClientSession(session);
 
   const signature = crypto
     .createHmac(
       'sha256',
-      getProjectSessionSecret(),
+      getClientSessionSecret(),
     )
     .update(payload)
     .digest('hex');
@@ -87,9 +87,9 @@ export function signProjectSessionPayload(
   ).toString('base64url')}.${signature}`;
 }
 
-export function verifyProjectSessionPayload(
+export function verifyClientSessionPayload(
   rawValue: string,
-): ProjectPortalSession | null {
+): ClientPortalSession | null {
   if (!rawValue.includes('.')) {
     return null;
   }
@@ -114,7 +114,7 @@ export function verifyProjectSessionPayload(
     const expectedSignature = crypto
       .createHmac(
         'sha256',
-        getProjectSessionSecret(),
+        getClientSessionSecret(),
       )
       .update(payloadJson)
       .digest('hex');
@@ -144,11 +144,11 @@ export function verifyProjectSessionPayload(
     const parsed =
       JSON.parse(
         payloadJson,
-      ) as ProjectPortalSession;
+      ) as ClientPortalSession;
 
     if (
-      !parsed.projectId ||
-      !parsed.projectCode ||
+      !parsed.clientId ||
+      !parsed.clientCode ||
       !parsed.expiresAt
     ) {
       return null;
@@ -159,8 +159,8 @@ export function verifyProjectSessionPayload(
     }
 
     return {
-      projectId: parsed.projectId,
-      projectCode: parsed.projectCode
+      clientId: parsed.clientId,
+      clientCode: parsed.clientCode
         .trim()
         .toUpperCase(),
       expiresAt: parsed.expiresAt,
@@ -170,13 +170,13 @@ export function verifyProjectSessionPayload(
   }
 }
 
-export function setProjectPortalSessionCookie(
+export function setClientPortalSessionCookie(
   cookies: AstroCookies,
-  session: ProjectPortalSession,
+  session: ClientPortalSession,
 ): void {
   cookies.set(
-    PROJECT_SESSION_COOKIE_NAME,
-    signProjectSessionPayload(session),
+    CLIENT_SESSION_COOKIE_NAME,
+    signClientSessionPayload(session),
     {
       path: '/',
       httpOnly: true,
@@ -193,29 +193,29 @@ export function setProjectPortalSessionCookie(
   );
 }
 
-export function clearProjectPortalSessionCookie(
+export function clearClientPortalSessionCookie(
   cookies: AstroCookies,
 ): void {
   cookies.delete(
-    PROJECT_SESSION_COOKIE_NAME,
+    CLIENT_SESSION_COOKIE_NAME,
     {
       path: '/',
     },
   );
 }
 
-export function getProjectPortalSession(
+export function getClientPortalSession(
   cookies: AstroCookies,
-): ProjectPortalSession | null {
+): ClientPortalSession | null {
   const raw = cookies.get(
-    PROJECT_SESSION_COOKIE_NAME,
+    CLIENT_SESSION_COOKIE_NAME,
   )?.value;
 
   if (!raw) {
     return null;
   }
 
-  return verifyProjectSessionPayload(raw);
+  return verifyClientSessionPayload(raw);
 }
 
 /* =========================================================

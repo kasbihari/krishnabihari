@@ -12,10 +12,17 @@ import ProjectHours from "./ProjectHours";
 import ProjectCategoryFocus from "./ProjectCategoryFocus";
 import ProjectUpdates from "./ProjectUpdates";
 import ProjectMilestones from "./ProjectMilestones";
+import ClientProjectList from "./ClientProjectList";
 
-import { fetchPortalDataByProjectSession } from "../../lib/client/portal";
+import {
+  fetchClientProjects,
+  fetchPortalDataByProjectId,
+} from "../../lib/client/portal";
 
-import type { ClientPortalData } from "../../lib/client/types";
+import type {
+  ClientPortalData,
+  ClientProjectsData,
+} from "../../lib/client/types";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -64,7 +71,11 @@ const staggerContainer = {
 };
 
 export default function ClientDashboard() {
+  const [clientData, setClientData] = useState<ClientProjectsData | null>(null);
+
   const [portalData, setPortalData] = useState<ClientPortalData | null>(null);
+
+  const [view, setView] = useState<"list" | "workspace">("list");
 
   const [loading, setLoading] = useState(true);
 
@@ -82,19 +93,22 @@ export default function ClientDashboard() {
          * Authorization is handled entirely server-side.
          *
          * The browser does not read or store the
-         * project session. The API reads the signed
-         * httpOnly cookie automatically.
+         * client session. The API reads the signed
+         * httpOnly cookie automatically and returns
+         * every project whose client_id matches the
+         * authenticated client.
          */
-        const data = await fetchPortalDataByProjectSession();
+        const data = await fetchClientProjects();
 
         if (!data) {
-          setError("We could not load this project workspace at the moment.");
+          setError("We could not load your client workspace at the moment.");
           return;
         }
 
-        setPortalData(data);
+        setClientData(data);
+        setView("list");
       } catch {
-        setError("We could not load this project workspace at the moment.");
+        setError("We could not load your client workspace at the moment.");
       } finally {
         setLoading(false);
       }
@@ -102,6 +116,32 @@ export default function ClientDashboard() {
 
     void load();
   }, [retryKey]);
+
+  const openProject = async (projectId: string) => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const data = await fetchPortalDataByProjectId(projectId);
+
+      if (!data) {
+        setError("We could not open this project workspace at the moment.");
+        return;
+      }
+
+      setPortalData(data);
+      setView("workspace");
+    } catch {
+      setError("We could not open this project workspace at the moment.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const backToList = () => {
+    setPortalData(null);
+    setView("list");
+  };
 
   const handleLogout = async () => {
     try {
@@ -117,6 +157,7 @@ export default function ClientDashboard() {
   };
 
   const handleRetry = () => {
+    setClientData(null);
     setPortalData(null);
     setError("");
     setLoading(true);
@@ -262,7 +303,7 @@ padding: 1rem;
             </div>
 
             <div className="portal-loading-copy">
-              Authenticating and loading your project workspace…
+              Authenticating and loading your client workspace...
             </div>
           </motion.div>
         </main>
@@ -374,11 +415,11 @@ padding: 1rem;
             }}
           >
             <div className="portal-error-title">
-              Unable to open project workspace
+              Unable to open client workspace
             </div>
 
             <div className="portal-error-copy">
-              {error || "Something went wrong while loading this project."}
+              {error || "Something went wrong while loading your workspace."}
             </div>
 
             <div className="portal-error-actions">
@@ -406,7 +447,310 @@ padding: 1rem;
                   scale: 0.99,
                 }}
               >
-                Back to project login
+                Back to client login
+              </motion.a>
+            </div>
+          </motion.div>
+        </main>
+      </>
+    );
+  }
+
+  if (view === "list") {
+    if (!clientData) {
+      return (
+        <>
+          {" "}
+          <style>{`
+.portal-error {
+min-height: 100svh;
+display: grid;
+place-items: center;
+padding: 1rem;
+}
+
+      .portal-error-card {
+        width:
+          min(100%, 720px);
+        padding:
+          clamp(
+            1.25rem,
+            4vw,
+            2rem
+          );
+        border:
+          1px solid
+          var(--line);
+        border-radius: 18px;
+        background:
+          rgba(
+            10,
+            10,
+            10,
+            0.8
+          );
+        box-shadow:
+          0 20px 55px
+          rgba(
+            0,
+            0,
+            0,
+            0.2
+          );
+      }
+
+      .portal-error-title {
+        margin-bottom:
+          0.75rem;
+        color:
+          var(--text);
+        font-size:
+          clamp(
+            1.3rem,
+            3vw,
+            1.5rem
+          );
+        line-height: 1.25;
+      }
+
+      .portal-error-copy {
+        color:
+          var(--text-faint);
+        line-height: 1.8;
+      }
+
+      .portal-error-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top:
+          1.25rem;
+      }
+
+      .portal-error-action {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (max-width: 520px) {
+        .portal-error-actions {
+          flex-direction: column;
+        }
+
+        .portal-error-action {
+          width: 100%;
+        }
+      }
+    `}</style>
+          <main className="portal-error">
+            <motion.div
+              className="portal-error-card"
+              initial={{
+                opacity: 0,
+                y: 12,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.5,
+                ease,
+              }}
+            >
+              <div className="portal-error-title">
+                Unable to open client workspace
+              </div>
+
+              <div className="portal-error-copy">
+                {error ||
+                  "Something went wrong while loading your workspace."}
+              </div>
+
+              <div className="portal-error-actions">
+                <motion.button
+                  type="button"
+                  className="btn-secondary portal-error-action"
+                  onClick={handleRetry}
+                  whileHover={{
+                    y: -1,
+                  }}
+                  whileTap={{
+                    scale: 0.99,
+                  }}
+                >
+                  Try again
+                </motion.button>
+
+                <motion.a
+                  href="/client"
+                  className="btn-secondary portal-error-action"
+                  whileHover={{
+                    y: -1,
+                  }}
+                  whileTap={{
+                    scale: 0.99,
+                  }}
+                >
+                  Back to client login
+                </motion.a>
+              </div>
+            </motion.div>
+          </main>
+        </>
+      );
+    }
+
+    return (
+      <ClientProjectList
+        client={clientData.client}
+        projects={clientData.projects}
+        error={error}
+        onOpenProject={openProject}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  if (!portalData) {
+    return (
+      <>
+        {" "}
+        <style>{`
+.portal-error {
+min-height: 100svh;
+display: grid;
+place-items: center;
+padding: 1rem;
+}
+
+      .portal-error-card {
+        width:
+          min(100%, 720px);
+        padding:
+          clamp(
+            1.25rem,
+            4vw,
+            2rem
+          );
+        border:
+          1px solid
+          var(--line);
+        border-radius: 18px;
+        background:
+          rgba(
+            10,
+            10,
+            10,
+            0.8
+          );
+        box-shadow:
+          0 20px 55px
+          rgba(
+            0,
+            0,
+            0,
+            0.2
+          );
+      }
+
+      .portal-error-title {
+        margin-bottom:
+          0.75rem;
+        color:
+          var(--text);
+        font-size:
+          clamp(
+            1.3rem,
+            3vw,
+            1.5rem
+          );
+        line-height: 1.25;
+      }
+
+      .portal-error-copy {
+        color:
+          var(--text-faint);
+        line-height: 1.8;
+      }
+
+      .portal-error-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top:
+          1.25rem;
+      }
+
+      .portal-error-action {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (max-width: 520px) {
+        .portal-error-actions {
+          flex-direction: column;
+        }
+
+        .portal-error-action {
+          width: 100%;
+        }
+      }
+    `}</style>
+        <main className="portal-error">
+          <motion.div
+            className="portal-error-card"
+            initial={{
+              opacity: 0,
+              y: 12,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.5,
+              ease,
+            }}
+          >
+            <div className="portal-error-title">
+              Unable to open client workspace
+            </div>
+
+            <div className="portal-error-copy">
+              {error || "Something went wrong while loading your workspace."}
+            </div>
+
+            <div className="portal-error-actions">
+              <motion.button
+                type="button"
+                className="btn-secondary portal-error-action"
+                onClick={handleRetry}
+                whileHover={{
+                  y: -1,
+                }}
+                whileTap={{
+                  scale: 0.99,
+                }}
+              >
+                Try again
+              </motion.button>
+
+              <motion.a
+                href="/client"
+                className="btn-secondary portal-error-action"
+                whileHover={{
+                  y: -1,
+                }}
+                whileTap={{
+                  scale: 0.99,
+                }}
+              >
+                Back to client login
               </motion.a>
             </div>
           </motion.div>
@@ -576,13 +920,24 @@ clamp(0.85rem, 3vw, 1.25rem)
         anywhere;
     }
 
+    .portal-dashboard__actions {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .portal-dashboard__back,
     .portal-dashboard__logout {
-      flex:
-        0 0 auto;
-      min-height:
-        44px;
-      min-width:
-        90px;
+      min-height: 44px;
+    }
+
+    .portal-dashboard__back {
+      min-width: 120px;
+    }
+
+    .portal-dashboard__logout {
+      min-width: 90px;
     }
 
     .portal-dashboard__primary-grid {
@@ -656,6 +1011,12 @@ clamp(0.85rem, 3vw, 1.25rem)
         width: 100%;
       }
 
+      .portal-dashboard__actions {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .portal-dashboard__back,
       .portal-dashboard__logout {
         width: 100%;
       }
@@ -780,10 +1141,8 @@ clamp(0.85rem, 3vw, 1.25rem)
               </div>
             </motion.div>
 
-            <motion.button
-              type="button"
-              onClick={handleLogout}
-              className="btn-secondary portal-dashboard__logout"
+            <motion.div
+              className="portal-dashboard__actions"
               initial={{
                 opacity: 0,
                 y: 6,
@@ -797,20 +1156,48 @@ clamp(0.85rem, 3vw, 1.25rem)
                 ease,
                 delay: 0.18,
               }}
-              whileHover={{
-                y: -1,
-              }}
-              whileTap={{
-                scale: 0.99,
-              }}
-              style={{
-                background: "transparent",
-                border: "1px solid var(--line)",
-                color: "var(--text)",
-              }}
             >
-              Log out
-            </motion.button>
+              <motion.button
+                type="button"
+                onClick={backToList}
+                className="btn-secondary portal-dashboard__back"
+                whileHover={{
+                  y: -1,
+                }}
+                whileTap={{
+                  scale: 0.99,
+                }}
+                style={{
+                  background: "transparent",
+                  border: "1px solid var(--line)",
+                  color: "var(--text)",
+                }}
+              >
+                <span aria-hidden="true">
+                  ←
+                </span>
+                All projects
+              </motion.button>
+
+              <motion.button
+                type="button"
+                onClick={handleLogout}
+                className="btn-secondary portal-dashboard__logout"
+                whileHover={{
+                  y: -1,
+                }}
+                whileTap={{
+                  scale: 0.99,
+                }}
+                style={{
+                  background: "transparent",
+                  border: "1px solid var(--line)",
+                  color: "var(--text)",
+                }}
+              >
+                Log out
+              </motion.button>
+            </motion.div>
           </motion.header>
 
           {isDemoProject ? (

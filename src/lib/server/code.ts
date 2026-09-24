@@ -1,11 +1,12 @@
 /**
- * Canonicalisation and matching for project codes.
+ * Canonicalisation and matching for access codes (client codes and project
+ * codes).
  *
- * A project code is entered by a human and looked up against
- * `projects.project_code`. The database is the source of truth for the value
- * it holds, and that value is not guaranteed to be upper-case: rows backfilled
- * by the schema migration, or codes written directly, can be stored in any
- * case.
+ * A code is entered by a human and looked up against a stored column
+ * (`clients.client_code` or `projects.project_code`). The database is the
+ * source of truth for the value it holds, and that value is not guaranteed
+ * to be upper-case: rows backfilled by the schema migration, or codes
+ * written directly, can be stored in any case.
  *
  * The portal previously canonicalised everywhere to upper-case but compared
  * with exact equality:
@@ -14,17 +15,17 @@
  *
  * That only ever finds a row whose stored value is already upper-case. Any
  * other casing is unreachable, and because the admin UI renders the code with
- * a CSS `text-transform: uppercase`, the operator reads a string that does not
- * exist in the database — the displayed code and the stored code disagree and
- * the portal rejects the very value it showed.
+ * a CSS `text-transform: uppercase`, the operator reads a string that does
+ * not exist in the database — the displayed code and the stored code disagree
+ * and the portal rejects the very value it showed.
  *
  * These helpers give every caller one shared definition: the input is trimmed
  * and upper-cased to form a comparison key, matching against the stored value
  * is case-insensitive, and the stored value itself is never rewritten.
  */
 
-/** The comparison key for a project code: trimmed, upper-cased. */
-export function canonicalProjectCode(value: string): string {
+/** The comparison key for a code: trimmed, upper-cased. */
+export function canonicalCode(value: string): string {
   return value.trim().toUpperCase();
 }
 
@@ -37,11 +38,11 @@ export function canonicalProjectCode(value: string): string {
  *
  * `*` is deliberately left alone: PostgREST treats it as a wildcard and
  * whether a preceding backslash escapes it is not dependable. Unescaped, `*`
- * can only widen the search — an over-match is rejected by
- * `projectCodeMatches()` — while an escaped `*` could be read as a literal
- * `%` and lose the row entirely.
+ * can only widen the search — an over-match is rejected by `codeMatches()` —
+ * while an escaped `*` could be read as a literal `%` and lose the row
+ * entirely.
  */
-export function projectCodeLikePattern(canonical: string): string {
+export function codeLikePattern(canonical: string): string {
   return canonical.replace(/[\\%_]/g, (char) => `\\${char}`);
 }
 
@@ -50,14 +51,14 @@ export function projectCodeLikePattern(canonical: string): string {
  *
  * Applied to the rows a case-insensitive lookup returns so that only a real
  * case-insensitive equality match is accepted — a pattern that over-matched
- * can never be mistaken for the requested project.
+ * can never be mistaken for the requested code.
  */
-export function projectCodeMatches(
+export function codeMatches(
   stored: unknown,
   canonical: string,
 ): boolean {
   return (
     typeof stored === 'string' &&
-    canonicalProjectCode(stored) === canonical
+    canonicalCode(stored) === canonical
   );
 }

@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 import {
-  clearProjectPortalSessionCookie,
+  clearClientPortalSessionCookie,
 } from '../../../lib/server/session';
 
 export const GET: APIRoute = () =>
@@ -20,7 +20,7 @@ export const GET: APIRoute = () =>
 export const POST: APIRoute = async ({
   cookies,
 }) => {
-  clearProjectPortalSessionCookie(cookies);
+  clearClientPortalSessionCookie(cookies);
 
   return new Response(
     JSON.stringify({

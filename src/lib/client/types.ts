@@ -92,6 +92,35 @@ recorded_at: string;
 created_at?: string;
 };
 
+export type ClientRecord = {
+  id: string;
+  name: string;
+  company: string;
+  client_code: string;
+};
+
+export type ClientProjectSummary = {
+  id: string;
+  project_code: string;
+  name: string;
+  description: string;
+  type: string;
+  category: ProjectCategory;
+  status: ClientStatus | string;
+  phase: string;
+  progress: number;
+  expected_launch: string;
+  live_demo_url?: string | null;
+  images: string[];
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type ClientProjectsData = {
+  client: ClientRecord;
+  projects: ClientProjectSummary[];
+};
+
 export type ClientPortalData = {
 project: ProjectRecord;
 timeline: TimelineRecord[];
@@ -99,12 +128,6 @@ hours: ProjectHoursRecord;
 updates: ProjectUpdateRecord[];
 milestones: ProjectMilestoneRecord[];
 progressHistory: ProjectProgressHistoryRecord[];
-};
-
-export type ProjectSession = {
-projectCode: string;
-projectId: string;
-expiresAt: number;
 };
 
 export function normalizeProjectCategory(
