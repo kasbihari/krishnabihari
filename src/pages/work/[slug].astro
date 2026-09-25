@@ -1,0 +1,602 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { fetchPublishedPortfolioProjects } from '../../lib/server/portfolio';
+import { fallbackProjects } from '../../lib/portfolio-fallback';
+import { getLangFromCookies } from '../../i18n/server';
+import { getDict } from '../../i18n';
+import {
+  getCaseStudy,
+  hasCaseStudy,
+  slugify,
+} from '../../lib/case-studies';
+import type { Project } from '../../components/portfolio/ProjectCard';
+
+const lang = getLangFromCookies(Astro.cookies);
+const t = getDict(lang);
+const cs = t.caseStudy;
+const w = t.work;
+
+const slug = Astro.params.slug ?? '';
+
+const published = await fetchPublishedPortfolioProjects();
+const projects: Project[] =
+  published && published.length > 0 ? published : fallbackProjects;
+
+const project =
+  projects.find((p) => slugify(p.title) === slug) ?? null;
+const study = project ? getCaseStudy(slug, lang) : null;
+
+if (!project || !study) {
+  return Astro.redirect('/#work');
+}
+
+const images = project.images === 'empty' ? [] : project.images;
+const cover = images[0] ?? null;
+
+const currentIndex = projects.findIndex((p) => p.id === project.id);
+const nextWithStudy = projects
+  .slice(currentIndex + 1)
+  .concat(projects.slice(0, currentIndex))
+  .find((p) => hasCaseStudy(slugify(p.title)));
+
+const statusLabel =
+  project.status === 'done' ? w.shippedBadge : w.inProgressBadge;
+const statusData = project.status === 'done' ? 'done' : 'in-progress';
+
+const pageTitle = `${project.title} — ${cs.label} | Krishna Bihari`;
+const pageDescription = project.tagline;
+---
+
+<Layout title={pageTitle} description={pageDescription} lang={lang}>
+  <article class="cs">
+    {/* ── Hero ── */}
+    <header class="cs-hero section-padding">
+      <div class="container-main">
+        <a href="/#work" class="cs-back" data-reveal>
+          <span class="cs-back__arrow" aria-hidden="true">←</span>
+          {cs.backToWork}
+        </a>
+
+        <div class="cs-hero__inner">
+          <p class="section-label" data-reveal>
+            {project.category}
+          </p>
+
+          <h1 class="cs-hero__title" data-reveal data-delay="100">
+            {project.title}
+          </h1>
+
+          <p class="cs-hero__tagline" data-reveal data-delay="200">
+            {project.tagline}
+          </p>
+
+          <div class="cs-hero__meta" data-reveal data-delay="300">
+            <div class="cs-meta">
+              <span class="cs-meta__label">{cs.role}</span>
+              <span class="cs-meta__value">{study.role}</span>
+            </div>
+            <div class="cs-meta">
+              <span class="cs-meta__label">{cs.year}</span>
+              <span class="cs-meta__value">{study.year}</span>
+            </div>
+            <div class="cs-meta">
+              <span class="cs-meta__label">{cs.status}</span>
+              <span class="cs-meta__value cs-status" data-status={statusData}>
+                {statusLabel}
+              </span>
+            </div>
+          </div>
+
+          <div class="cs-hero__actions" data-reveal data-delay="400">
+            {project.link && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-secondary"
+              >
+                {w.github}
+              </a>
+            )}
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-primary"
+              >
+                {w.liveSite}
+              </a>
+            )}
+          </div>
+        </div>
+
+        {cover && (
+          <div class="cs-hero__cover" data-reveal data-delay="200">
+            <img src={cover} alt={project.title} class="cs-hero__img" />
+          </div>
+        )}
+      </div>
+    </header>
+
+    {/* ── Overview ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.overview}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          {study.overview.map((paragraph) => (
+            <p class="cs-lead">{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ── Problem / Solution ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.problem}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          {study.problem.map((paragraph) => (
+            <p class="cs-body">{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.solution}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          {study.solution.map((paragraph) => (
+            <p class="cs-body">{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ── Architecture ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.architecture}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          <ol class="cs-list">
+            {study.architecture.map((layer, i) => (
+              <li class="cs-list__item">
+                <span class="cs-list__index" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span class="cs-list__text">{layer}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Key features ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.keyFeatures}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          <div class="cs-features">
+            {study.keyFeatures.map((feature) => (
+              <div class="cs-feature">
+                <h3 class="cs-feature__title">{feature.title}</h3>
+                <p class="cs-feature__body">{feature.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Technology ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.technology}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          <div class="cs-tech">
+            {study.technology.map((tech) => (
+              <span class="cs-tech__chip">{tech}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Challenges ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.challenges}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          <ol class="cs-list">
+            {study.challenges.map((challenge, i) => (
+              <li class="cs-list__item cs-list__item--block">
+                <span class="cs-list__index" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div class="cs-list__block">
+                  <h3 class="cs-list__title">{challenge.title}</h3>
+                  <p class="cs-list__text">{challenge.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    {/* ── Outcome ── */}
+    <section class="cs-section section-padding--tight">
+      <div class="container-main cs-section__grid">
+        <div class="cs-section__head" data-reveal>
+          <p class="section-label">{cs.outcome}</p>
+        </div>
+        <div class="cs-section__body" data-reveal data-delay="100">
+          {study.outcome.map((paragraph) => (
+            <p class="cs-lead">{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ── Footer nav ── */}
+    <footer class="cs-nav section-padding">
+      <div class="container-main cs-nav__inner">
+        <a href="/#work" class="btn-secondary">
+          <span aria-hidden="true">←</span> {cs.backToWork}
+        </a>
+
+        {nextWithStudy && (
+          <a
+            href={`/work/${slugify(nextWithStudy.title)}`}
+            class="cs-nav__next"
+          >
+            <span class="cs-nav__next-label">{cs.nextProject}</span>
+            <span class="cs-nav__next-title">{nextWithStudy.title}</span>
+            <span class="cs-nav__next-arrow" aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
+    </footer>
+  </article>
+
+  <style>
+    /* ── Hero ── */
+    .cs-hero {
+      position: relative;
+    }
+
+    .cs-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    .cs-back:hover {
+      color: var(--text);
+    }
+
+    .cs-back__arrow {
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+
+    .cs-back:hover .cs-back__arrow {
+      transform: translateX(-3px);
+    }
+
+    .cs-hero__inner {
+      margin-top: clamp(3rem, 6vw, 5rem);
+      max-width: 46ch;
+    }
+
+    .cs-hero__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--fs-display);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-top: 1.5rem;
+    }
+
+    .cs-hero__tagline {
+      margin-top: 1.5rem;
+      font-size: var(--fs-lead);
+      line-height: 1.7;
+      color: var(--text-soft);
+      max-width: 44ch;
+    }
+
+    .cs-hero__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(1.5rem, 4vw, 3rem);
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .cs-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .cs-meta__label {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .cs-meta__value {
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    .cs-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cs-status::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--verde-ink);
+    }
+
+    .cs-status[data-status='in-progress']::before {
+      background: var(--bronze-soft);
+    }
+
+    .cs-hero__actions {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-top: 2.25rem;
+    }
+
+    .cs-hero__cover {
+      margin-top: clamp(3rem, 6vw, 5rem);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+
+    .cs-hero__img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    /* ── Sections ── */
+    .cs-section {
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .cs-section__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+    }
+
+    .cs-section__body {
+      max-width: 68ch;
+    }
+
+    .cs-lead {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      line-height: 1.6;
+      color: var(--text-soft);
+    }
+
+    .cs-lead + .cs-lead {
+      margin-top: 1.25rem;
+    }
+
+    .cs-body {
+      color: var(--text-faint);
+      line-height: 1.85;
+      font-size: 0.98rem;
+    }
+
+    .cs-body + .cs-body {
+      margin-top: 1.1rem;
+    }
+
+    /* ── Lists (architecture, challenges) ── */
+    .cs-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cs-list__item {
+      display: flex;
+      gap: 1.25rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .cs-list__item:first-child {
+      padding-top: 0;
+    }
+
+    .cs-list__index {
+      flex: none;
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      color: var(--bronze);
+      padding-top: 0.3rem;
+    }
+
+    .cs-list__text {
+      color: var(--text-soft);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .cs-list__item--block {
+      align-items: flex-start;
+    }
+
+    .cs-list__block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .cs-list__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    /* ── Features ── */
+    .cs-features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .cs-feature {
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      padding: 1.4rem;
+      transition: border-color var(--dur-base) var(--ease-out);
+    }
+
+    .cs-feature:hover {
+      border-color: var(--glass-border-hover);
+    }
+
+    .cs-feature__title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .cs-feature__body {
+      color: var(--text-faint);
+      line-height: 1.7;
+      font-size: 0.88rem;
+    }
+
+    /* ── Technology ── */
+    .cs-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .cs-tech__chip {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      color: var(--text-soft);
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius-pill);
+      padding: 0.5rem 1rem;
+      background: transparent;
+      transition:
+        color var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out);
+    }
+
+    .cs-tech__chip:hover {
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    /* ── Footer nav ── */
+    .cs-nav {
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .cs-nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cs-nav__next {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.3rem;
+      text-align: right;
+    }
+
+    .cs-nav__next-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .cs-nav__next-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--text);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    .cs-nav__next:hover .cs-nav__next-title {
+      color: var(--verde-ink);
+    }
+
+    .cs-nav__next-arrow {
+      color: var(--text-faint);
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+
+    .cs-nav__next:hover .cs-nav__next-arrow {
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 860px) {
+      .cs-section__grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .cs-features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Layout>

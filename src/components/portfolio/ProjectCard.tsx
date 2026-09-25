@@ -1,4 +1,5 @@
 import { useI18n } from '../../lib/client/i18n-store';
+import { hasCaseStudy, slugify } from '../../lib/case-studies';
 import type { Lang } from '../../i18n';
 
 export type ProjectStatus = 'done' | 'in-progress';
@@ -69,6 +70,8 @@ export default function ProjectCard({
   const hasImages = images.length > 0;
   const cover = hasImages ? images[0] : null;
   const currentSlide = hasImages ? Math.min(slideIndex, images.length - 1) : 0;
+  const studySlug = slugify(project.title);
+  const hasStudy = hasCaseStudy(studySlug);
 
   return (
     <article
@@ -225,6 +228,16 @@ export default function ProjectCard({
           )}
 
           <div className="pj-actions">
+            {hasStudy && (
+              <a
+                href={`/work/${studySlug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="btn-primary"
+              >
+                {t.caseStudy.label}
+              </a>
+            )}
+
             {project.link && (
               <a
                 href={project.link}
