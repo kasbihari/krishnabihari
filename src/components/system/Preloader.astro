@@ -1,22 +1,27 @@
 ---
 /**
- * Cinematic entry preloader.
+ * Cinematic entry preloader — circular ring redesign.
  *
  * A full-screen, minimal opening sequence shown on first entry to the
- * portfolio. Uses the real logo-mark.svg as its centerpiece, the existing
- * design tokens (bg, fonts, motion curves) and the same theme handling as
- * the rest of the site — it is meant to feel like part of the portfolio,
- * not a separate loading screen.
+ * portfolio. The real logo-mark.svg sits at the center, surrounded by a
+ * thin SVG progress ring, with the percentage underneath. The background
+ * is always deep black so the white logo mark reads as authored in both
+ * themes.
  *
  * Behaviour:
  *  - Entrance is pure CSS (opacity/transform keyframes, compositor-friendly).
- *  - The progress line reflects real readiness: it moves to 70% when the
- *    critical fonts resolve (document.fonts.ready) and to 100% on reveal.
- *  - Reveal happens when fonts are ready AND a short minimum has elapsed so
- *    the sequence reads as intentional; a hard timeout guarantees the site
- *    can never be stuck behind the loader. Repeat visitors (localStorage
- *    flag) get a shorter minimum. prefers-reduced-motion users get a static
- *    composition that clears as soon as fonts are ready.
+ *  - The ring and percentage reflect real readiness: they move to 70% when
+ *    the critical fonts resolve (document.fonts.ready) and to 100% on
+ *    reveal. The number eases toward each target so it reads as smooth
+ *    without faking progress.
+ *  - Reveal happens when fonts are ready AND a short minimum has elapsed;
+ *    a hard timeout guarantees the site can never be stuck behind the
+ *    loader. Repeat visitors (localStorage flag) get a shorter minimum.
+ *    prefers-reduced-motion users get a static composition that clears as
+ *    soon as fonts are ready.
+ *  - Exit: the ring expands outward and fades while the logo stays centered
+ *    briefly, then the black background dissolves to reveal the homepage
+ *    already rendered underneath — no blank frame.
  *  - If JavaScript fails entirely, a CSS-only fallback animation fades the
  *    loader out after 4s, so the portfolio always becomes accessible.
  *
@@ -27,21 +32,29 @@
 
 <div class="kb-preloader" id="kb-preloader" role="status" aria-live="polite" data-state="entering">
   <div class="kb-preloader__inner">
-    <img
-      src="/images/logo-mark.svg"
-      alt=""
-      aria-hidden="true"
-      class="kb-logo-mark kb-preloader__logo"
-      width="500"
-      height="500"
-      decoding="async"
-    />
-    <p class="kb-preloader__name">Krishna Bihari</p>
-    <p class="kb-preloader__role">Software / AI Developer</p>
-    <div class="kb-preloader__line" aria-hidden="true">
-      <div class="kb-preloader__fill"></div>
+    <div class="kb-preloader__stage">
+      <svg class="kb-preloader__ring" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="kb-preloader__ring-track" cx="100" cy="100" r="92" pathLength="100" />
+        <circle
+          class="kb-preloader__ring-progress"
+          cx="100"
+          cy="100"
+          r="92"
+          pathLength="100"
+          transform="rotate(-90 100 100)"
+        />
+      </svg>
+      <img
+        src="/images/logo-mark.svg"
+        alt=""
+        aria-hidden="true"
+        class="kb-preloader__logo"
+        width="500"
+        height="500"
+        decoding="async"
+      />
     </div>
-    <p class="kb-preloader__status">Initializing</p>
+    <p class="kb-preloader__percent">0%</p>
   </div>
 </div>
 
@@ -53,12 +66,12 @@
     display: grid;
     place-items: center;
     overflow: hidden;
-    background: var(--bg);
+    background: #050505;
     opacity: 1;
     visibility: visible;
     transition:
-      opacity 600ms var(--ease-out),
-      visibility 0s linear 600ms;
+      opacity 700ms var(--ease-out) 200ms,
+      visibility 0s linear 900ms;
     /* CSS-only fallback: if the inline script never runs, the loader
        still clears itself so the site can never be blocked. */
     animation: kbPreloaderFallback 500ms var(--ease-out) 4s forwards;
@@ -74,105 +87,108 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(0.9rem, 2.4vh, 1.4rem);
     padding:
       max(1rem, env(safe-area-inset-top))
       max(1rem, env(safe-area-inset-right))
       max(1rem, env(safe-area-inset-bottom))
       max(1rem, env(safe-area-inset-left));
-    text-align: center;
+  }
+
+  /* ── Stage: ring + logo, logo centered inside the ring ── */
+  .kb-preloader__stage {
+    --kb-ring-size: clamp(190px, 36vw, 250px);
+    position: relative;
+    width: var(--kb-ring-size);
+    height: var(--kb-ring-size);
+  }
+
+  .kb-preloader__ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    animation: kbPreloaderFadeIn 500ms var(--ease-out) 150ms backwards;
     transition:
-      transform 600ms var(--ease-out),
+      transform 700ms var(--ease-out),
       opacity 500ms var(--ease-out);
   }
 
-  /* Cinematic exit: the composition lifts slightly and fades while the
-     background fades, so the homepage is revealed underneath. */
-  .kb-preloader[data-state='done'] .kb-preloader__inner {
-    transform: scale(1.03);
-    opacity: 0;
+  .kb-preloader__ring-track {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.75;
+  }
+
+  .kb-preloader__ring-progress {
+    fill: none;
+    stroke: var(--verde-ink);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
   }
 
   .kb-preloader__logo {
-    --kb-logo-size: clamp(64px, 11vw, 104px);
-    margin-bottom: clamp(0.4rem, 1.5vh, 0.9rem);
-    opacity: 0;
-    transform: scale(0.92) translateY(8px);
-    animation: kbPreloaderLogo 800ms var(--ease-out) 60ms forwards;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(56px, 10vw, 92px);
+    height: clamp(56px, 10vw, 92px);
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: kbPreloaderLogo 800ms var(--ease-out) 60ms backwards;
+    transition: opacity 400ms var(--ease-out) 100ms;
   }
 
-  .kb-preloader__name {
-    font-family: var(--font-name);
-    font-size: clamp(1.5rem, 4.2vw, 2.3rem);
-    line-height: 1.1;
-    color: var(--text);
-    opacity: 0;
-    transform: translateY(12px);
-    animation: kbPreloaderFadeUp 650ms var(--ease-out) 420ms forwards;
-  }
-
-  .kb-preloader__role {
+  .kb-preloader__percent {
     font-family: var(--font-mono);
-    font-size: clamp(0.56rem, 1.1vw, 0.68rem);
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
+    font-size: clamp(0.68rem, 1.3vw, 0.8rem);
+    letter-spacing: 0.12em;
     color: var(--text-faint);
-    opacity: 0;
-    transform: translateY(10px);
-    animation: kbPreloaderFadeUp 650ms var(--ease-out) 580ms forwards;
+    font-variant-numeric: tabular-nums;
+    margin-top: clamp(1rem, 2.5vh, 1.5rem);
+    opacity: 1;
+    animation: kbPreloaderFadeIn 400ms var(--ease-out) 350ms backwards;
+    transition:
+      opacity 300ms var(--ease-out),
+      color 400ms var(--ease-out);
   }
 
-  .kb-preloader__line {
-    width: min(230px, 62vw);
-    height: 2px;
-    background: var(--line);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: clamp(0.7rem, 2vh, 1.2rem);
-    opacity: 0;
-    animation: kbPreloaderFadeIn 450ms var(--ease-out) 760ms forwards;
-  }
-
-  .kb-preloader__fill {
-    height: 100%;
-    width: 100%;
-    background: var(--verde-ink);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 600ms var(--ease-out);
-  }
-
-  .kb-preloader__status {
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.34em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    opacity: 0;
-    animation: kbPreloaderFadeIn 450ms var(--ease-out) 880ms forwards;
-  }
-
-  .kb-preloader__status[data-ready='true'] {
+  .kb-preloader__percent[data-ready='true'] {
     color: var(--verde-ink);
   }
 
-  @keyframes kbPreloaderLogo {
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
+  /* ── Cinematic exit ──
+     The ring expands outward and fades while the logo stays centered
+     briefly; then the black background dissolves, revealing the homepage
+     already rendered underneath. No hard cut, no blank frame. */
+  .kb-preloader[data-state='done'] .kb-preloader__ring {
+    transform: scale(1.55);
+    opacity: 0;
   }
 
-  @keyframes kbPreloaderFadeUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
+  .kb-preloader[data-state='done'] .kb-preloader__logo {
+    opacity: 0;
+  }
+
+  .kb-preloader[data-state='done'] .kb-preloader__percent {
+    opacity: 0;
+  }
+
+  @keyframes kbPreloaderLogo {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.92);
     }
   }
 
   @keyframes kbPreloaderFadeIn {
-    to {
-      opacity: 1;
+    from {
+      opacity: 0;
     }
   }
 
@@ -187,32 +203,38 @@
   /* Short viewports (landscape phones): tighten the composition so it
      never clips or scrolls. */
   @media (max-height: 480px) {
+    .kb-preloader__stage {
+      --kb-ring-size: 150px;
+    }
+
     .kb-preloader__logo {
-      --kb-logo-size: 52px;
+      width: 44px;
+      height: 44px;
     }
 
-    .kb-preloader__inner {
-      gap: 0.5rem;
-    }
-
-    .kb-preloader__line {
-      margin-top: 0.4rem;
+    .kb-preloader__percent {
+      margin-top: 0.6rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .kb-preloader__ring,
     .kb-preloader__logo,
-    .kb-preloader__name,
-    .kb-preloader__role,
-    .kb-preloader__line,
-    .kb-preloader__status {
+    .kb-preloader__percent {
       animation: none;
       opacity: 1;
+    }
+
+    .kb-preloader__logo {
+      transform: translate(-50%, -50%);
+    }
+
+    .kb-preloader[data-state='done'] .kb-preloader__ring {
       transform: none;
     }
 
-    .kb-preloader[data-state='done'] .kb-preloader__inner {
-      transform: none;
+    .kb-preloader[data-state='done'] {
+      transition: opacity 300ms linear;
     }
   }
 </style>
@@ -223,22 +245,43 @@
     if (!el) return;
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var fill = el.querySelector('.kb-preloader__fill');
-    var status = el.querySelector('.kb-preloader__status');
     var done = false;
+    var MAX = reduce ? 2000 : 3500;
 
-    var MIN = 1200; /* first visit — let the entrance sequence read */
-    var MAX = 3500; /* hard ceiling — never block the site */
-    var seen = false;
-    try {
-      seen = window.localStorage.getItem('kb-preloader') === '1';
-    } catch (e) {
-      /* storage blocked — treat as first visit */
+    var ring = el.querySelector('.kb-preloader__ring-progress');
+    var percent = el.querySelector('.kb-preloader__percent');
+    var current = 0;
+    var target = 0;
+    var rafId = null;
+
+    function render(value) {
+      if (ring) ring.style.strokeDashoffset = String(100 - value);
+      if (percent) percent.textContent = Math.round(value) + '%';
     }
-    if (seen) MIN = 600; /* repeat visit — shorter transition */
-    if (reduce) {
-      MIN = 0;
-      MAX = 2000;
+
+    function setProgress(value) {
+      target = value;
+      if (reduce) {
+        current = value;
+        render(value);
+        return;
+      }
+      if (rafId !== null) return;
+      var start = current;
+      var startTime = null;
+      function step(ts) {
+        if (startTime === null) startTime = ts;
+        var t = Math.min(1, (ts - startTime) / 550);
+        var eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        current = start + (target - start) * eased;
+        render(current);
+        if (t < 1) {
+          rafId = requestAnimationFrame(step);
+        } else {
+          rafId = null;
+        }
+      }
+      rafId = requestAnimationFrame(step);
     }
 
     function reveal() {
@@ -249,27 +292,39 @@
       } catch (e) {
         /* ignore */
       }
-      if (fill) fill.style.transform = 'scaleX(1)';
-      if (status) {
-        status.textContent = 'READY';
-        status.setAttribute('data-ready', 'true');
-      }
+      setProgress(100);
+      if (percent) percent.setAttribute('data-ready', 'true');
       setTimeout(function () {
         el.setAttribute('data-state', 'done');
         setTimeout(function () {
           if (el.parentNode) el.parentNode.removeChild(el);
-        }, 700);
-      }, reduce ? 0 : 400);
+        }, reduce ? 0 : 900);
+      }, reduce ? 0 : 450);
     }
+
+    /* Hard ceiling registered first — the site can never be stuck. */
+    setTimeout(reveal, MAX);
+    /* JS is in control now; the CSS fallback is no longer needed. */
+    el.style.animation = 'none';
+
+    var MIN = 1200; /* first visit — let the entrance sequence read */
+    var seen = false;
+    try {
+      seen = window.localStorage.getItem('kb-preloader') === '1';
+    } catch (e) {
+      /* storage blocked — treat as first visit */
+    }
+    if (seen) MIN = 600; /* repeat visit — shorter transition */
+    if (reduce) MIN = 0;
 
     var fontsReady =
       document.fonts && document.fonts.ready
         ? document.fonts.ready
         : Promise.resolve();
 
-    /* The line reflects real readiness: critical fonts loaded → 70%. */
+    /* The ring reflects real readiness: critical fonts loaded → 70%. */
     fontsReady.then(function () {
-      if (fill && !done) fill.style.transform = 'scaleX(0.7)';
+      if (!done) setProgress(70);
     });
 
     var minWait = new Promise(function (resolve) {
@@ -277,6 +332,5 @@
     });
 
     Promise.all([fontsReady, minWait]).then(reveal);
-    setTimeout(reveal, MAX);
   })();
 </script>
