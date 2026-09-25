@@ -36,6 +36,32 @@ const canonicalURL = new URL(
     />
     <meta property="og:image" content="https://krishnabihari.vercel.app/images/preview.png" />
     <meta name="twitter:image" content="https://krishnabihari.vercel.app/images/preview.png" />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Krishna Bihari',
+      url: 'https://krishnabihari.vercel.app/',
+      jobTitle: 'Full-Stack & AI Engineer',
+      email: 'mailto:kas.bihari@gmail.com',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Amsterdam',
+        addressCountry: 'NL',
+      },
+      sameAs: [
+        'https://github.com/kasbihari',
+        'https://www.linkedin.com/in/krishna-bihari/',
+      ],
+      knowsAbout: [
+        'Full-stack development',
+        'AI integration',
+        'Voice automation',
+        'SaaS products',
+        'React',
+        'Node.js',
+      ],
+    })} />
   </head>
 
   <body>
