@@ -1,0 +1,282 @@
+---
+/**
+ * Cinematic entry preloader.
+ *
+ * A full-screen, minimal opening sequence shown on first entry to the
+ * portfolio. Uses the real logo-mark.svg as its centerpiece, the existing
+ * design tokens (bg, fonts, motion curves) and the same theme handling as
+ * the rest of the site — it is meant to feel like part of the portfolio,
+ * not a separate loading screen.
+ *
+ * Behaviour:
+ *  - Entrance is pure CSS (opacity/transform keyframes, compositor-friendly).
+ *  - The progress line reflects real readiness: it moves to 70% when the
+ *    critical fonts resolve (document.fonts.ready) and to 100% on reveal.
+ *  - Reveal happens when fonts are ready AND a short minimum has elapsed so
+ *    the sequence reads as intentional; a hard timeout guarantees the site
+ *    can never be stuck behind the loader. Repeat visitors (localStorage
+ *    flag) get a shorter minimum. prefers-reduced-motion users get a static
+ *    composition that clears as soon as fonts are ready.
+ *  - If JavaScript fails entirely, a CSS-only fallback animation fades the
+ *    loader out after 4s, so the portfolio always becomes accessible.
+ *
+ * No new dependencies, no React island, no network requests beyond the logo
+ * the navbar already loads.
+ */
+---
+
+<div class="kb-preloader" id="kb-preloader" role="status" aria-live="polite" data-state="entering">
+  <div class="kb-preloader__inner">
+    <img
+      src="/images/logo-mark.svg"
+      alt=""
+      aria-hidden="true"
+      class="kb-logo-mark kb-preloader__logo"
+      width="500"
+      height="500"
+      decoding="async"
+    />
+    <p class="kb-preloader__name">Krishna Bihari</p>
+    <p class="kb-preloader__role">Software / AI Developer</p>
+    <div class="kb-preloader__line" aria-hidden="true">
+      <div class="kb-preloader__fill"></div>
+    </div>
+    <p class="kb-preloader__status">Initializing</p>
+  </div>
+</div>
+
+<style>
+  .kb-preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: var(--bg);
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 600ms var(--ease-out),
+      visibility 0s linear 600ms;
+    /* CSS-only fallback: if the inline script never runs, the loader
+       still clears itself so the site can never be blocked. */
+    animation: kbPreloaderFallback 500ms var(--ease-out) 4s forwards;
+  }
+
+  .kb-preloader[data-state='done'] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .kb-preloader__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.9rem, 2.4vh, 1.4rem);
+    padding:
+      max(1rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    text-align: center;
+    transition:
+      transform 600ms var(--ease-out),
+      opacity 500ms var(--ease-out);
+  }
+
+  /* Cinematic exit: the composition lifts slightly and fades while the
+     background fades, so the homepage is revealed underneath. */
+  .kb-preloader[data-state='done'] .kb-preloader__inner {
+    transform: scale(1.03);
+    opacity: 0;
+  }
+
+  .kb-preloader__logo {
+    --kb-logo-size: clamp(64px, 11vw, 104px);
+    margin-bottom: clamp(0.4rem, 1.5vh, 0.9rem);
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+    animation: kbPreloaderLogo 800ms var(--ease-out) 60ms forwards;
+  }
+
+  .kb-preloader__name {
+    font-family: var(--font-name);
+    font-size: clamp(1.5rem, 4.2vw, 2.3rem);
+    line-height: 1.1;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: kbPreloaderFadeUp 650ms var(--ease-out) 420ms forwards;
+  }
+
+  .kb-preloader__role {
+    font-family: var(--font-mono);
+    font-size: clamp(0.56rem, 1.1vw, 0.68rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: kbPreloaderFadeUp 650ms var(--ease-out) 580ms forwards;
+  }
+
+  .kb-preloader__line {
+    width: min(230px, 62vw);
+    height: 2px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: clamp(0.7rem, 2vh, 1.2rem);
+    opacity: 0;
+    animation: kbPreloaderFadeIn 450ms var(--ease-out) 760ms forwards;
+  }
+
+  .kb-preloader__fill {
+    height: 100%;
+    width: 100%;
+    background: var(--verde-ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 600ms var(--ease-out);
+  }
+
+  .kb-preloader__status {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    opacity: 0;
+    animation: kbPreloaderFadeIn 450ms var(--ease-out) 880ms forwards;
+  }
+
+  .kb-preloader__status[data-ready='true'] {
+    color: var(--verde-ink);
+  }
+
+  @keyframes kbPreloaderLogo {
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes kbPreloaderFadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes kbPreloaderFadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes kbPreloaderFallback {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  /* Short viewports (landscape phones): tighten the composition so it
+     never clips or scrolls. */
+  @media (max-height: 480px) {
+    .kb-preloader__logo {
+      --kb-logo-size: 52px;
+    }
+
+    .kb-preloader__inner {
+      gap: 0.5rem;
+    }
+
+    .kb-preloader__line {
+      margin-top: 0.4rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kb-preloader__logo,
+    .kb-preloader__name,
+    .kb-preloader__role,
+    .kb-preloader__line,
+    .kb-preloader__status {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .kb-preloader[data-state='done'] .kb-preloader__inner {
+      transform: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var el = document.getElementById('kb-preloader');
+    if (!el) return;
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fill = el.querySelector('.kb-preloader__fill');
+    var status = el.querySelector('.kb-preloader__status');
+    var done = false;
+
+    var MIN = 1200; /* first visit — let the entrance sequence read */
+    var MAX = 3500; /* hard ceiling — never block the site */
+    var seen = false;
+    try {
+      seen = window.localStorage.getItem('kb-preloader') === '1';
+    } catch (e) {
+      /* storage blocked — treat as first visit */
+    }
+    if (seen) MIN = 600; /* repeat visit — shorter transition */
+    if (reduce) {
+      MIN = 0;
+      MAX = 2000;
+    }
+
+    function reveal() {
+      if (done) return;
+      done = true;
+      try {
+        window.localStorage.setItem('kb-preloader', '1');
+      } catch (e) {
+        /* ignore */
+      }
+      if (fill) fill.style.transform = 'scaleX(1)';
+      if (status) {
+        status.textContent = 'READY';
+        status.setAttribute('data-ready', 'true');
+      }
+      setTimeout(function () {
+        el.setAttribute('data-state', 'done');
+        setTimeout(function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 700);
+      }, reduce ? 0 : 400);
+    }
+
+    var fontsReady =
+      document.fonts && document.fonts.ready
+        ? document.fonts.ready
+        : Promise.resolve();
+
+    /* The line reflects real readiness: critical fonts loaded → 70%. */
+    fontsReady.then(function () {
+      if (fill && !done) fill.style.transform = 'scaleX(0.7)';
+    });
+
+    var minWait = new Promise(function (resolve) {
+      setTimeout(resolve, MIN);
+    });
+
+    Promise.all([fontsReady, minWait]).then(reveal);
+    setTimeout(reveal, MAX);
+  })();
+</script>

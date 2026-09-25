@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import HeadMeta from '../components/system/HeadMeta.astro';
 import GlobalBackground from '../components/system/GlobalBackground.astro';
 import RevealScript from '../components/system/RevealScript.astro';
+import Preloader from '../components/system/Preloader.astro';
 import { getLangFromCookies, localizedMeta } from '../i18n/server';
 import type { Lang } from '../i18n';
 
@@ -65,6 +66,8 @@ const canonicalURL = new URL(
   </head>
 
   <body>
+    <Preloader />
+
     <GlobalBackground />
 
     <a href="#home" class="skip-link">Skip to content</a>
