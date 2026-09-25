@@ -1600,6 +1600,21 @@ export default function Hero({
               />
             </a>
           </div>
+
+          <div className="hero-proof hero-animate hero-delay-6">
+            <div className="hero-proof__stat">
+              <span className="hero-proof__value">3+</span>
+              <span className="hero-proof__label">{t.hero.statsYears}</span>
+            </div>
+            <div className="hero-proof__stat">
+              <span className="hero-proof__value">2</span>
+              <span className="hero-proof__label">{t.hero.statsProjects}</span>
+            </div>
+            <div className="hero-proof__stat">
+              <span className="hero-proof__value">4</span>
+              <span className="hero-proof__label">{t.hero.statsStacks}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2003,6 +2018,39 @@ export default function Hero({
           gap: 0.7rem;
         }
 
+        /* ── Proof strip — real facts, no invented numbers ── */
+        .hero-proof {
+          display: flex;
+          justify-content: center;
+          gap: clamp(1.75rem, 4vw, 3.25rem);
+          margin-top: clamp(2.25rem, 5vh, 3.5rem);
+          padding-top: clamp(1.5rem, 3vh, 2rem);
+          border-top: 1px solid var(--line-soft);
+        }
+
+        .hero-proof__stat {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.35rem;
+        }
+
+        .hero-proof__value {
+          font-family: var(--font-display);
+          font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+          line-height: 1;
+          color: var(--text);
+        }
+
+        .hero-proof__label {
+          font-size: 0.6rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--text-faint);
+          text-align: center;
+          max-width: 15ch;
+        }
+
         /*
           The vinyl is an easter egg, not a hero component.
 
@@ -2363,6 +2411,10 @@ export default function Hero({
 
         .hero-delay-5 {
           animation-delay: 1020ms;
+        }
+
+        .hero-delay-6 {
+          animation-delay: 1220ms;
         }
 
         @keyframes heroReveal {
