@@ -18,6 +18,11 @@ const w = t.work;
 
 const slug = Astro.params.slug ?? '';
 
+// Old brand route — redirect cleanly to the current canonical URL.
+if (slug === 'veyro-agent') {
+  return Astro.redirect('/work/veyxo');
+}
+
 const published = await fetchPublishedPortfolioProjects();
 const projects: Project[] =
   published && published.length > 0 ? published : fallbackProjects;
@@ -43,7 +48,7 @@ const statusLabel =
   project.status === 'done' ? w.shippedBadge : w.inProgressBadge;
 const statusData = project.status === 'done' ? 'done' : 'in-progress';
 
-const pageTitle = `${project.title} — ${cs.label} | Krishna Bihari`;
+const pageTitle = study.seoTitle ?? `${project.title} — ${cs.label} | Krishna Bihari`;
 const pageDescription = project.tagline;
 ---
 
