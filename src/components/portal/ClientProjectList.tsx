@@ -12,11 +12,6 @@ const ease = [
   1,
 ] as const;
 
-const viewport = {
-  once: true,
-  amount: 0.12,
-};
-
 const staggerContainer = {
   hidden: {},
   visible: {

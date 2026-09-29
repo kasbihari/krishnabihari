@@ -131,21 +131,17 @@ async function main() {
     )
   ).rows[0];
 
-  const projectA2 = (
-    await pool.query(
-      `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
-       values ($1, $2, $3, $4, $5, $6, $7, $8) returning id, project_code`,
-      [clientA.id, 'PRJ-A2', 'Website', 'Web Application', 'web-development', 'Active', 'Design', 25],
-    )
-  ).rows[0];
+  await pool.query(
+    `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
+     values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    [clientA.id, 'PRJ-A2', 'Website', 'Web Application', 'web-development', 'Active', 'Design', 25],
+  );
 
-  const projectA3 = (
-    await pool.query(
-      `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
-       values ($1, $2, $3, $4, $5, $6, $7, $8) returning id, project_code`,
-      [clientA.id, 'PRJ-A3', 'Maintenance', 'Web Application', 'web-development', 'Completed', 'Launch', 100],
-    )
-  ).rows[0];
+  await pool.query(
+    `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
+     values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    [clientA.id, 'PRJ-A3', 'Maintenance', 'Web Application', 'web-development', 'Completed', 'Launch', 100],
+  );
 
   const projectB1 = (
     await pool.query(
@@ -155,21 +151,17 @@ async function main() {
     )
   ).rows[0];
 
-  const projectB2 = (
-    await pool.query(
-      `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
-       values ($1, $2, $3, $4, $5, $6, $7, $8) returning id, project_code`,
-      [clientB.id, 'PRJ-B2', 'Mobile App', 'Web Application', 'web-development', 'Paused', 'Planning', 10],
-    )
-  ).rows[0];
+  await pool.query(
+    `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
+     values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    [clientB.id, 'PRJ-B2', 'Mobile App', 'Web Application', 'web-development', 'Paused', 'Planning', 10],
+  );
 
-  const projectC1 = (
-    await pool.query(
-      `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
-       values ($1, $2, $3, $4, $5, $6, $7, $8) returning id, project_code`,
-      [clientC.id, 'PRJ-C1', 'Solo Project', 'Web Application', 'web-development', 'Active', 'Development', 50],
-    )
-  ).rows[0];
+  await pool.query(
+    `insert into projects (client_id, project_code, name, type, category, status, phase, progress)
+     values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    [clientC.id, 'PRJ-C1', 'Solo Project', 'Web Application', 'web-development', 'Active', 'Development', 50],
+  );
 
   try {
     // ── Test 1: Client A (single project view via Client C) ───────────

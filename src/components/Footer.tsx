@@ -6,17 +6,13 @@ const SOCIALS = [
   { label: 'GitHub', href: 'https://github.com/kasbihari', icon: Github },
   {
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/krishna-bihari-0811a7299',
+    href: 'https://www.linkedin.com/in/krishna-bihari/',
     icon: Linkedin,
   },
   { label: 'Email', href: 'mailto:kas.bihari@gmail.com', icon: Mail },
 ] as const;
 
-const NAV = [
-  { label: 'Work', href: '#projects' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
-] as const;
+const NAV_KEYS = ['work', 'story', 'contact'] as const;
 
 export default function Footer({ lang: initialLang = 'en' }: { lang?: Lang }) {
   const { t } = useI18n(initialLang);
@@ -29,9 +25,13 @@ export default function Footer({ lang: initialLang = 'en' }: { lang?: Lang }) {
         <p className="kb-footer__role">{t.footer.role}</p>
 
         <nav aria-label="Footer" className="kb-footer__nav">
-          {NAV.map((item) => (
-            <a key={item.label} href={item.href} className="kb-footer__link">
-              {item.label}
+          {NAV_KEYS.map((key) => (
+            <a
+              key={key}
+              href={key === 'work' ? '#projects' : key === 'story' ? '#about' : '#contact'}
+              className="kb-footer__link"
+            >
+              {t.nav[key]}
             </a>
           ))}
         </nav>
