@@ -4,22 +4,28 @@ import type { Project } from '../components/portfolio/ProjectCard';
  * Static fallback projects used when Supabase is not configured or the
  * published-projects query fails. Shared by the Projects section and the
  * case-study pages so both resolve the same data in every environment.
+ *
+ * The order is intentional: own commercial product → personal product →
+ * school work → school work. It is a progression, not a ranking.
  */
 export const fallbackProjects: Project[] = [
   {
     id: '01',
     category: 'AI Employee & Automation',
+    categoryKey: 'ai-employee-automation',
     projectCategory: 'ai-automation',
-    title: 'Veyxo',
+    title: 'Heyvelai',
+    context: 'Own product · 2026',
+    contextKey: 'own-product',
     tagline:
-      'AI employee platform that handles customer communication and business workflows across voice and digital channels.',
+      'An AI-powered automation product designed to help businesses automate customer communication and repetitive workflows.',
     description:
-      'Veyxo is an AI employee platform that acts as a 24/7 fixed contact point for businesses. It handles customer communication — calls, SMS, appointments and routine questions — and connects to business workflows such as CRM updates, calendar management, notifications and follow-ups, with human handoff when needed. Built as a reusable platform that adapts to each business.',
+      'An AI-powered automation product designed to help businesses automate customer communication and repetitive workflows.',
     outcome:
-      'Production-oriented AI employee platform handling customer communication and business workflows — active development.',
+      'Commercial product in active development — AI-powered automation for customer communication and business workflows.',
     architecture: [
       'AI conversation',
-      'Voice & messaging channels',
+      'Communication channels',
       'Business integrations',
       'Workflow automation',
       'Human handoff',
@@ -33,7 +39,7 @@ export const fallbackProjects: Project[] = [
       'Databases',
       'Automation',
     ],
-    link: 'https://github.com/kasbihari/Veyro-Agent',
+    link: '',
     accent: 'var(--verde-ink)',
     status: 'in-progress',
     images: 'empty',
@@ -41,15 +47,45 @@ export const fallbackProjects: Project[] = [
 
   {
     id: '02',
+    category: 'Personal System & Web App',
+    categoryKey: 'personal-system',
+    projectCategory: 'web-development',
+    title: 'Project BLACKOUT',
+    context: 'Personal project · 2026',
+    contextKey: 'personal-project',
+    tagline:
+      'A personal web application built around discipline, progress, journaling and a gamified progression system.',
+    description:
+      'A personal web application built around discipline, progress, journaling and a gamified progression system.',
+    outcome:
+      'Personal project in active development — a system for making consistency visible.',
+    architecture: [
+      'Discipline tracking',
+      'Progress system',
+      'Journaling',
+      'Gamified progression',
+    ],
+    stack: [],
+    link: '',
+    accent: 'var(--bronze-soft)',
+    status: 'in-progress',
+    images: 'empty',
+  },
+
+  {
+    id: '03',
     category: 'Full-Stack Web App',
+    categoryKey: 'full-stack-web',
     projectCategory: 'web-development',
     title: 'Budget Buddy',
+    context: 'School project · ROC Mondriaan',
+    contextKey: 'school-roc',
     tagline:
-      'Personal finance manager with a premium dashboard, smart categorisation, and a full reporting engine.',
+      'A full-stack application for tracking, understanding and managing personal finances.',
     description:
-      'End-to-end finance platform built with Symfony 6 and Chart.js. Handles transaction management, budget categorisation, role-based user and admin access, and rich data visualisation all delivered through a clean, premium interface. Designed with real users in mind: fast, secure, and intuitive.',
+      'A full-stack application for tracking, understanding and managing personal finances.',
     outcome:
-      'Full production deployment with secure authentication, real-time reporting, and granular admin controls.',
+      'Complete full-stack application delivered for the school project.',
     architecture: [
       'Symfony 6',
       'Twig',
@@ -74,16 +110,19 @@ export const fallbackProjects: Project[] = [
   },
 
   {
-    id: '03',
+    id: '04',
     category: 'Full-Stack Data Platform',
+    categoryKey: 'data-platform',
     projectCategory: 'web-development',
     title: 'SDG Dashboard',
+    context: 'School project · ROC Mondriaan',
+    contextKey: 'school-roc',
     tagline:
-      'Real-time UN Sustainable Development Goals tracker with live KPI visualisation.',
+      'A data dashboard designed to make Sustainable Development Goals more accessible through data and interactive visualizations.',
     description:
-      'Comprehensive data platform built with Next.js 14 and TypeScript. Tracks live SDG KPIs through interactive charts, includes full user authentication, and supports CSV data export all backed by MySQL with Prisma ORM. Built to demonstrate how API-keys can make complex data accessible and actionable.',
+      'A data dashboard designed to make Sustainable Development Goals more accessible through data and interactive visualizations.',
     outcome:
-      'Complete full-stack system: authentication, live KPI tracking, and a full data export pipeline.',
+      'Complete full-stack dashboard delivered for the school project.',
     architecture: [
       'Next.js 14',
       'TypeScript',

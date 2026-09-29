@@ -102,7 +102,7 @@ export default function ClientPortalSection({
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .cp-head {
           display: flex;
           flex-direction: column;
@@ -316,7 +316,7 @@ export default function ClientPortalSection({
             grid-template-columns: repeat(2, 1fr);
           }
         }
-      `}</style>
+      ` }} />
     </section>
   );
 }

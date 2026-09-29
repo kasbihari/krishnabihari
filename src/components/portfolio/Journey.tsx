@@ -108,7 +108,7 @@ export default function Journey({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .jr-header {
           display: flex;
           flex-direction: column;
@@ -289,7 +289,7 @@ export default function Journey({ lang: initialLang = 'en' }: { lang?: Lang }) {
             margin-top: 0;
           }
         }
-      `}</style>
+      ` }} />
     </section>
   );
 }

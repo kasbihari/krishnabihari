@@ -63,7 +63,7 @@ export default function Footer({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .kb-footer {
           position: relative;
           padding: var(--section-y-tight) 0 2.5rem;
@@ -188,7 +188,7 @@ export default function Footer({ lang: initialLang = 'en' }: { lang?: Lang }) {
             gap: 0.6rem;
           }
         }
-      `}</style>
+      ` }} />
     </footer>
   );
 }

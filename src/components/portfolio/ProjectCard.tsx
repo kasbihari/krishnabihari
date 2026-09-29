@@ -4,6 +4,22 @@ import type { Lang } from '../../i18n';
 
 export type ProjectStatus = 'done' | 'in-progress';
 
+/**
+ * i18n keys for the localized category and context labels shown on the
+ * project cards. The keys must exist in every language dictionary under
+ * `work.projectCategories` / `work.projectContexts`.
+ */
+export type ProjectCategoryKey =
+  | 'ai-employee-automation'
+  | 'personal-system'
+  | 'full-stack-web'
+  | 'data-platform';
+
+export type ProjectContextKey =
+  | 'own-product'
+  | 'personal-project'
+  | 'school-roc';
+
 export type ProjectCategory =
   | 'web-development'
   | 'web-redesign'
@@ -16,12 +32,19 @@ export type ProjectCategory =
  * `images` is the media list (JPG / PNG / WebP / GIF / AVIF); the first
  * entry is the square tile cover, the rest feed the detail slideshow.
  * `'empty'` means the project has no media yet.
+ *
+ * `categoryKey` / `contextKey` are optional i18n keys used to localize the
+ * category and context labels. When absent (e.g. admin-managed projects),
+ * the raw `category` / `context` strings are shown as-is.
  */
 export type Project = {
   id: string;
   category: string;
+  categoryKey?: ProjectCategoryKey;
   projectCategory: ProjectCategory;
   title: string;
+  context?: string;
+  contextKey?: ProjectContextKey;
   tagline: string;
   description: string;
   outcome: string;
@@ -73,27 +96,41 @@ export default function ProjectCard({
   const studySlug = slugify(project.title);
   const hasStudy = hasCaseStudy(studySlug);
 
+  // Localized labels — fall back to the raw data strings for projects
+  // without i18n keys (e.g. admin-managed projects).
+  const category = project.categoryKey
+    ? (w.projectCategories[project.categoryKey] ?? project.category)
+    : project.category;
+  const context = project.contextKey
+    ? (w.projectContexts[project.contextKey] ?? project.context)
+    : project.context;
+
   return (
     <article
       className="pj-card"
       data-open={isOpen ? 'true' : 'false'}
       data-reveal
     >
-      <div
-        role="button"
-        tabIndex={0}
-        aria-expanded={isOpen}
-        aria-controls={`project-panel-${project.id}`}
-        onClick={() => onToggle(project.id, isOpen)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onToggle(project.id, isOpen);
-          }
-        }}
-        className="pj-trigger"
-      >
-        <div className="pj-cover" data-empty={hasImages ? 'false' : 'true'}>
+      {/* Tile — the square cover with the caption overlaid on it. The tile
+          is the positioning context for the caption, so the caption stays
+          anchored to the cover when the detail panel below expands. */}
+      <div className="pj-tile">
+        {/* Cover — clicking it toggles the detail panel. */}
+        <div
+          role="button"
+          tabIndex={0}
+          aria-expanded={isOpen}
+          aria-controls={`project-panel-${project.id}`}
+          onClick={() => onToggle(project.id, isOpen)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onToggle(project.id, isOpen);
+            }
+          }}
+          className="pj-cover"
+          data-empty={hasImages ? 'false' : 'true'}
+        >
           {cover ? (
             <img
               src={cover}
@@ -122,34 +159,62 @@ export default function ProjectCard({
             data-status={project.status}
             aria-hidden="true"
           />
+        </div>
 
-          <div className="pj-caption">
-            <span className="pj-category">{project.category}</span>
-            <div className="pj-caption__row">
-              <h3 className="pj-title">{project.title}</h3>
-              <span className="pj-plus" aria-hidden="true">
-                <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M10 4v12M4 10h12"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
-            </div>
+        {/* Caption — name, category, context, short description and the
+            clear path into the case study. Sits over the cover as a sibling
+            so the study link is never nested inside the toggle. */}
+        <div className="pj-caption">
+          <div className="pj-caption__meta">
+            <span className="pj-category">{category}</span>
+            {context && <span className="pj-context">{context}</span>}
+          </div>
+
+          <h3 className="pj-title">{project.title}</h3>
+
+          <p className="pj-desc">{project.description}</p>
+
+          <div className="pj-caption__row">
+            {hasStudy && (
+              <a
+                href={`/work/${studySlug}`}
+                className="pj-study"
+              >
+                {w.readCaseStudy}
+                <span className="pj-study__arrow" aria-hidden="true">→</span>
+              </a>
+            )}
+
+            <button
+              type="button"
+              aria-expanded={isOpen}
+              aria-controls={`project-panel-${project.id}`}
+              aria-label={isOpen ? w.close : w.explore}
+              onClick={() => onToggle(project.id, isOpen)}
+              className="pj-expand"
+            >
+              <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 4v12M4 10h12"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Expanded detail — slideshow, overview, stack, links */}
+      {/* Expanded detail — slideshow, overview, outcome, links */}
       <div
         id={`project-panel-${project.id}`}
         className="pj-panel"
         data-open={isOpen ? 'true' : 'false'}
       >
         <div className="pj-panel__inner">
-          {images.length > 1 && (
+          <div className="pj-panel__content">
+            {images.length > 1 && (
             <div className="pj-slides">
               <img
                 src={images[currentSlide]}
@@ -217,16 +282,6 @@ export default function ProjectCard({
             </div>
           </div>
 
-          {project.stack.length > 0 && (
-            <div className="pj-stack">
-              {project.stack.map((tech) => (
-                <span key={tech} className="pj-stack-chip">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          )}
-
           <div className="pj-actions">
             {hasStudy && (
               <a
@@ -261,11 +316,12 @@ export default function ProjectCard({
                 {w.liveSite}
               </a>
             )}
+            </div>
           </div>
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .pj-card {
           position: relative;
           display: flex;
@@ -288,19 +344,24 @@ export default function ProjectCard({
           border-color: var(--glass-border-hover);
         }
 
-        .pj-trigger {
-          display: block;
-          cursor: pointer;
-        }
-
-        /* ── Square cover — the tile ──
-           aspect-ratio reserves the square before the image arrives, so the
-           grid never shifts. The image is absolutely positioned inside it. */
-        .pj-cover {
+        /* ── Square tile — cover + caption ──
+           The tile reserves the square (aspect-ratio) before the image
+           arrives, so the grid never shifts. It is the positioning context
+           for the caption: when the detail panel below expands, the caption
+           stays anchored to the cover instead of sliding down over the
+           panel content. */
+        .pj-tile {
           position: relative;
           aspect-ratio: 1 / 1;
+        }
+
+        .pj-cover {
+          position: relative;
+          width: 100%;
+          height: 100%;
           overflow: hidden;
           background: var(--surface);
+          cursor: pointer;
         }
 
         .pj-cover__img {
@@ -317,10 +378,13 @@ export default function ProjectCard({
           transform: scale(1.04);
         }
 
-        /* Typographic plate for projects without media. */
+        /* Typographic plate for projects without media. The mark sits in
+           the upper area so the caption below never covers it. */
         .pj-cover[data-empty='true'] {
-          display: grid;
-          place-items: center;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: 16%;
           background:
             radial-gradient(
               120% 120% at 50% 0%,
@@ -367,12 +431,17 @@ export default function ProjectCard({
           background: var(--bronze-soft);
         }
 
-        /* ── Caption — always visible, refined on hover ── */
+        /* ── Caption — name, category, context, description, study link.
+           Always visible; the gradient scrim keeps it readable over media. */
         .pj-caption {
           position: absolute;
           left: 0;
           right: 0;
           bottom: 0;
+          z-index: 2;
+          display: flex;
+          flex-direction: column;
+          gap: 0.45rem;
           padding: clamp(1.1rem, 2.2vw, 1.6rem);
           background: linear-gradient(
             180deg,
@@ -392,25 +461,33 @@ export default function ProjectCard({
           );
         }
 
+        .pj-caption__meta {
+          display: flex;
+          align-items: baseline;
+          gap: 0.6rem;
+          min-width: 0;
+        }
+
         .pj-category {
-          display: block;
           font-size: 0.6rem;
           font-weight: 600;
           letter-spacing: 0.16em;
           text-transform: uppercase;
           color: var(--on-accent);
           opacity: 0.66;
-          margin-bottom: 0.5rem;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        .pj-caption__row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 0.75rem;
+        .pj-context {
+          flex: none;
+          font-size: 0.6rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--on-accent);
+          opacity: 0.5;
+          white-space: nowrap;
         }
 
         .pj-title {
@@ -427,27 +504,86 @@ export default function ProjectCard({
           color: color-mix(in srgb, var(--verde-ink) 55%, var(--on-accent));
         }
 
-        .pj-plus {
+        .pj-desc {
+          color: var(--on-accent);
+          opacity: 0.78;
+          font-size: 0.8rem;
+          line-height: 1.55;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .pj-caption__row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+          margin-top: 0.35rem;
+        }
+
+        .pj-study {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.68rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--on-accent);
+          opacity: 0.85;
+          transition:
+            opacity var(--dur-base) var(--ease-out),
+            gap var(--dur-base) var(--ease-out);
+        }
+
+        .pj-study:hover {
+          opacity: 1;
+          gap: 0.6rem;
+        }
+
+        .pj-study__arrow {
+          transition: transform var(--dur-base) var(--ease-out);
+        }
+
+        .pj-study:hover .pj-study__arrow {
+          transform: translateX(3px);
+        }
+
+        .pj-expand {
           display: inline-flex;
           flex: none;
+          align-items: center;
+          justify-content: center;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          background: rgba(8, 8, 8, 0.35);
           color: var(--on-accent);
-          opacity: 0.75;
+          cursor: pointer;
           transition:
             transform var(--dur-base) var(--ease-out),
-            opacity var(--dur-base) var(--ease-out);
+            background-color var(--dur-base) var(--ease-out),
+            border-color var(--dur-base) var(--ease-out);
         }
 
-        .pj-card:hover .pj-plus {
-          opacity: 1;
+        .pj-expand:hover {
+          background: rgba(8, 8, 8, 0.55);
+          border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .pj-card[data-open='true'] .pj-plus {
+        .pj-card[data-open='true'] .pj-expand {
           transform: rotate(45deg);
         }
 
         /* ── Detail panel ──
            grid-template-rows 0fr → 1fr animates the height smoothly without
-           a magic max-height. The inner fades in/out with the border. */
+           a magic max-height. The inner fades in/out with the border. The
+           padding and border live on a nested content wrapper so the row can
+           collapse to a true 0 height when closed (padding on the animated
+           element itself would leave a visible tail). */
         .pj-panel {
           display: grid;
           grid-template-rows: 0fr;
@@ -461,14 +597,17 @@ export default function ProjectCard({
         .pj-panel__inner {
           overflow: hidden;
           min-height: 0;
-          padding: clamp(1.25rem, 2vw, 1.6rem);
-          border-top: 1px solid var(--glass-border);
           opacity: 0;
           transition: opacity var(--dur-base) var(--ease-out);
         }
 
         .pj-panel[data-open='true'] .pj-panel__inner {
           opacity: 1;
+        }
+
+        .pj-panel__content {
+          padding: clamp(1.25rem, 2vw, 1.6rem);
+          border-top: 1px solid var(--glass-border);
         }
 
         .pj-panel__lead {
@@ -564,30 +703,35 @@ export default function ProjectCard({
           color: var(--text-faint);
         }
 
-        .pj-stack {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.45rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .pj-stack-chip {
-          font-family: var(--font-mono);
-          font-size: 0.62rem;
-          letter-spacing: 0.06em;
-          padding: 0.24rem 0.6rem;
-          border: 1px solid var(--line-soft);
-          border-radius: var(--radius-pill);
-          color: var(--text-faint);
-          white-space: nowrap;
-        }
-
         .pj-actions {
           display: flex;
           gap: 0.7rem;
           flex-wrap: wrap;
         }
-      `}</style>
+
+        /* ── Small tiles ──
+           On phones the tiles are narrow; keep the caption readable by
+           tightening the rhythm and letting the description breathe. */
+        @media (max-width: 480px) {
+          .pj-caption {
+            gap: 0.35rem;
+            padding: 0.9rem;
+          }
+
+          .pj-desc {
+            -webkit-line-clamp: 1;
+          }
+
+          .pj-context {
+            display: none;
+          }
+
+          .pj-expand {
+            width: 26px;
+            height: 26px;
+          }
+        }
+      `}} />
     </article>
   );
 }

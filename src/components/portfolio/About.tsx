@@ -322,7 +322,7 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* ── Stage ── */
         .about-stage {
           position: relative;
@@ -593,7 +593,7 @@ export default function About({ lang: initialLang = 'en' }: { lang?: Lang }) {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0; }
         }
-      `}</style>
+      ` }} />
     </section>
   );
 }

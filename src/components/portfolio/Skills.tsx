@@ -127,7 +127,7 @@ export default function Skills({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </blockquote>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .cap-header {
           display: flex;
           flex-direction: column;
@@ -304,7 +304,7 @@ export default function Skills({ lang: initialLang = 'en' }: { lang?: Lang }) {
             padding-left: 0;
           }
         }
-      `}</style>
+      ` }} />
     </section>
   );
 }

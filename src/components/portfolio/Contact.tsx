@@ -401,7 +401,7 @@ export default function Contact({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .ct-grid {
           display: grid;
           grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -758,7 +758,7 @@ export default function Contact({ lang: initialLang = 'en' }: { lang?: Lang }) {
             grid-template-columns: 1fr;
           }
         }
-      `}</style>
+      ` }} />
     </section>
   );
 }

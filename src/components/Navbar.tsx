@@ -142,7 +142,7 @@ export default function Navbar({ lang: initialLang = 'en' }: { lang?: Lang }) {
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .kb-nav {
           position: fixed;
           top: 0;
@@ -388,7 +388,7 @@ export default function Navbar({ lang: initialLang = 'en' }: { lang?: Lang }) {
             transition: none;
           }
         }
-      `}</style>
+      ` }} />
     </header>
   );
 }

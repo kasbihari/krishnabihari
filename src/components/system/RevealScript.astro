@@ -27,11 +27,11 @@
     }
 
     function init() {
-      var nodes = document.querySelectorAll('[data-reveal]:not([data-reveal-ready])');
+      var nodes = document.querySelectorAll('[data-reveal]');
 
       if (reduce || !('IntersectionObserver' in window)) {
         for (var i = 0; i < nodes.length; i++) {
-          nodes[i].setAttribute('data-reveal-ready', '');
+          if (nodes[i].closest('astro-island[ssr]')) continue;
           show(nodes[i]);
         }
         fillBars(document);
@@ -59,7 +59,7 @@
       );
 
       for (var j = 0; j < nodes.length; j++) {
-        nodes[j].setAttribute('data-reveal-ready', '');
+        if (nodes[j].closest('astro-island[ssr]')) continue;
         observer.observe(nodes[j]);
       }
     }
@@ -80,6 +80,11 @@
         init();
       });
     });
-    mo.observe(document.documentElement, { childList: true, subtree: true });
+    mo.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['ssr']
+    });
   })();
 </script>

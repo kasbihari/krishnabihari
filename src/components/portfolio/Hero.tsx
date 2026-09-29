@@ -222,7 +222,7 @@ export default function Hero({
         <div className="hero-scroll-line" />
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .hero-section {
           position: relative;
           min-height: 100svh;
@@ -645,7 +645,7 @@ export default function Hero({
             animation: none;
           }
         }
-      `}</style>
+      ` }} />
     </section>
   );
 }

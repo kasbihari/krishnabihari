@@ -128,7 +128,7 @@ export default function Projects({
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .pj-header {
           display: flex;
           flex-direction: column;
@@ -214,7 +214,7 @@ export default function Projects({
           color: var(--text-faint);
           font-size: 0.9rem;
         }
-      `}</style>
+      `}} />
     </section>
   );
 }

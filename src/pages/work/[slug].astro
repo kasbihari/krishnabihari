@@ -18,9 +18,9 @@ const w = t.work;
 
 const slug = Astro.params.slug ?? '';
 
-// Old brand route — redirect cleanly to the current canonical URL.
-if (slug === 'veyro-agent') {
-  return Astro.redirect('/work/veyxo');
+// Old brand routes — redirect cleanly to the current canonical URL.
+if (slug === 'veyro-agent' || slug === 'veyxo') {
+  return Astro.redirect('/work/heyvelai');
 }
 
 const published = await fetchPublishedPortfolioProjects();
@@ -48,6 +48,12 @@ const statusLabel =
   project.status === 'done' ? w.shippedBadge : w.inProgressBadge;
 const statusData = project.status === 'done' ? 'done' : 'in-progress';
 
+// Localized category — fall back to the raw data string for projects
+// without i18n keys (e.g. admin-managed projects).
+const category = project.categoryKey
+  ? (w.projectCategories[project.categoryKey] ?? project.category)
+  : project.category;
+
 const pageTitle = study.seoTitle ?? `${project.title} — ${cs.label} | Krishna Bihari`;
 const pageDescription = project.tagline;
 ---
@@ -64,7 +70,7 @@ const pageDescription = project.tagline;
 
         <div class="cs-hero__inner">
           <p class="section-label" data-reveal>
-            {project.category}
+            {category}
           </p>
 
           <h1 class="cs-hero__title" data-reveal data-delay="100">
@@ -138,6 +144,22 @@ const pageDescription = project.tagline;
       </div>
     </section>
 
+    {/* ── Context ── */}
+    {study.context && study.context.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.context}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            {study.context.map((paragraph) => (
+              <p class="cs-body">{paragraph}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
     {/* ── Problem / Solution ── */}
     <section class="cs-section section-padding--tight">
       <div class="container-main cs-section__grid">
@@ -165,85 +187,116 @@ const pageDescription = project.tagline;
       </div>
     </section>
 
+    {/* ── Key decisions ── */}
+    {study.keyDecisions && study.keyDecisions.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.keyDecisions}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            <ol class="cs-list">
+              {study.keyDecisions.map((decision, i) => (
+                <li class="cs-list__item">
+                  <span class="cs-list__index" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span class="cs-list__text">{decision}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+    )}
+
     {/* ── Architecture ── */}
-    <section class="cs-section section-padding--tight">
-      <div class="container-main cs-section__grid">
-        <div class="cs-section__head" data-reveal>
-          <p class="section-label">{cs.architecture}</p>
+    {study.architecture && study.architecture.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.architecture}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            <ol class="cs-list">
+              {study.architecture.map((layer, i) => (
+                <li class="cs-list__item">
+                  <span class="cs-list__index" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span class="cs-list__text">{layer}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
-        <div class="cs-section__body" data-reveal data-delay="100">
-          <ol class="cs-list">
-            {study.architecture.map((layer, i) => (
-              <li class="cs-list__item">
-                <span class="cs-list__index" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span class="cs-list__text">{layer}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     {/* ── Key features ── */}
-    <section class="cs-section section-padding--tight">
-      <div class="container-main cs-section__grid">
-        <div class="cs-section__head" data-reveal>
-          <p class="section-label">{cs.keyFeatures}</p>
-        </div>
-        <div class="cs-section__body" data-reveal data-delay="100">
-          <div class="cs-features">
-            {study.keyFeatures.map((feature) => (
-              <div class="cs-feature">
-                <h3 class="cs-feature__title">{feature.title}</h3>
-                <p class="cs-feature__body">{feature.body}</p>
-              </div>
-            ))}
+    {study.keyFeatures && study.keyFeatures.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.keyFeatures}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            <div class="cs-features">
+              {study.keyFeatures.map((feature) => (
+                <div class="cs-feature">
+                  <h3 class="cs-feature__title">{feature.title}</h3>
+                  <p class="cs-feature__body">{feature.body}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     {/* ── Technology ── */}
-    <section class="cs-section section-padding--tight">
-      <div class="container-main cs-section__grid">
-        <div class="cs-section__head" data-reveal>
-          <p class="section-label">{cs.technology}</p>
-        </div>
-        <div class="cs-section__body" data-reveal data-delay="100">
-          <div class="cs-tech">
-            {study.technology.map((tech) => (
-              <span class="cs-tech__chip">{tech}</span>
-            ))}
+    {study.technology.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.technology}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            <div class="cs-tech">
+              {study.technology.map((tech) => (
+                <span class="cs-tech__chip">{tech}</span>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     {/* ── Challenges ── */}
-    <section class="cs-section section-padding--tight">
-      <div class="container-main cs-section__grid">
-        <div class="cs-section__head" data-reveal>
-          <p class="section-label">{cs.challenges}</p>
+    {study.challenges && study.challenges.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.challenges}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            <ol class="cs-list">
+              {study.challenges.map((challenge, i) => (
+                <li class="cs-list__item cs-list__item--block">
+                  <span class="cs-list__index" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div class="cs-list__block">
+                    <h3 class="cs-list__title">{challenge.title}</h3>
+                    <p class="cs-list__text">{challenge.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
-        <div class="cs-section__body" data-reveal data-delay="100">
-          <ol class="cs-list">
-            {study.challenges.map((challenge, i) => (
-              <li class="cs-list__item cs-list__item--block">
-                <span class="cs-list__index" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div class="cs-list__block">
-                  <h3 class="cs-list__title">{challenge.title}</h3>
-                  <p class="cs-list__text">{challenge.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     {/* ── Outcome ── */}
     <section class="cs-section section-padding--tight">
@@ -258,6 +311,22 @@ const pageDescription = project.tagline;
         </div>
       </div>
     </section>
+
+    {/* ── Lessons ── */}
+    {study.lessons && study.lessons.length > 0 && (
+      <section class="cs-section section-padding--tight">
+        <div class="container-main cs-section__grid">
+          <div class="cs-section__head" data-reveal>
+            <p class="section-label">{cs.lessons}</p>
+          </div>
+          <div class="cs-section__body" data-reveal data-delay="100">
+            {study.lessons.map((paragraph) => (
+              <p class="cs-body">{paragraph}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
 
     {/* ── Footer nav ── */}
     <footer class="cs-nav section-padding">
